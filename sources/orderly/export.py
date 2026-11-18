@@ -87,14 +87,14 @@ def export(masters: list[Master], sets: list[dict[str, Glyph]], vf: Path, out_di
         "languages": languages,
         "glyphs": glyphs,
     }
-    (out_dir / "orderly.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    (out_dir / "orderly.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
     outlines = {
         "unitsPerEm": 1000,
         "masters": [m.name for m in masters],
         "glyphs": {n: {m.name: [{"part": c.part, "points": _points(c)} for c in s[n].contours]
                        for m, s in zip(masters, sets)} for n in order},
     }
-    (out_dir / "outlines.json").write_text(json.dumps(outlines, separators=(",", ":")), encoding="utf-8")
+    (out_dir / "outlines.json").write_text(json.dumps(outlines, separators=(",", ":")), encoding="utf-8", newline="\n")
 
 
 def woff2(ttf: Path, out: Path) -> Path:

@@ -73,7 +73,7 @@ def languages() -> list[dict]:
 
 def _write_metrics(m: Master, glyphs) -> None:
     data = {n: {"advance": g.advance, "lsb": g.lsb, "rsb": g.rsb, "unicodes": list(g.unicodes)} for n, g in glyphs.items()}
-    (BUILD / f"metrics-{m.name}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
+    (BUILD / f"metrics-{m.name}.json").write_text(json.dumps(data, indent=1), encoding="utf-8", newline="\n")
 
 
 def check_compat() -> bool:
