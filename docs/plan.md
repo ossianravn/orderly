@@ -1,0 +1,230 @@
+# Orderly: plan
+
+Orderly is an open-source geometric grotesk typeface, drawn in code, with a small website that shows it. This plan
+holds the decisions, the phases and the progress log. The letterforms are specified in the [design brief](design.md).
+
+Inspiration: the [Halden Grotesk specimen](https://miaai-lab.github.io/Claude-Fable-5.2-HTML-Files/045-foundry-specimen-halden.html),
+a page that draws a geometric grotesk from numbered points without shipping a font. Orderly takes its calm, its
+construction logic and its editorial specimen layout, and ships the real font. Neither the letterforms nor the page
+are copies.
+
+## Decisions
+
+Decided by the maintainer on 2026-11-18 unless marked otherwise.
+
+| Topic         | Decision                                                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name          | Orderly. A web search found no typeface of that name (closest: "Order" by Typodermic). Phase 5 repeats the check against font catalogues.                                      |
+| Family scope  | One upright variable font with two axes: weight (`wght`) and optical size (`opsz`). Italic is a later round.                                                                   |
+| Licence       | Fonts: SIL Open Font License 1.1 (`OFL.txt`). Code and website: MIT (`LICENSE`).                                                                                               |
+| Hosting       | GitHub Pages, deployed by a GitHub Action on push to `main`, at `https://ossianravn.github.io/orderly/`.                                                                       |
+| Credits       | Honest colophon: by Ossian Ravn, drawn in code with Claude. Font copyright line: `Copyright 2026 The Orderly Project Authors (https://github.com/ossianravn/orderly)`.         |
+| Site sections | Named with words. No "01, 02" numbering anywhere.                                                                                                                              |
+| Git           | Commit and push to `main` without asking when the change is non-destructive.                                                                                                   |
+
+Everything below is the planner's proposal (Claude, 2026-11-18). The maintainer can overrule any of it; record the
+change in this table.
+
+## What "high quality in late 2026" means here
+
+Each line is an acceptance criterion for the release, checked in Phase 5.
+
+- **Variable first.** One TrueType-flavoured variable font with `fvar`, `STAT`, `avar` and named instances; static
+  instances generated from it for apps that need them; WOFF2 for the web, also subset by script with `unicode-range`.
+- **Sources build the fonts.** One command rebuilds every font file from the repository, and the same sources give the
+  same bytes.
+- **Masters interpolate.** Every glyph has the same contours, points and order in every master.
+- **Points at extremes**, no stray points, no near-duplicate points, consistent contour direction.
+- **Spacing before kerning.** Sidebearings carry the rhythm; kerning only fixes pairs that spacing cannot. Kerning is
+  class-based.
+- **Language support is tested**, not assumed: Google Fonts Latin Core complete, and every Latin-script official
+  language of the EU and the Nordic countries (Sámi and Greenlandic included) plus Turkish, verified with a coverage
+  tool.
+- **Diacritics by anchors**: composites are components placed by anchors, and the font carries `mark` and `mkmk`.
+- **OpenType features that people use**: `kern`, `mark`, `mkmk`, `ccmp`, `locl`, `case`, `cpsp`, `frac`, `numr`,
+  `dnom`, `sups`, `subs`, `ordn`, `tnum`, `pnum`, `zero`, and a few stylistic sets (see the design brief).
+- **Vertical metrics** follow the Google Fonts specification (typo and hhea equal, `USE_TYPO_METRICS` set, win
+  metrics cover the bounding box), so lines sit the same on every platform.
+- **Automated QA is clean**: no FAIL from the font QA tool's universal and Google Fonts profiles; every WARN either
+  fixed or explained in `docs/production.md`.
+- **Looked at.** Every glyph has been looked at large, and running text has been looked at small, in a real browser,
+  in light and dark.
+
+Tooling moves, so check current documentation before choosing: the Google Fonts toolchain has been moving from
+`fontmake` and `fontbakery` (Python) to `fontc` and `fontspector` (Rust). Prefer the current tool when it installs and
+works on Windows and in CI; fall back to the older one otherwise. Record the choice and the versions in
+`docs/production.md`.
+
+## Architecture
+
+### The font is a program
+
+Hand-placing thousands of points across six masters does not scale and does not stay consistent. Orderly's source is a
+Python package that draws each glyph from parameters:
+
+- **A master is a set of numbers** (`Master`): heights, stem widths, contrast, join thinning, apertures, spacing,
+  curve tension. Six masters differ only in these numbers: {Thin, Regular, Black} x {Text, Display}.
+- **A glyph is a function** of a master that returns contours, anchors and an advance. It builds from shared
+  primitives: straight stems and bars, rings, variable-width strokes along a skeleton with cut terminals, diagonals.
+  Shared parts are shared code: the bowl of `b d p q`, the arch of `n h m r u`, the hook of `f j t`.
+- **Curves are drawn the way type designers draw them**: on-curve points at extremes, handles horizontal or vertical
+  there, one tension value shaping how round or square a quadrant is.
+- **A glyph function takes the same path through its code for every master**, so the masters are compatible by
+  construction. Overlapping parts stay overlapping in the variable font (stem over bowl); static instances get their
+  overlaps removed.
+- **Joins are thinned.** Where a curve enters a stem, the stroke narrows, by a master parameter. Parts that merely
+  overlap at full weight make dark clots, the mark of an amateur font.
+- **Spacing is computed, then adjusted**: an area-based sidebearing calculation per glyph, with an explicit table of
+  hand adjustments. Kerning likewise: computed for a pair list by class, small values dropped, then adjusted.
+
+The generator writes UFO masters and a designspace into `build/` (not committed); the font compiler turns them into
+binaries in `fonts/` (committed, so downloads and the site need no font toolchain).
+
+### Layout
+
+```
+sources/orderly/    the generator: masters, primitives, glyphs, spacing, kerning, features, build
+fonts/              built fonts: variable/, static/, web/
+proofs/             rendered proof images (not committed)
+site/               the showcase website (Astro)
+docs/               plan.md, design.md, production.md (pipeline, QA results; written in Phase 0)
+```
+
+Python runs through `uv`; the site through `npm` inside `site/`. Dev server ports: site dev **4811**, site preview
+**4812**, proof server **4813** (`.claude/launch.json`).
+
+### Proofs
+
+An agent cannot judge a letter from coordinates. Two proof tools are part of the pipeline from Phase 0:
+
+- **Outline sheets** straight from the generator, no compile needed: glyphs large, with metric lines, on-curve and
+  off-curve points, sidebearings; and masters overlaid. PNG files an agent can open.
+- **Browser proofs** of the compiled font: words and text at 9 to 200 px, every weight, both optical sizes, light and
+  dark, screenshotted from a real browser engine to PNG.
+
+### Site data
+
+The font build exports one JSON file for the site: axes, instances, metrics, features, languages, the glyph list with
+Unicode values, advances and outlines per master. The site shows these numbers; none is typed by hand.
+
+## Phases
+
+One phase at a time. Each ends at a **gate**: the implementer stops, writes what was built and how it was checked in
+the progress log, commits, pushes, and the reviewer looks before the next phase starts.
+
+### Phase 0: pipeline proof
+
+Repository skeleton, licences, `uv` environment, generator skeleton, both proof tools, and the control glyphs
+`H O n o` of the Regular Display master compiled to a font.
+
+Gate: one command builds a TTF containing `H O n o`; an outline sheet and a browser proof exist as PNG; tool choices
+and versions are in `docs/production.md`.
+
+### Phase 1: Regular Display
+
+`A-Z a-z 0-9` and basic punctuation (`. , : ; ! ? - ' " ( ) / &`) plus `Æ Ø Å æ ø å`, spaced, in the Regular Display
+master. Draw in the order of the design brief's control strings; settle the control glyphs before drawing the rest.
+
+Gate: outline sheets for every glyph; browser proofs of the brief's test words and a paragraph at 16 to 200 px.
+Every item on the brief's review checklist passes in the implementer's own judgement, with the weak spots named.
+
+### Phase 2: weight
+
+Thin and Black Display masters; the variable font with `wght` 100 to 900; `avar` so the named weights step evenly to
+the eye.
+
+Gate: masters interpolate cleanly (tool-checked); proofs of all nine weights; the Black's counters stay open and the
+Thin's joins stay clean. If an extreme cannot meet the brief, propose a narrower range instead of shipping it.
+
+### Phase 3: optical size
+
+Three Text masters; the variable font with `opsz` 12 to 72 (default 12, the Text design).
+
+Gate: browser proofs of running text at 9, 11, 13, 16 px with Text against Display at the same size, and headlines at
+72 px and up the other way round. Text must be clearly easier to read small; Display clearly finer large.
+
+### Phase 4: character set and features
+
+Diacritics by anchors, punctuation, currency, math, arrows, fractions, superiors and inferiors, tabular figures,
+alternates; `locl`; kerning.
+
+Gate: language coverage verified by tool; a proof page per feature; kerning proofs (capitals, capital-lowercase,
+punctuation, figures).
+
+### Phase 5: production
+
+Static instances, WOFF2 and subsets, names, `STAT`, vertical metrics, automated QA, name check, a CI workflow that
+rebuilds the fonts and fails when `fonts/` differs from the sources, `README.md`, `CHANGELOG.md`, `OFL.txt`,
+`FONTLOG` or equivalent.
+
+Gate: every criterion under "What high quality means" is met or listed with its reason in `docs/production.md`.
+
+### Phase 6: website
+
+Build the site described below, then deploy it to GitHub Pages.
+
+Gate: the site looked at with realistic content at 1440 and 390 px, light and dark; keyboard-operable; no third-party
+requests; Lighthouse mobile performance and accessibility at 95 or more; live on GitHub Pages.
+
+Phase 6 may start beside Phase 4 once Phase 3's variable font exists, since the two touch different folders.
+
+## The website
+
+A single-page specimen with one job: let a visitor see what Orderly is, try it, and download it.
+
+**The idea the reference cannot have: the whole page is live.** The reference draws letters because it has no font.
+Orderly has one, with two axes, so the page's own text is the specimen. A small fixed control bar holds weight,
+optical size (auto or manual) and appearance; it changes the specimens on the page as it moves.
+
+**What it borrows from the reference:** an editorial grid with a narrow label column, very large type that bleeds off
+the edge, hairline rules, measurements shown beside the thing measured, a construction section, a full character grid,
+a colophon written in a human voice.
+
+**What makes it its own:**
+
+- Set entirely in Orderly. Labels are Orderly, small, uppercase, tracked, with tabular figures (the reference uses a
+  monospace). This is the proof that it works small.
+- Its own palette: cool paper-white, near-black ink, one accent that is not the reference's cobalt blue. Light and
+  dark, following the system, with a control to override.
+- Sections named with words and no numbers. Working titles, in order: Orderly (cover), Weights, Sizes, Construction,
+  In use, Reading, Features, Characters, Try it, Colophon.
+- Real numbers from the font build's JSON, and real outlines: the Construction section and the glyph inspector draw
+  the masters' actual points and interpolate between them in the browser.
+- In-use pieces invented for Orderly's theme of things kept in order: a departure board (tabular figures, arrows), a
+  library index card, a pharmacy label or a receipt (very small sizes), a poster (display). Nordic languages
+  throughout, so `æ ø å` appear as a matter of course. No harbour, no ferry terminal, no kunsthall.
+
+**Section contents:**
+
+| Section      | Shows                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Cover        | The name, very large; one sentence saying what Orderly is; the download button; the facts (weights, axes, glyphs, languages, licence). |
+| Weights      | The nine named weights as a ladder; dragging across it moves through the weight axis.                                              |
+| Sizes        | The same word in Text and Display scaled to equal height, differences marked; a size waterfall with optical sizing on and off.     |
+| Construction | The shared parts: one circle, one stem, vertical cuts, overshoot. Drawn from master data, with measurements.                       |
+| In use       | The invented pieces above.                                                                                                         |
+| Reading      | Paragraphs at text sizes in several languages.                                                                                     |
+| Features     | OpenType features switched on and off beside an example each.                                                                      |
+| Characters   | The whole character set as a grid; choosing one opens the inspector (outline, points, advance, sidebearings, Unicode).             |
+| Try it       | Editable text with size, weight and optical-size controls.                                                                         |
+| Colophon     | Who made it and how, the licence, the downloads, the repository.                                                                   |
+
+**Build:** Astro, static output, TypeScript, plain CSS with custom properties, small vanilla islands for the
+interactive parts. No UI framework and no CSS framework unless a section needs one. `base` is `/orderly/`.
+
+**Bar:** the maintainer's rule is "would Apple ship this?". Controls are as wide as their content; two to four options
+use a segmented control; labels sit beside what they label; the screen explains itself through layout, not through
+sentences about the interface. Use the skills `emil-design-eng`, `apple-design`, `golden-ratio-ux` and `break-ui`
+while building, and `mobile-native` for the phone pass.
+
+## Outside this version
+
+Italic, small capitals, old-style figures, CFF/OTF static fonts, Cyrillic, Greek, Vietnamese, manual TrueType hinting,
+a monospace companion, submission to Google Fonts or Fontsource. Name a need before adding any of them.
+
+## Progress log
+
+Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
+
+- 2026-11-18: Plan, design brief and AGENTS.md written (Claude Fable 5.2, planner and reviewer). Repository cloned
+  from GitHub. Implementation is delegated phase by phase to Claude Opus 5.5.

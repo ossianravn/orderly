@@ -1,0 +1,10 @@
+build/
+proofs/
+node_modules/
+dist/
+.astro/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
