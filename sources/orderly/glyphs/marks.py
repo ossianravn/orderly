@@ -58,12 +58,12 @@ def _shape(name: str, m: Master, y0: float, h: float, w: float, d: float) -> lis
         o, i = eo.arc("W", "S", "E"), ei.arc("W", "S", "E")
         return [Contour.of(o, line(o.end, i.end), i.reversed())]
     if name == "tildecomb":
-        wt, ht = xh * 0.24, h * 0.5
-        a = math.radians(48)
-        nodes = [((-wt, y0 + ht * 0.25), (math.cos(a), math.sin(a)), w), ((-wt / 2, y0 + ht), (1.0, 0.0), w),
-                 ((wt / 2, y0), (1.0, 0.0), w), ((wt, y0 + ht * 0.75), (math.cos(a), math.sin(a)), w)]
+        wt, ht = xh * 0.27, h * 0.55
+        a = math.radians(62)
+        nodes = [((-wt, y0 + ht * 0.05), (math.cos(a), math.sin(a)), w), ((-wt * 0.45, y0 + ht), (1.0, 0.0), w),
+                 ((wt * 0.45, y0), (1.0, 0.0), w), ((wt, y0 + ht * 0.95), (math.cos(a), math.sin(a)), w)]
         left, right = offsets(nodes, [(0.56, 0.56)] * 3)
-        x0, x1 = -wt + w * 0.4, wt - w * 0.4
+        x0, x1 = -wt + w * 0.5, wt - w * 0.5
         left, right = left.cut_x(x0, "tail", 0).cut_x(x1, "head", -1), right.cut_x(x0, "tail", 0).cut_x(x1, "head", -1)
         c = Contour.of(left, line(left.end, right.end), right.reversed())
         return [c if c.area() > 0 else c.reversed()]

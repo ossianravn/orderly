@@ -127,7 +127,7 @@ REGULAR_DISPLAY_PARAMS = {
     "k.armin": 0.1,  # k arm's top stops this many stems short of the leg's foot
     "mark.case": 0.82, "mark.gap": 0.1, "mark.h": 0.26, "mark.w": 0.92, "mark.dot": 0.9,  # marks
     "mark.hat": 0.48, "mark.dots": 0.2, "mark.ring": 0.34,  # circumflex/caron width, dieresis spread, ring / x-height
-    "math.axis": 0.46, "math.w": 0.72,  # math symbols: axis / cap height; width / cap height
+    "math.axis": 0.46, "math.w": 0.72, "math.sb": 0.08,  # math: axis, width, side margin / cap height
     "dash.en": 0.5, "dash.em": 0.92,  # dash lengths / em
     "bar.asc": 0.42, "eth.leave": 25,  # đ ħ bar height in the ascender; ð stem leaves the round at this angle
     "join.notch": 0.04,  # an outer join stays at least this far (/ x-height) inside the stem's end

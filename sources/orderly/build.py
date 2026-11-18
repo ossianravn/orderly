@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .export import export, woff2
 from .font import build as build_glyphs
+from .kerning import compute as kern_compute
 from .master import Master
 from .sizes import TEXT
 from .weights import DISPLAY, WEIGHT_MAP, WEIGHT_NAMES
@@ -42,6 +43,17 @@ def ufo_path(m: Master) -> Path:
 
 MASTERS = TEXT + DISPLAY  # Regular Text (wght 400, opsz 12) is the default master
 
+# Substitution features (kern, mark and mkmk are written by fontc from the masters' kerning and anchors)
+FEATURES = """
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+feature ss01 {
+    featureNames { name "Double-storey a"; };
+    sub a by a.ss01;
+} ss01;
+"""
+
 
 def masters_ufos(masters: list[Master]) -> list[Path]:
     return [write_ufo(m, build_glyphs(m), ufo_path(m)) for m in masters]
@@ -51,7 +63,7 @@ def build_variable() -> Path:
     """Orderly: weight 100 to 900 and optical size 12 to 72 from six masters (Text and Display x three weights),
     then the web font and the site's data."""
     sets = [build_glyphs(m) for m in MASTERS]
-    ufos = [write_ufo(m, g, ufo_path(m)) for m, g in zip(MASTERS, sets)]
+    ufos = [write_ufo(m, g, ufo_path(m), features=FEATURES, kerning=kern_compute(m, g)) for m, g in zip(MASTERS, sets)]
     ds = write_designspace(MASTERS, ufos, BUILD / "masters" / "Orderly.designspace", family="Orderly",
                            weight_map=WEIGHT_MAP, names=WEIGHT_NAMES)
     out = compile_font(ds, FONTS / "variable" / "Orderly[opsz,wght].ttf", BUILD / "fontc" / "variable")

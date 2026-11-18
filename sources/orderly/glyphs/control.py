@@ -13,6 +13,11 @@ def space(m: Master) -> Drawing:
     return Drawing([], advance=round(m.xh * m.space))
 
 
+@glyph("nbspace", 0xA0, "pun")
+def nbspace(m: Master) -> Drawing:
+    return space(m)
+
+
 @glyph("H", 0x48, "uc")
 def H(m: Master) -> Drawing:
     w, st = m.w("H"), m.cstem

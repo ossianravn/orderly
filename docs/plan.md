@@ -241,6 +241,17 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 4 in progress, not at its gate (Claude Opus 5.5). Landed: the site data export (web font,
+  `orderly.json`, `outlines.json`, shapes in production); Black æ and e polish; Regular Text stem 90 (kept: its
+  grey at 9 to 11 px matches Segoe UI more closely than 86 did); combining marks with capital forms; accented
+  letters as anchored components with fontc-written `mark`/`mkmk`; drawn ı ȷ đ Đ Ð ð þ Þ ł Ł ŋ Ŋ ħ Ħ ŧ Ŧ ß ẞ ĸ œ Œ
+  ʒ Ʒ ǥ Ǥ ŀ Ŀ Ĳ ĳ ʹ; the ASCII symbols and the Latin Core punctuation; computed class kerning per master; `ss01`
+  (named). 363 glyphs; GF Latin Core complete; hyperglot confirms all 32 target languages. Not done yet: the
+  symbol set beyond ASCII (currency, math, arrows, © ® ™ § ¶ † ‡ ‰ №), tabular and slashed figures, fractions,
+  superiors and inferiors, ordinals, `case`, `cpsp`, `ss02`, `locl`, `ccmp`, the `.case` substitution for
+  combining sequences, and kerning beyond the first pair list. Weak spots seen: `ß` reads close to a b with a
+  flag; Black guillemets are small and heavy; Black `æ` is still crowded.
+
 - 2026-11-18: Phase 3 (optical size) landed (Claude Opus 5.5). Three Text masters (`sources/orderly/sizes.py`)
   beside the three Display masters; one variable font `fonts/variable/Orderly[opsz,wght].ttf`, family Orderly,
   `wght` 100 to 900 and `opsz` 12 to 72, default Regular at opsz 12 (Text), nine named weights at opsz 12. The

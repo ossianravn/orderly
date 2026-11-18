@@ -145,4 +145,23 @@ ascent 950 and descent 250. Phase 5 sets them by the Google Fonts specification 
 
 ## QA results
 
-None yet. Accepted warnings will be listed here with their reasons.
+2026-11-18, Phase 4 (in progress), `Orderly[opsz,wght].ttf`, 363 glyphs.
+
+- `uv run --group qa fontbakery check-universal -l WARN --succinct fonts/variable/Orderly[opsz,wght].ttf`:
+  98 PASS, 3 FAIL, 1 ERROR, 1 WARN. The Google Fonts profile runs only in part: its `googlefonts` extra does not
+  resolve with uv (gfmetadata needs protobuf 6.33 or later against gflanguages' pins), so some of its checks error;
+  fontspector in CI (Phase 5) replaces it.
+- `uv run --group qa orderly languages` (hyperglot 0.8.2): all 32 listed languages supported.
+
+Open findings and their status:
+
+| Check | Result | Status |
+| --- | --- | --- |
+| `family/win_ascent_and_descent` | FAIL | Phase 5 sets vertical metrics by the Google Fonts specification. |
+| `inconsistencies_between_fvar_STAT` | FAIL | fontc's basic STAT lacks axis values for the instances; Phase 5 writes STAT. |
+| `smart_dropout` | FAIL | No `prep` program yet; Phase 5 adds the smart-dropout instructions (or ttfautohint's). |
+| `name/family_and_style_max_length` | ERROR | The check itself crashes on this font; recheck with fontspector in Phase 5. |
+| `unreachable_glyphs` | WARN | Accepted: the capital (`.case`) marks and `caroncomb.alt` are used only as components of accented capitals and ď ľ ť Ľ. |
+
+Fixed during Phase 4: `whitespace_glyphs` (nbspace added) and `math_signs_width` (math signs share one advance).
+

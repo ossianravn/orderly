@@ -182,14 +182,9 @@
  ],
  "features": [
   {
-   "tag": "abvm",
-   "name": "abvm",
-   "sample": ""
-  },
-  {
-   "tag": "blwm",
-   "name": "blwm",
-   "sample": ""
+   "tag": "kern",
+   "name": "Kerning",
+   "sample": "AVATAR Tower Yacht"
   },
   {
    "tag": "mark",
@@ -200,6 +195,11 @@
    "tag": "mkmk",
    "name": "Mark to mark",
    "sample": "ǘ"
+  },
+  {
+   "tag": "ss01",
+   "name": "Double-storey a",
+   "sample": "Blåbærsyltetøj"
   }
  ],
  "languages": [
@@ -369,6 +369,44 @@
    "name": "space",
    "unicode": 32,
    "char": " ",
+   "category": "space",
+   "metrics": {
+    "ThinText": {
+     "advance": 279,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularText": {
+     "advance": 268,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackText": {
+     "advance": 250,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "ThinDisplay": {
+     "advance": 230,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularDisplay": {
+     "advance": 230,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackDisplay": {
+     "advance": 232,
+     "lsb": 0,
+     "rsb": 0
+    }
+   }
+  },
+  {
+   "name": "nbspace",
+   "unicode": 160,
+   "char": " ",
    "category": "space",
    "metrics": {
     "ThinText": {
@@ -5730,34 +5768,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 648,
-     "lsb": 72,
-     "rsb": 72
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 624,
-     "lsb": 60,
-     "rsb": 60
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 600,
-     "lsb": 48,
-     "rsb": 48
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 620,
-     "lsb": 58,
-     "rsb": 58
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 592,
-     "lsb": 44,
-     "rsb": 44
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 576,
-     "lsb": 36,
-     "rsb": 36
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -5768,34 +5806,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 648,
-     "lsb": 72,
-     "rsb": 72
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 624,
-     "lsb": 60,
-     "rsb": 60
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 600,
-     "lsb": 48,
-     "rsb": 48
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 620,
-     "lsb": 58,
-     "rsb": 58
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 592,
-     "lsb": 44,
-     "rsb": 44
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 576,
-     "lsb": 36,
-     "rsb": 36
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -5806,34 +5844,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 650,
-     "lsb": 73,
-     "rsb": 73
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 628,
-     "lsb": 62,
-     "rsb": 62
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 606,
-     "lsb": 51,
-     "rsb": 51
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 620,
-     "lsb": 58,
-     "rsb": 58
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 596,
-     "lsb": 46,
-     "rsb": 46
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 582,
-     "lsb": 39,
-     "rsb": 39
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -5844,34 +5882,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 649,
-     "lsb": 72,
-     "rsb": 73
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 626,
-     "lsb": 59,
-     "rsb": 63
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 605,
-     "lsb": 47,
-     "rsb": 54
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 621,
-     "lsb": 58,
-     "rsb": 59
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 594,
-     "lsb": 43,
-     "rsb": 47
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 581,
-     "lsb": 35,
-     "rsb": 42
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -5882,34 +5920,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 649,
-     "lsb": 73,
-     "rsb": 72
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 626,
-     "lsb": 63,
-     "rsb": 59
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 605,
-     "lsb": 54,
-     "rsb": 47
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 621,
-     "lsb": 59,
-     "rsb": 58
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 594,
-     "lsb": 47,
-     "rsb": 43
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 581,
-     "lsb": 42,
-     "rsb": 35
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -5920,32 +5958,32 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 321,
+     "advance": 352,
      "lsb": 72,
      "rsb": 74
     },
     "RegularText": {
-     "advance": 297,
+     "advance": 328,
      "lsb": 59,
      "rsb": 63
     },
     "BlackText": {
-     "advance": 360,
+     "advance": 322,
      "lsb": 47,
      "rsb": 45
     },
     "ThinDisplay": {
-     "advance": 287,
+     "advance": 317,
      "lsb": 58,
      "rsb": 59
     },
     "RegularDisplay": {
-     "advance": 260,
+     "advance": 290,
      "lsb": 43,
      "rsb": 47
     },
     "BlackDisplay": {
-     "advance": 382,
+     "advance": 330,
      "lsb": 35,
      "rsb": 33
     }
@@ -5958,32 +5996,32 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 321,
+     "advance": 352,
      "lsb": 74,
      "rsb": 72
     },
     "RegularText": {
-     "advance": 297,
+     "advance": 328,
      "lsb": 63,
      "rsb": 59
     },
     "BlackText": {
-     "advance": 360,
+     "advance": 322,
      "lsb": 45,
      "rsb": 47
     },
     "ThinDisplay": {
-     "advance": 287,
+     "advance": 317,
      "lsb": 59,
      "rsb": 58
     },
     "RegularDisplay": {
-     "advance": 260,
+     "advance": 290,
      "lsb": 47,
      "rsb": 43
     },
     "BlackDisplay": {
-     "advance": 382,
+     "advance": 330,
      "lsb": 33,
      "rsb": 35
     }
@@ -5996,32 +6034,32 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 514,
+     "advance": 574,
      "lsb": 72,
      "rsb": 74
     },
     "RegularText": {
-     "advance": 527,
+     "advance": 584,
      "lsb": 59,
      "rsb": 63
     },
     "BlackText": {
-     "advance": 625,
+     "advance": 611,
      "lsb": 47,
      "rsb": 45
     },
     "ThinDisplay": {
-     "advance": 469,
+     "advance": 528,
      "lsb": 58,
      "rsb": 59
     },
     "RegularDisplay": {
-     "advance": 477,
+     "advance": 533,
      "lsb": 43,
      "rsb": 47
     },
     "BlackDisplay": {
-     "advance": 649,
+     "advance": 620,
      "lsb": 35,
      "rsb": 33
     }
@@ -6034,32 +6072,32 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 514,
+     "advance": 574,
      "lsb": 74,
      "rsb": 72
     },
     "RegularText": {
-     "advance": 527,
+     "advance": 584,
      "lsb": 63,
      "rsb": 59
     },
     "BlackText": {
-     "advance": 625,
+     "advance": 611,
      "lsb": 45,
      "rsb": 47
     },
     "ThinDisplay": {
-     "advance": 469,
+     "advance": 528,
      "lsb": 59,
      "rsb": 58
     },
     "RegularDisplay": {
-     "advance": 477,
+     "advance": 533,
      "lsb": 47,
      "rsb": 43
     },
     "BlackDisplay": {
-     "advance": 649,
+     "advance": 620,
      "lsb": 33,
      "rsb": 35
     }
@@ -6490,34 +6528,34 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 545,
-     "lsb": 73,
-     "rsb": 73
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularText": {
-     "advance": 480,
-     "lsb": 61,
-     "rsb": 61
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackText": {
-     "advance": 433,
-     "lsb": 49,
-     "rsb": 49
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 523,
-     "lsb": 59,
-     "rsb": 59
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 454,
-     "lsb": 45,
-     "rsb": 45
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 403,
-     "lsb": 37,
-     "rsb": 37
+     "advance": 616,
+     "lsb": 0,
+     "rsb": 0
     }
    }
   },
@@ -6566,34 +6604,34 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 266,
+     "advance": 254,
      "lsb": 72,
-     "rsb": 80
+     "rsb": 92
     },
     "RegularText": {
-     "advance": 441,
+     "advance": 355,
      "lsb": 60,
      "rsb": 58
     },
     "BlackText": {
-     "advance": 626,
+     "advance": 333,
      "lsb": 48,
-     "rsb": 47
+     "rsb": 46
     },
     "ThinDisplay": {
-     "advance": 227,
+     "advance": 216,
      "lsb": 58,
-     "rsb": 67
+     "rsb": 78
     },
     "RegularDisplay": {
-     "advance": 367,
+     "advance": 316,
      "lsb": 44,
-     "rsb": 43
+     "rsb": 42
     },
     "BlackDisplay": {
-     "advance": 645,
+     "advance": 311,
      "lsb": 36,
-     "rsb": 35
+     "rsb": 43
     }
    }
   },
@@ -6604,33 +6642,33 @@
    "category": "punctuation",
    "metrics": {
     "ThinText": {
-     "advance": 266,
-     "lsb": 80,
+     "advance": 254,
+     "lsb": 92,
      "rsb": 72
     },
     "RegularText": {
-     "advance": 441,
+     "advance": 355,
      "lsb": 58,
      "rsb": 60
     },
     "BlackText": {
-     "advance": 626,
-     "lsb": 47,
+     "advance": 333,
+     "lsb": 46,
      "rsb": 48
     },
     "ThinDisplay": {
-     "advance": 227,
-     "lsb": 67,
+     "advance": 216,
+     "lsb": 78,
      "rsb": 58
     },
     "RegularDisplay": {
-     "advance": 367,
-     "lsb": 43,
+     "advance": 316,
+     "lsb": 42,
      "rsb": 44
     },
     "BlackDisplay": {
-     "advance": 645,
-     "lsb": 35,
+     "advance": 311,
+     "lsb": 43,
      "rsb": 36
     }
    }

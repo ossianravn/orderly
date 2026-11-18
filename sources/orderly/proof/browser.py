@@ -95,6 +95,57 @@ def pages() -> dict[str, str]:
                          f"font-weight:{wt};line-height:1.25'>{html.escape(text)}</div>" for wt, name in WEIGHTS)
         out[f"ladder-{px}"] = _page(f"ladder {px}", b)
     out.update(size_pages())
+    out.update(phase4_pages())
+    return out
+
+
+MASTER_STYLES = [("Thin Text", 100, 12), ("Regular Text", 400, 12), ("Black Text", 900, 12),
+                 ("Thin Display", 100, 72), ("Regular Display", 400, 72), ("Black Display", 900, 72)]
+
+
+def _fv(w: int, o: int) -> str:
+    return f"font-weight:{w};font-optical-sizing:none;font-variation-settings:'opsz' {o}"
+
+
+def phase4_pages() -> dict[str, str]:
+    """Kerning off and on, every accented letter, the whole character set per master, language samples."""
+    from fontTools.ttLib import TTFont
+
+    out = {}
+    cmap = TTFont(FONT_FILE).getBestCmap() if FONT_FILE.exists() else {}
+    chars = "".join(chr(u) for u in sorted(cmap) if u > 0x20 and not 0x300 <= u < 0x370)
+    kern = "AVATAR Tower Yacht LTAV TA VA P. F. ‘A’ «Wa» Yo To Vo rv ry f. 1.T"
+    b = ""
+    for name, w, o in MASTER_STYLES:
+        for on in ("none", "normal"):
+            b += (f"<div class='l'>48 px {name} kerning {'off' if on == 'none' else 'on'}</div><div class='w' "
+                  f"style='font-size:48px;font-kerning:{on};{_fv(w, o)}'>{html.escape(kern)}</div>")
+    out["kerning"] = _page("kerning", b)
+    accented = "".join(c for c in chars if len(__import__("unicodedata").normalize("NFD", c)) > 1)
+    b = ""
+    for name, w, o in MASTER_STYLES:
+        b += (f"<div class='l'>40 px {name}</div><div style='font-size:40px;line-height:1.5;max-width:30em;word-break:break-all;"
+              f"{_fv(w, o)}'>{html.escape(accented)}</div>")
+    out["diacritics"] = _page("diacritics", b)
+    b = ""
+    for name, w, o in MASTER_STYLES:
+        b += (f"<div class='l'>36 px {name}</div><div style='font-size:36px;line-height:1.45;max-width:36em;"
+              f"word-break:break-all;{_fv(w, o)}'>{html.escape(chars)}</div>")
+    out["charset-all"] = _page("all characters", b)
+    try:
+        from hyperglot.languages import Languages
+
+        from ..coverage import LANGUAGES
+
+        db = Languages()
+        b = ""
+        for tag, code, name in LANGUAGES:
+            base = db[code]["orthographies"][0].get("base", "")
+            b += (f"<div class='l'>{name} ({tag})</div><div lang='{tag}' style='font-size:28px;line-height:1.3'>"
+                  f"{html.escape(base)}</div>")
+        out["languages"] = _page("languages", b)
+    except ImportError:
+        pass
     return out
 
 

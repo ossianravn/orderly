@@ -27,19 +27,34 @@ def _w(m: Master) -> float:
     return m.cap * m.g("math.w")
 
 
+def math_glyph(fn):
+    """Math signs share one advance: the sign's width plus a fixed margin each side, drawn centred."""
+    def wrap(m: Master) -> Drawing:
+        d = fn(m)
+        xs = [p[0] for c in d.contours for p in c.flat(6)]
+        adv = _w(m) + 2 * m.cap * m.g("math.sb")
+        return Drawing(shift(d.contours, (adv - (max(xs) + min(xs))) / 2), advance=adv)
+
+    wrap.__name__ = fn.__name__
+    return wrap
+
+
 @glyph("plus", 0x2B, "uc")
+@math_glyph
 def plus(m: Master) -> Drawing:
     w, b, y = _w(m), m.bar, mid(m)
     return Drawing([box(0, y - b / 2, w, y + b / 2), box(w / 2 - m.stem * 0.47, y - w / 2, w / 2 + m.stem * 0.47, y + w / 2)])
 
 
 @glyph("minus", 0x2212, "uc")
+@math_glyph
 def minus(m: Master) -> Drawing:
     w, b, y = _w(m), m.bar, mid(m)
     return Drawing([box(0, y - b / 2, w, y + b / 2)])
 
 
 @glyph("equal", 0x3D, "uc")
+@math_glyph
 def equal(m: Master) -> Drawing:
     w, b, y, g = _w(m), m.bar, mid(m), m.cap * 0.1
     return Drawing([box(0, y + g - b / 2, w, y + g + b / 2), box(0, y - g - b / 2, w, y - g + b / 2)])
@@ -52,17 +67,19 @@ def _chevron(m: Master, w: float, h: float, y: float, t: float) -> list:
 
 
 @glyph("less", 0x3C, "uc")
+@math_glyph
 def less(m: Master) -> Drawing:
     return Drawing(_chevron(m, _w(m), _w(m) * 0.95, mid(m), m.stem * 0.95))
 
 
 @glyph("greater", 0x3E, "uc")
+@math_glyph
 def greater(m: Master) -> Drawing:
     return Drawing(mirror_x(_chevron(m, _w(m), _w(m) * 0.95, mid(m), m.stem * 0.95), _w(m) / 2))
 
 
 def _guil(m: Master, s: float) -> list:
-    return _chevron(m, m.xh * 0.34 * s, m.xh * 0.42 * s, m.xh * 0.5, m.stem * 0.9)
+    return _chevron(m, m.xh * 0.4 * s, m.xh * 0.52 * s, m.xh * 0.5, m.stem * 0.9)
 
 
 @glyph("guilsinglleft", 0x2039, "pun")
@@ -78,7 +95,7 @@ def guilsinglright(m: Master) -> Drawing:
 @glyph("guillemotleft", 0xAB, "pun")
 def guillemotleft(m: Master) -> Drawing:
     one = _guil(m, 1)
-    return Drawing(one + shift(one, m.xh * 0.34 + m.stem * 0.6))
+    return Drawing(one + shift(one, m.xh * 0.4 + m.stem * 0.55))
 
 
 @glyph("guillemotright", 0xBB, "pun")
@@ -179,6 +196,7 @@ def asciicircum(m: Master) -> Drawing:
 
 
 @glyph("asciitilde", 0x7E, "uc")
+@math_glyph
 def asciitilde(m: Master) -> Drawing:
     from dataclasses import replace
 
@@ -194,14 +212,12 @@ def grave(m: Master) -> Drawing:
 
 
 def _brace(m: Master) -> list:
-    st, y0, y1 = m.stem * 0.9, m.desc * 0.72, m.asc + 20
-    ym = (y0 + y1) / 2
-    rx = max(m.xh * 0.18, st * 1.8)
-    up = mirror_y([lc_hook(m, 0, y1 - (y1 - ym) * 0.92, ym - 0, rx, rx * 0.9, 45, st=st, th=m.bar)], (y1 + ym) / 2)
-    up = shift(up, 0, 0)
-    dn = lc_hook(m, 0, ym + (ym - y0) * 0.08, y0, rx, rx * 0.9, 45, st=st, th=m.bar)
-    nose = box(-rx * 0.9, ym - m.bar / 2, st * 0.5, ym + m.bar / 2)
-    return up + [dn, nose]
+    """{ : the square bracket with a nose at its middle, so braces read as brackets of the family."""
+    st, b, w = m.stem, m.bar, m.xh * 0.46
+    y0, y1 = m.desc * 0.72, m.asc + 20
+    ym, nx = (y0 + y1) / 2, m.xh * 0.12
+    return [quad((nx, y0), (w, y0), (w, y0 + b), (nx + st, y0 + b), (nx + st, y1 - b), (w, y1 - b), (w, y1), (nx, y1),
+                 (nx, ym + st * 0.7), (0, ym + b / 2), (0, ym - b / 2), (nx, ym - st * 0.7))]
 
 
 @glyph("braceleft", 0x7B, "pun")
