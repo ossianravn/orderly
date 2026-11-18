@@ -8,10 +8,11 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from .geom import Contour, Path, line, tcurve
+from .geom import Contour, Path, line, tcurve, labelled
 from .parts import Ell
 
 
+@labelled("hook")
 def hook(x0: float, st: float, th: float, y_top: float, bot: float, rx: float, ry: float, x_cut: float,
          t: float, t_in: float) -> Contour:
     """A stem whose left edge is x0, running down from y_top and turning right along the bottom.
@@ -72,6 +73,7 @@ class SSpec:
     t_mid: float = 0.4  # tension at the spine's centre: low keeps the passage short, with no straight run
 
 
+@labelled("spine")
 def s_curve(s: SSpec) -> Contour:
     """Two stacked rounds joined by a short curved spine, drawn from a skeleton.
 

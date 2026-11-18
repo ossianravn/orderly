@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import math
 
-from .geom import Contour, Path, Pt, bez, line, split, tcurve
+from .geom import Contour, Path, Pt, bez, line, split, tcurve, labelled
 from .parts import Ell, Join, neg, stem_join
 
 
@@ -130,6 +130,7 @@ def shoulder(j: Join, top: Pt, t: float) -> Path:
     return Path([tcurve(j.outer, d, top, (sense, 0.0), t)])
 
 
+@labelled("arch")
 def arch(eo: Ell, ei: Ell, host: float | Path, base: float, w_join: float, depth: float, turn: float,
          t: float, limit: tuple[float, float] | None = None) -> tuple[Contour, Path]:
     """n-shoulder: joins a stem on the left, rises to the top, and comes down as a straight stem to y = base.
@@ -145,6 +146,7 @@ def arch(eo: Ell, ei: Ell, host: float | Path, base: float, w_join: float, depth
     return c, outer
 
 
+@labelled("arch")
 def arm(eo: Ell, ei: Ell, s: float, x_cut: float, w_join: float, depth: float, turn: float, t: float,
         limit: tuple[float, float] | None = None) -> Contour:
     """The arm of r: the n's shoulder from the stem, over the top, cut vertically at x_cut."""
@@ -155,6 +157,7 @@ def arm(eo: Ell, ei: Ell, s: float, x_cut: float, w_join: float, depth: float, t
     return Contour.of(outer.reversed(), line(j.outer, j.outer_in, j.inner_in, j.inner), inner)
 
 
+@labelled("bowl")
 def bowl(eo: Ell, ei: Ell, s: float, w_top: float, w_bot: float, depth: float, turn: float, t: float,
          top_limit: tuple[float, float] | None = None, bot_limit: tuple[float, float] | None = None) -> Contour:
     """A round joined at top and bottom to a stem whose right edge is x = s (the bowl of b and p)."""
@@ -174,6 +177,7 @@ def bowl(eo: Ell, ei: Ell, s: float, w_top: float, w_bot: float, depth: float, t
     )
 
 
+@labelled("round")
 def cut_round(eo: Ell, ei: Ell, x_top: float, x_bot: float) -> Contour:
     """A round opened on the right by two vertical cuts (c, C): upper terminal at x_top, lower at x_bot."""
     outer = eo.arc("E", "N", "W", "S", "E")

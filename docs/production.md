@@ -78,6 +78,54 @@ from the same map. The optical-size axis runs 12 to 72 in its own units (CSS px)
 is Regular Text; its UFO style name is "Regular", so the font names itself Orderly Regular. fontc writes `STAT`
 (basic, Phase 5 reviews it) and `MVAR` (x-heights 500 to 520).
 
+## Site data
+
+`uv run orderly build` writes, after compiling the variable font (contract: the plan's "Site data"):
+
+- `fonts/web/Orderly[opsz,wght].woff2`: the variable font, WOFF2 (fontTools with brotli 1.2.1).
+- `fonts/data/orderly.json` and `fonts/data/outlines.json`, UTF-8 JSON, written by `sources/orderly/export.py`.
+
+`orderly.json`:
+
+```
+{
+  "family": "Orderly", "version": "0.100", "unitsPerEm": 1000,
+  "metrics": { "ascender": 740, "capHeight": 700, "descender": -200,
+               "xHeight": { "12": 516, "72": 500 },          // per optical size, Regular masters
+               "line": { "ascender": 950, "descender": -250, "lineGap": 0 } },
+  "axes": [ { "tag": "wght", "name": "Weight", "min": 100, "default": 400, "max": 900 },
+            { "tag": "opsz", "name": "Optical size", "min": 12, "default": 12, "max": 72 } ],
+  "instances": [ { "name": "Thin", "wght": 100 }, ... nine, at the default optical size ],
+  "masters": [ { "id": "RegularText", "name": "Regular Text", "wght": 400, "opsz": 12,
+                 "numbers": { "stem", "capStem", "bar", "capBar", "xHeight", "capHeight", "overshoot", "join",
+                              "spacingArea", "dot" } }, ... six ],
+  "features": [ { "tag": "kern", "name": "Kerning", "sample": "AVATAR Tower Yacht" }, ... as compiled ],
+  "languages": [ { "tag": "da", "name": "Danish", ... } ],      // filled from Phase 4 on
+  "glyphs": [ { "name": "a", "unicode": 97, "char": "a",        // unicode and char are null when unencoded
+                "category": "lowercase",                          // uppercase lowercase figure punctuation
+                                                                   // symbol mark space alternate
+                "metrics": { "RegularText": { "advance": 535, "lsb": 39, "rsb": 50 }, ... per master id } } ]
+}
+```
+
+`outlines.json`:
+
+```
+{
+  "unitsPerEm": 1000,
+  "masters": [ "ThinText", "RegularText", "BlackText", "ThinDisplay", "RegularDisplay", "BlackDisplay" ],
+  "glyphs": { "a": { "RegularText": [ { "part": "bowl",                 // or stem, bar, round, counter, arch,
+                                         "points": [ { "x": 0, "y": 0, "on": true }, ... ] }, ... ],
+                     ... every master } }
+}
+```
+
+Contours are closed and start on an on-curve point; between two on-curve points there are zero (a line) or two
+(a cubic) off-curve points. Outer contours run counter-clockwise, counters clockwise; overlapping parts are
+separate contours. Every master has the same contours and points in the same order, so the page can interpolate
+them. `part` is null where the generator has no name for the shape. Glyphs and features are added to these
+shapes as they are drawn; the shapes themselves stay as documented here.
+
 ## Browser proofs
 
 `uv run orderly proof` renders every page light and dark at device scale 1, and the small-size page also at 2.

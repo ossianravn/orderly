@@ -191,6 +191,24 @@ class Path:
         return tangent(self.segs[0], 0.0)
 
 
+def labelled(name: str):
+    """Decorator: the contours a shape function returns carry this part name (for the site's outline data)."""
+
+    def deco(fn):
+        def wrap(*args, **kwargs):
+            out = fn(*args, **kwargs)
+            first = out[0] if isinstance(out, tuple) else out
+            for c in first if isinstance(first, list) else [first]:
+                if isinstance(c, Contour) and c.part is None:
+                    c.part = name
+            return out
+
+        wrap.__name__, wrap.__doc__ = fn.__name__, fn.__doc__
+        return wrap
+
+    return deco
+
+
 def chain(*paths: Path) -> Path:
     """Join paths end to start, bridging gaps with straight lines."""
     out = Path()
@@ -209,6 +227,7 @@ def line(*pts: Pt) -> Path:
 @dataclass
 class Contour:
     segs: list
+    part: str | None = None  # what the shape is (stem, bar, round, counter, arch, bowl, hook, diagonal, dot...)
 
     @classmethod
     def of(cls, *paths: Path) -> Contour:
@@ -217,10 +236,10 @@ class Contour:
         return cls(p.segs)
 
     def map(self, fn) -> Contour:
-        return Contour([tuple(fn(p) for p in s) for s in self.segs])
+        return Contour([tuple(fn(p) for p in s) for s in self.segs], self.part)
 
     def reversed(self) -> Contour:
-        return Contour([tuple(reversed(s)) for s in reversed(self.segs)])
+        return Contour([tuple(reversed(s)) for s in reversed(self.segs)], self.part)
 
     def area(self) -> float:
         """Signed area, positive when counter-clockwise (curves flattened)."""

@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from .geom import Contour, Path, Pt, line, tcurve
+from .geom import Contour, Path, Pt, line, tcurve, labelled
 
 CCW = "ENWS"
 CCW_DIR = {"E": (0.0, 1.0), "N": (-1.0, 0.0), "W": (0.0, -1.0), "S": (1.0, 0.0)}
@@ -52,12 +52,16 @@ class Ell:
 
 
 def box(x0: float, y0: float, x1: float, y1: float) -> Contour:
-    """Counter-clockwise rectangle: a stem or a bar."""
-    return Contour.of(line((x0, y0), (x1, y0), (x1, y1), (x0, y1)))
+    """Counter-clockwise rectangle: a stem (taller than wide) or a bar."""
+    c = Contour.of(line((x0, y0), (x1, y0), (x1, y1), (x0, y1)))
+    c.part = "stem" if abs(y1 - y0) >= abs(x1 - x0) else "bar"
+    return c
 
 
 def ring(eo: Ell, ei: Ell) -> list[Contour]:
-    return [Contour.of(eo.arc("S", "E", "N", "W", "S")), Contour.of(ei.arc("S", "W", "N", "E", "S"))]
+    outer, inner = Contour.of(eo.arc("S", "E", "N", "W", "S")), Contour.of(ei.arc("S", "W", "N", "E", "S"))
+    outer.part, inner.part = "round", "counter"
+    return [outer, inner]
 
 
 def half_round(cx: float, y0: float, y1: float, xr: float, t: float) -> Path:
@@ -67,6 +71,7 @@ def half_round(cx: float, y0: float, y1: float, xr: float, t: float) -> Path:
                  tcurve((xr, ym), (0.0, 1.0), (cx, y1), (-1.0, 0.0), t)])
 
 
+@labelled("bowl")
 def dbowl(x0: float, st: float, y0: float, y1: float, xr: float, rx: float, arm: float, side: float, t: float,
           t_in: float, ystem: float | None = None) -> list[Contour]:
     """A stem with a D-shaped bowl from y0 to y1 on its right: one outer contour and the counter.
@@ -86,6 +91,7 @@ def dbowl(x0: float, st: float, y0: float, y1: float, xr: float, rx: float, arm:
     return [Contour.of(outer), Contour(inner.segs)]
 
 
+@labelled("dot")
 def disc(cx: float, cy: float, d: float, t: float = 0.56) -> Contour:
     e = Ell(cx, cy, d / 2, d / 2, t)
     return Contour.of(e.arc("S", "E", "N", "W", "S"))

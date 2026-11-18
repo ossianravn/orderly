@@ -10,6 +10,7 @@ dependencies = [
     "fontc==2.0.1",
     "skia-python==144.1",
     "playwright==1.65.2",
+    "brotli==1.2.1",
 ]
 
 [project.scripts]

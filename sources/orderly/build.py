@@ -9,6 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from .export import export, woff2
 from .font import build as build_glyphs
 from .master import Master
 from .sizes import TEXT
@@ -47,14 +48,27 @@ def masters_ufos(masters: list[Master]) -> list[Path]:
 
 
 def build_variable() -> Path:
-    """Orderly: weight 100 to 900 and optical size 12 to 72 from six masters (Text and Display x three weights)."""
-    ufos = masters_ufos(MASTERS)
+    """Orderly: weight 100 to 900 and optical size 12 to 72 from six masters (Text and Display x three weights),
+    then the web font and the site's data."""
+    sets = [build_glyphs(m) for m in MASTERS]
+    ufos = [write_ufo(m, g, ufo_path(m)) for m, g in zip(MASTERS, sets)]
     ds = write_designspace(MASTERS, ufos, BUILD / "masters" / "Orderly.designspace", family="Orderly",
                            weight_map=WEIGHT_MAP, names=WEIGHT_NAMES)
     out = compile_font(ds, FONTS / "variable" / "Orderly[opsz,wght].ttf", BUILD / "fontc" / "variable")
-    _write_metrics(MASTERS[1], build_glyphs(MASTERS[1]))
-    print(f"built {out.relative_to(ROOT)}")
+    _write_metrics(MASTERS[1], sets[1])
+    web = woff2(out, FONTS / "web" / "Orderly[opsz,wght].woff2")
+    weights = [(u, n) for (u, _), n in zip(WEIGHT_MAP, WEIGHT_NAMES)]
+    export(MASTERS, sets, out, FONTS / "data", weights, languages())
+    print(f"built {out.relative_to(ROOT)}, {web.relative_to(ROOT)}, fonts/data/orderly.json, fonts/data/outlines.json")
     return out
+
+
+def languages() -> list[dict]:
+    try:
+        from .coverage import supported
+    except ImportError:
+        return []
+    return supported()
 
 
 def _write_metrics(m: Master, glyphs) -> None:

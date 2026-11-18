@@ -11,7 +11,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from .geom import Contour, Pt, intersect, quad
+from .geom import Contour, Pt, intersect, quad, labelled
 
 
 def hwidth(p0: Pt, p1: Pt, t: float) -> float:
@@ -20,6 +20,7 @@ def hwidth(p0: Pt, p1: Pt, t: float) -> float:
     return t * math.hypot(dx, dy) / abs(dy)
 
 
+@labelled("diagonal")
 def stroke(p0: Pt, p1: Pt, t0: float, t1: float | None = None) -> Contour:
     """Diagonal from centre point p0 (lower) to p1 (upper), cut horizontally at both heights."""
     e = Edges.of(p0, p1, t0, t0 if t1 is None else t1)
@@ -77,18 +78,21 @@ def cross(a0: Pt, a1: Pt, b0: Pt, b1: Pt) -> Pt:
     return p
 
 
+@labelled("diagonal")
 def vee_poly(left: Edges, right: Edges) -> Contour:
     """V: left stroke falling to the apex, right stroke rising from it; flat apex between the outer edges."""
     c = cross(left.r0, left.r1, right.l0, right.l1)
     return quad(left.l1, left.l0, right.r0, right.r1, right.l1, c, left.r1)
 
 
+@labelled("diagonal")
 def peak_poly(left: Edges, right: Edges) -> Contour:
     """Inverted V (A): left stroke rising to the apex, right stroke falling from it; flat apex on top."""
     c = cross(left.r0, left.r1, right.l0, right.l1)
     return quad(left.l0, left.r0, c, right.l0, right.r0, right.r1, left.l1)
 
 
+@labelled("diagonal")
 def double_vee(s1: Edges, s2: Edges, s3: Edges, s4: Edges) -> Contour:
     """W: two vees sharing a middle apex at the top."""
     c12 = cross(s1.r0, s1.r1, s2.l0, s2.l1)
@@ -97,6 +101,7 @@ def double_vee(s1: Edges, s2: Edges, s3: Edges, s4: Edges) -> Contour:
     return quad(s1.l1, s1.l0, s2.r0, c23, s3.l0, s4.r0, s4.r1, s4.l1, c34, s3.r1, s2.l1, c12, s1.r1)
 
 
+@labelled("diagonal")
 def branch(c0: Pt, c1: Pt, t0: float, t1: float, x_cut: float) -> Contour:
     """A diagonal from centre point c0 to c1, cut horizontally at c1 and vertically at x_cut near c0.
 
