@@ -51,19 +51,33 @@ def _unhinted(font: TTFont) -> None:
     font["maxp"].maxStackElements = max(font["maxp"].maxStackElements, 2)
 
 
+def _flags(font: TTFont) -> None:
+    """OVERLAP_SIMPLE / OVERLAP_COMPOUND on every glyph (renderers then draw any contours that touch or overlap
+    with non-zero winding), and the WWS bit: the names follow the weight-width-slope model."""
+    glyf = font["glyf"]
+    for name in font.getGlyphOrder():
+        g = glyf[name]
+        if g.isComposite():
+            g.components[0].flags |= 0x0400
+        elif g.numberOfContours > 0:
+            g.flags[0] |= 0x40
+    font["OS/2"].fsSelection |= 1 << 8
+
+
 def finish(path: Path) -> None:
     font = TTFont(path, recalcTimestamp=False, cfg=CFG)  # keep fontc's fixed head.modified: same sources, same bytes
     weights = [{"value": u, "name": n, **({"flags": 0x2, "linkedValue": 700} if n == "Regular" else {})}
                for (u, _), n in zip(WEIGHT_MAP, WEIGHT_NAMES)]
-    sizes = [{"value": 12, "name": "12pt", "flags": 0x2}, {"value": 72, "name": "72pt"}]  # GF axis registry
+    sizes = [{"value": 12, "name": "12pt"}, {"value": 72, "name": "72pt"}]  # GF axis registry; never elided
     buildStatTable(font, [{"tag": "wght", "name": "Weight", "values": weights},
-                          {"tag": "opsz", "name": "Optical size", "values": sizes}], elidedFallbackName=2,
+                          {"tag": "opsz", "name": "Optical Size", "values": sizes}], elidedFallbackName=2,
                    macNames=False)
     version = f"{VERSION[0]}.{VERSION[1]:03d}"
     _set(font, 3, f"{version};NONE;{FAMILY}-Regular")
     _set(font, 5, f"Version {version}")  # fontc appends its own name and version; the statics carry the plain one
     _set(font, 25, FAMILY)
     _unhinted(font)
+    _flags(font)
     meta = newTable("meta")
     meta.data = {"dlng": "Latn", "slng": "Latn"}  # designed for and supports the Latin script
     font["meta"] = meta
@@ -107,9 +121,9 @@ def _name_static(font: TTFont, family: str, style: str) -> None:
     font["head"].macStyle = 1 if style == "Bold" else 0
     opsz = dict(SIZES_BY_FAMILY)[family]
     wv = {"value": font["OS/2"].usWeightClass, "name": style, **({"flags": 0x2} if style == "Regular" else {})}
-    ov = {"value": opsz, "name": f"{opsz}pt", **({"flags": 0x2} if opsz == 12 else {})}
+    ov = {"value": opsz, "name": f"{opsz}pt"}
     buildStatTable(font, [{"tag": "wght", "name": "Weight", "values": [wv]},
-                          {"tag": "opsz", "name": "Optical size", "values": [ov]}], elidedFallbackName=2,
+                          {"tag": "opsz", "name": "Optical Size", "values": [ov]}], elidedFallbackName=2,
                    macNames=False)
 
 
@@ -163,6 +177,7 @@ def statics(vf: Path, out_ttf: Path, out_woff2: Path) -> list[Path]:
             font.recalcTimestamp = False
             font.cfg.update(CFG)
             _drop_repeats(font)
+            _flags(font)
             font["OS/2"].usWeightClass = wght
             del font["STAT"]
             _name_static(font, family, style)

@@ -110,7 +110,7 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
     sizes = sorted({m.opsz for m in masters})
     if len(sizes) > 1:
         o = AxisDescriptor()
-        o.tag, o.name = "opsz", "Optical size"
+        o.tag, o.name = "opsz", "Optical Size"  # the registered name
         o.minimum, o.maximum, o.default = sizes[0], sizes[-1], sizes[0]
         doc.addAxis(o)
     design = dict(weight_map or [])
@@ -121,7 +121,7 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
         s.familyName, s.styleName = family, m.style
         s.location = {"Weight": design.get(m.wght, m.wght)}
         if len(sizes) > 1:
-            s.location["Optical size"] = m.opsz
+            s.location["Optical Size"] = m.opsz
         doc.addSource(s)
     for (u, d), name in zip(weight_map or [], names or []):
         i = InstanceDescriptor()
@@ -130,7 +130,7 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
         i.postScriptFontName = f"{family}-{name}"
         i.location = {"Weight": d}
         if len(sizes) > 1:
-            i.location["Optical size"] = sizes[0]
+            i.location["Optical Size"] = sizes[0]
         doc.addInstance(i)
     doc.write(str(path))
     return path

@@ -58,7 +58,7 @@ def _category(name: str, uni: int | None) -> str:
         return "figure" if any(f in name for f in FIGURE_FORMS) else "alternate"
     c = unicodedata.category(chr(uni))
     return {"Lu": "uppercase", "Ll": "lowercase", "Nd": "figure", "No": "figure", "Zs": "space",
-            "Mn": "mark"}.get(c, "punctuation" if c.startswith("P") else "symbol")
+            "Zl": "space", "Zp": "space", "Mn": "mark"}.get(c, "punctuation" if c.startswith("P") else "symbol")
 
 
 def _points(c) -> list[dict]:

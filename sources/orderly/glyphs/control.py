@@ -13,9 +13,19 @@ def space(m: Master) -> Drawing:
     return Drawing([], advance=round(m.xh * m.space))
 
 
-@glyph("nbspace", 0xA0, "pun")
+@glyph("uni00A0", 0xA0, "pun")  # no-break space; the AGL's "nbspace" is not a recommended production name
 def nbspace(m: Master) -> Drawing:
     return space(m)
+
+
+@glyph("uni2028", 0x2028, "pun")  # line separator: an empty glyph, so the character never shows as tofu
+def line_separator(m: Master) -> Drawing:
+    return Drawing([], advance=0)
+
+
+@glyph("uni2029", 0x2029, "pun")  # paragraph separator
+def paragraph_separator(m: Master) -> Drawing:
+    return Drawing([], advance=0)
 
 
 @glyph("H", 0x48, "uc")

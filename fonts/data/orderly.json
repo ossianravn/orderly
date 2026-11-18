@@ -64,7 +64,7 @@
   },
   {
    "tag": "opsz",
-   "name": "Optical size",
+   "name": "Optical Size",
    "min": 12.0,
    "default": 12.0,
    "max": 72.0
@@ -2332,7 +2332,7 @@
    }
   },
   {
-   "name": "nbspace",
+   "name": "uni00A0",
    "unicode": 160,
    "char": " ",
    "category": "space",
@@ -2364,6 +2364,82 @@
     },
     "BlackDisplay": {
      "advance": 232,
+     "lsb": 0,
+     "rsb": 0
+    }
+   }
+  },
+  {
+   "name": "uni2028",
+   "unicode": 8232,
+   "char": " ",
+   "category": "space",
+   "metrics": {
+    "ThinText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "ThinDisplay": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularDisplay": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackDisplay": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    }
+   }
+  },
+  {
+   "name": "uni2029",
+   "unicode": 8233,
+   "char": " ",
+   "category": "space",
+   "metrics": {
+    "ThinText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackText": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "ThinDisplay": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "RegularDisplay": {
+     "advance": 0,
+     "lsb": 0,
+     "rsb": 0
+    },
+    "BlackDisplay": {
+     "advance": 0,
      "lsb": 0,
      "rsb": 0
     }

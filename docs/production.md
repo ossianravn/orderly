@@ -256,7 +256,14 @@ or Cyrillic would be 1.100 or 2.000.
   PostScript name prefix (ID 25) Orderly. `fvar`: nine named instances Thin to Black at opsz 12, each with its
   PostScript name (`Orderly-Thin` ...).
 - `STAT` (format 1 values): weight 100 Thin to 900 Black, Regular elided and linked to Bold; optical size 12pt
-  (elided) and 72pt, the names the Google Fonts axis registry uses. Elided fallback name ID 2.
+  and 72pt (the names the Google Fonts axis registry uses; optical-size values are never elided). Axis names
+  Weight and Optical Size, as registered. Elided fallback name ID 2.
+- Every glyph carries the overlap flag (OVERLAP_SIMPLE, or OVERLAP_COMPOUND on its first component), so
+  renderers draw touching or overlapping contours with non-zero winding; fsSelection has the WWS bit (the names
+  follow the weight-width-slope model). The same in the statics.
+- Layout tables are packed by fontTools' own packer, never HarfBuzz's (`production.CFG`): fontTools uses the
+  HarfBuzz repacker whenever `uharfbuzz` is importable, which the `qa` group installs, and the two give different
+  bytes. Before this was pinned, local builds and CI disagreed on the statics and subsets (GSUB, GPOS only).
 - `avar` from the weight map; `MVAR` (x-heights, from fontc).
 - Unhinted TrueType: `gasp` 0xFFFF -> 0x000F (grid-fit and smoothing at every size) and a `prep` program setting
   smart dropout control (`PUSHW 511 SCANCTRL PUSHB 4 SCANTYPE`), as gftools' fix-unhinted does.
@@ -299,6 +306,17 @@ Accepted warnings and why:
 | `googlefonts/glyphsets/shape_languages` | all | Auxiliary (optional) characters of some languages, such as ſ for German and ʻ for English. |
 | `googlefonts/vendor_id` | all | No registered vendor ID. |
 | `outline_colinear_vectors`, `outline_short_segments`, `outline_jaggy_segments`, `outline_alignment_miss` | statics | Points where overlap removal joined two shapes (stem and bowl, diagonal and bar) and the 1-unit steps rounding leaves there. The two that were real spurs (Ʒ and ẞ: a diagonal poking out of its bar) were fixed. |
+
+fontspector (CI, latest release, run 2026-11-18 on commit f45b5a4 before the fixes in the next paragraph):
+universal profile 0 FAIL on the variable font and Orderly statics (31 WARN) and on Orderly Display (23 WARN);
+Google Fonts profile on the variable font 0 FAIL, 12 WARN. Its warnings beyond fontbakery's were then fixed:
+`valid_glyphnames` (nbspace renamed uni00A0), `opentype/fsselection_wws` (WWS bit), `overlaps_bit` (overlap flags),
+`opentype/fvar/registered_axis_tags` ("Optical Size"), `googlefonts/STAT/opsz_not_elided`,
+`googlefonts/separator_glyphs` (empty U+2028 and U+2029 added). Left: `suspicious_sidebearings` on a few glyphs
+whose right side changes more than most across weights by design (the Black `l.ss02` hook is shorter, so its
+advance drops; the ring and acute of `å Ǻ`; `↙`; `Ʒ`; `six.numr`), `contour_count` as above, and the Google
+Fonts warnings above. `fontdata_namecheck` (fontbakery, online) sometimes errors when its web service answers
+oddly; it is not about the font.
 
 Fixed during Phase 5, found by these checks: tilde touching its letter in Black (`ñ ã õ ĩ`), Black breve with an
 inverted counter, Black `5` whose foot closed onto its stem, `⅔` numerator touching the slash, floating ogonek on
