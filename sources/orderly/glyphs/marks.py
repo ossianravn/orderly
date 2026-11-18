@@ -52,13 +52,14 @@ def _shape(name: str, m: Master, y0: float, h: float, w: float, d: float) -> lis
     if name == "macroncomb":
         return [box(-xh * 0.24, y0 + h * 0.2, xh * 0.24, y0 + h * 0.2 + w)]
     if name == "brevecomb":
-        r = xh * 0.2
+        r = max(xh * 0.2, w * 2.0)  # heavy breves widen so the counter stays open
         eo = Ell(0, y0 + h * 0.7, r, h * 0.7, m.tension)
         ei = eo.inset(w * 1.05, w, m.tension_in)
         o, i = eo.arc("W", "S", "E"), ei.arc("W", "S", "E")
         return [Contour.of(o, line(o.end, i.end), i.reversed())]
     if name == "tildecomb":
         wt, ht = xh * 0.27, h * 0.55
+        y0 += w * 0.5  # the wave's skeleton sits half a stroke up, so its ink starts on the mark's line
         a = math.radians(62)
         nodes = [((-wt, y0 + ht * 0.05), (math.cos(a), math.sin(a)), w), ((-wt * 0.45, y0 + ht), (1.0, 0.0), w),
                  ((wt * 0.45, y0), (1.0, 0.0), w), ((wt, y0 + ht * 0.95), (math.cos(a), math.sin(a)), w)]

@@ -80,4 +80,5 @@ def kay(m: Master, w: float, h: float, st: float, top: float, join: float) -> li
 
 @glyph("k", 0x6B, "lc")
 def k(m: Master) -> Drawing:
-    return Drawing(kay(m, m.w("k"), m.xh, m.stem, m.asc, m.g("k.join")))
+    return Drawing(kay(m, m.w("k"), m.xh, m.stem, m.asc, m.g("k.join")),
+                   anchors={"top": (m.stem / 2, m.asc)})  # ǩ: over the ascender, as ĺ ĥ

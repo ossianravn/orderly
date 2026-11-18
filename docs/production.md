@@ -10,7 +10,7 @@ Python runs through `uv`. From the repository root:
 | Command                          | Does                                                                                     |
 | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | `uv sync`                        | Installs the pinned environment (`pyproject.toml`, `uv.lock`).                           |
-| `uv run orderly build`           | Generator -> six UFO masters and a designspace in `build/masters/` -> `fonts/variable/Orderly[opsz,wght].ttf`. |
+| `uv run orderly build`           | Generator -> six UFO masters and a designspace in `build/masters/` -> `fonts/variable/Orderly[opsz,wght].ttf` (fontc), finished (`production.py`) -> 18 statics in `fonts/static/`, web fonts and `orderly.css` in `fonts/web/`, site data in `fonts/data/`. About 25 s. |
 | `uv run orderly sheets [group]`  | Outline sheets per master -> `proofs/sheets/{thin,regular,black}[-text]/`, overlays -> `proofs/sheets/overlay*-*.png`. |
 | `uv run orderly proof [page]`    | Browser proofs of the compiled font, light and dark -> `proofs/browser/*.png`.           |
 | `uv run orderly look n o --text "nnonn"` | Quick look while drawing: named glyphs large with points, strings filled.        |
@@ -28,8 +28,11 @@ Python runs through `uv`. From the repository root:
 `sources/orderly/` is the generator. `master.py` holds the numbers, `geom.py` the curve primitives (tension curves,
 cutting paths at a coordinate), `parts.py` the compass (`Ell`), stems and joins, `rounds.py` the bowls, arches and
 cut rounds, `shapes.py` the master-aware shared shapes, `glyphs/` the glyph functions by family, `spacing.py` the
-area-based sidebearings, `font.py` runs the glyph functions and spaces and rounds the result, `ufo.py` writes UFO and
-designspace, `build.py` calls the compiler. `proof/` holds both proof tools.
+area-based sidebearings, `font.py` runs the glyph functions and spaces and rounds the result (and places composites:
+by anchor, by offset, or one after another), `small.py` the scaled master for small forms, `kerning.py` and
+`features.py` the kerning and feature code, `ufo.py` writes UFO and designspace, `build.py` calls the compiler,
+`production.py` finishes the variable font and makes the statics and web fonts, `export.py` the site data.
+`proof/` holds the proof tools (outline sheets, the six-master grid, browser pages).
 
 The generator writes UFO 3 masters with cubic outlines, outer contours counter-clockwise (PostScript direction);
 fontc converts to quadratic TrueType outlines and reverses direction. Overlapping parts (stem over bowl) stay
@@ -45,7 +48,8 @@ Checked 2026-11-18 on Windows 11 with uv 0.8.15 and Python 3.13.2.
 | Sources             | fontTools 4.68.0, ufoLib2 0.19.1         | UFO and designspace writing; `fontTools.varLib.interpolatable` for the compatibility check.                                                                                                               |
 | Outline sheets      | skia-python 144.1                        | Anti-aliased rendering with non-zero winding, so overlapping contours draw as the font will.                                                                                                              |
 | Browser proofs      | playwright 1.65.2 (Python)               | Drives the installed Chrome (157 at the time of writing), else Edge, else Playwright's own Chromium (`uv run playwright install chromium`). Device scale factor 1, so 16 px is 16 screen pixels.            |
-| Font QA             | fontbakery 1.1.0 (local), fontspector (CI) | See "QA tool" below. fontbakery is in the `qa` group; fontspector runs only in CI from Phase 5.                                                                                                            |
+| Font QA             | fontbakery 1.1.0 (local), fontspector (CI) | See "QA tool" below. fontbakery is in the `qa` group; fontspector runs only in CI.                                                                                                                         |
+| Overlap removal     | skia-pathops 0.9.2                       | Used by fontTools' instancer to remove overlaps in the statics.                                                                                                                                           |
 
 ### Determinism
 
@@ -57,10 +61,26 @@ bytes (checked with SHA-256).
 
 Ruled by the planner (2026-11-18): no downloaded executables.
 
-- **Local QA: fontbakery 1.1.0** from PyPI, pinned in the `qa` dependency group of `pyproject.toml`. Run it with
-  `uv run --group qa fontbakery check-universal fonts/...` (and `check-googlefonts`) from Phase 4 on.
+- **Local QA: fontbakery 1.1.0** from PyPI, pinned in the `qa` dependency group of `pyproject.toml`:
+  `uv run --group qa fontbakery check-universal -l WARN --succinct <fonts>`. The Google Fonts profile needs the
+  `googlefonts` extra, which does not resolve inside the project environment (gfmetadata wants protobuf 6.33 or
+  later against gflanguages' pins), so it runs in its own tool environment:
+  `uvx --from "fontbakery[googlefonts]==1.1.0" fontbakery check-googlefonts -l WARN --succinct <fonts>`
+  (set `PYTHONIOENCODING=utf-8` on Windows, or its report crashes printing ſ). Check each family on its own
+  (`fonts/static/Orderly-*.ttf`, `fonts/static/OrderlyDisplay-*.ttf`, the variable font): run together, the
+  family checks report Orderly and Orderly Display as one inconsistent family.
 - **CI: fontspector** (the Rust successor to fontbakery), installed only in GitHub Actions through its official
-  `fonttools/setup-fontspector` action, from Phase 5. It is not on PyPI, and its Windows binary is a download.
+  `fonttools/setup-fontspector` action. It is not on PyPI, and its Windows binary is a download.
+
+### Continuous integration
+
+`.github/workflows/fonts.yml`, on every push and pull request: install uv 0.8.15, `uv run --frozen orderly build`,
+fail when `git status -- fonts/` shows any change (the committed fonts must be what the sources produce), then
+fontspector: the universal profile on the variable font and both static families fails the job on any FAIL; the
+Google Fonts profile on the variable font is reported in the job summary without failing it, because fontspector
+could not be run locally to confirm its results match fontbakery's. Not yet verified on Linux: the build is
+byte-identical run to run on Windows, but whether Linux gives the same bytes (fontc and skia-pathops are native
+code) is first known from the first CI run. If only the statics differ, overlap removal is the place to look.
 
 ## Spacing
 
@@ -138,7 +158,7 @@ is Regular Text; its UFO style name is "Regular", so the font names itself Order
   "family": "Orderly", "version": "0.100", "unitsPerEm": 1000,
   "metrics": { "ascender": 740, "capHeight": 700, "descender": -200,
                "xHeight": { "12": 516, "72": 500 },          // per optical size, Regular masters
-               "line": { "ascender": 950, "descender": -250, "lineGap": 0 } },
+               "line": { "ascender": 1000, "descender": -300, "lineGap": 0 } },   // typo = hhea; line height 1.3
   "axes": [ { "tag": "wght", "name": "Weight", "min": 100, "default": 400, "max": 900,
               "map": [ [100, 20], [200, 34], ..., [900, 160] ] },   // user weight -> design coordinate (avar)
             { "tag": "opsz", "name": "Optical size", "min": 12, "default": 12, "max": 72 } ],
@@ -207,29 +227,97 @@ fails here (or, for the cases the code guards, at build time with a message).
 
 ## Vertical metrics
 
-Placeholders until Phase 5: typo and hhea ascender 950, descender -250, line gap 0, `USE_TYPO_METRICS` set, win
-ascent 950 and descent 250. Phase 5 sets them by the Google Fonts specification once accents exist.
+By the Google Fonts specification (gf-guide, "Vertical Metrics", read 2026-11-18): typo and hhea equal, line gaps
+0, `USE_TYPO_METRICS` set, capitals centred in the line (typo ascender minus cap height equals the absolute typo
+descender), about 130 % of the em in all, win metrics covering the bounding box of every master.
+
+Measured from the outlines of all six corners: the tallest glyphs are Ǻ 1142 (Black: ring and acute), Å 988, Ů 919,
+the dieresis capitals 903; the deepest are the comma-accented letters at -335 (Ķ ļ ș, Black) and the descenders
+at -203 (g j). Set:
+
+| Field | Value | Why |
+| --- | --- | --- |
+| typo and hhea ascender | 1000 | Clears every accented capital but the rare Ǻ (Å, the tallest in Nordic text, is 988). |
+| typo and hhea descender | -300 | Capitals centred: 1000 - 700 = 300; deeper than the descenders (-203). |
+| typo and hhea line gap | 0 | |
+| win ascent, win descent | 1142, 335 | The outlines' extremes over all masters, computed at build time (`build.win_metrics`). |
+
+Default line height: (1000 + 300 + 0) / 1000 = **1.3**. `orderly.json` carries these as `metrics.line`.
+
+## Names, version and the rest of the variable font
+
+`production.finish()` runs after fontc. Version **1.000** (`head.fontRevision` 1.0, name ID 5 "Version 1.000"):
+the glyph set, features and production meet every criterion the plan set for the first release, and a version
+under 1.0 tells apps and catalogues the family is unfinished. The maintainer tags the release; a later italic
+or Cyrillic would be 1.100 or 2.000.
+
+- Names: family Orderly, style Regular, `Orderly-Regular`, unique ID `1.000;NONE;Orderly-Regular`, designer and
+  manufacturer Ossian Ravn, vendor and designer URL the repository, the OFL description and URL, variations
+  PostScript name prefix (ID 25) Orderly. `fvar`: nine named instances Thin to Black at opsz 12, each with its
+  PostScript name (`Orderly-Thin` ...).
+- `STAT` (format 1 values): weight 100 Thin to 900 Black, Regular elided and linked to Bold; optical size 12pt
+  (elided) and 72pt, the names the Google Fonts axis registry uses. Elided fallback name ID 2.
+- `avar` from the weight map; `MVAR` (x-heights, from fontc).
+- Unhinted TrueType: `gasp` 0xFFFF -> 0x000F (grid-fit and smoothing at every size) and a `prep` program setting
+  smart dropout control (`PUSHW 511 SCANCTRL PUSHB 4 SCANTYPE`), as gftools' fix-unhinted does.
+- `meta`: dlng and slng Latn. OS/2 fsType 0 (installable), usWeightClass 400, vendor ID blank (no registered ID).
+
+## Statics
+
+`production.statics()` cuts each named weight at opsz 12 (family **Orderly**) and opsz 72 (family **Orderly
+Display**) with fontTools' instancer, removes overlaps (skia-pathops), drops points that overlap removal left on top
+of their neighbour, and names them so apps group them: Regular and Bold are a style-linked pair under name ID 1
+(Orderly, Orderly Display); the other weights carry their weight in name ID 1 (Orderly Thin) with name IDs 16 and
+17 (Orderly / Thin). OS/2 weight class, fsSelection (REGULAR for every weight but Bold, BOLD for Bold) and
+macStyle follow; each static has a one-value `STAT`. Files: `fonts/static/Orderly-Thin.ttf` ...
+`OrderlyDisplay-Black.ttf`, and the same as WOFF2 in `fonts/web/static/`.
+
+## Web
+
+`production.web()` subsets the variable font (all layout features kept) into **Latin** (Google Fonts' Latin range)
+and **Latin extended** (everything else the font covers: Latin Extended-A and B, symbols, arrows, math), WOFF2,
+and writes `fonts/web/orderly.css` with one `@font-face` per subset and its `unicode-range`. The whole variable
+font stays at `fonts/web/Orderly[opsz,wght].woff2` (the specimen site uses it).
 
 ## QA results
 
-2026-11-18, Phase 4 gate, `Orderly[opsz,wght].ttf`, 524 glyphs (437 encoded).
+2026-11-18, Phase 5 gate (fontbakery 1.1.0; fontspector runs in CI only).
 
-- `uv run --group qa fontbakery check-universal -l WARN --succinct fonts/variable/Orderly[opsz,wght].ttf`:
-  100 PASS, 3 FAIL, 1 ERROR, 0 WARN. The Google Fonts profile is Phase 5's.
+| Fonts | Universal profile | Google Fonts profile |
+| --- | --- | --- |
+| `Orderly[opsz,wght].ttf` | 0 FAIL, 0 WARN, 104 PASS | 0 FAIL, 4 WARN, 135 PASS |
+| `Orderly-*.ttf` (9) | 0 FAIL, 9 WARN (contour_count) | 0 FAIL, 67 WARN |
+| `OrderlyDisplay-*.ttf` (9) | 0 FAIL, 9 WARN (contour_count) | 0 FAIL, 71 WARN |
+
+Accepted warnings and why:
+
+| Check | Where | Why it stays |
+| --- | --- | --- |
+| `contour_count` | statics | Design, not defects: `@` (the a stands free in the ring), `§` (the two s overlap into a loop, or not in Thin), `ẞ` (a closed counter under the diagonal), Thin `&` (leg and bowl cross: four counters), Black `ǥ` (the bar closes a counter). Every other divergence it found was a real collision and was fixed (see below). |
+| `googlefonts/article/images` | all | No Google Fonts article; Orderly is not submitted to Google Fonts. |
+| `googlefonts/metadata/unreachable_subsetting` | all | Spacing accents, combining marks and symbols outside Google's subset definitions; our own subsets cover them. |
+| `googlefonts/glyphsets/shape_languages` | all | Auxiliary (optional) characters of some languages, such as ſ for German and ʻ for English. |
+| `googlefonts/vendor_id` | all | No registered vendor ID. |
+| `outline_colinear_vectors`, `outline_short_segments`, `outline_jaggy_segments`, `outline_alignment_miss` | statics | Points where overlap removal joined two shapes (stem and bowl, diagonal and bar) and the 1-unit steps rounding leaves there. The two that were real spurs (Ʒ and ẞ: a diagonal poking out of its bar) were fixed. |
+
+Fixed during Phase 5, found by these checks: tilde touching its letter in Black (`ñ ã õ ĩ`), Black breve with an
+inverted counter, Black `5` whose foot closed onto its stem, `⅔` numerator touching the slash, floating ogonek on
+`ę Ų`, the caron of `ǩ` on the ascender, Lithuanian `į̀ į́ į̃` keeping the dot (dotless `iogonek` in `ccmp`),
+missing dotted circle, missing `meta`, Mac name records from STAT, the licence description, STAT names for
+optical size, ss01/ss02 names lost in the statics, zero-length segments after overlap removal, non-reproducible
+timestamps in post-processed files.
+
+Languages and glyph sets:
+
 - `uv run --group qa orderly languages` (hyperglot 0.8.2): all 32 listed languages supported.
 - Glyph sets (glyphsets 1.1.3): GF Latin Kernel and GF Latin Core complete. GF Latin Plus is not a target; of it
   the font has ¦ ¬ ± ² ³ µ ¹ ¼ ½ ¾ π † ‡ ‰ ⁄ ⁴–⁹ ₀–₉ ₹ ₺ ₽ № Ω ⅓ ⅔ ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ∂ ∆ ∏ ∑ √ ∞ ∫ ≈ ≠ ≤ ≥ ◊.
-  (The Phase 4 progress note of the previous implementer said Latin Core was complete before the spacing accents
-  and ¢ £ ¥ © ® × ÷ • € ™ § ¶ ª º existed; it was not.)
+  (The previous implementer's Phase 4 note said Latin Core was complete before the spacing accents and
+  ¢ £ ¥ © ® × ÷ • € ™ § ¶ ª º existed; it was not.)
 
-Open findings and their status:
-
-| Check | Result | Status |
-| --- | --- | --- |
-| `family/win_ascent_and_descent` | FAIL | Phase 5 sets vertical metrics by the Google Fonts specification. |
-| `inconsistencies_between_fvar_STAT` | FAIL | fontc's basic STAT lacks axis values for the instances; Phase 5 writes STAT. |
-| `smart_dropout` | FAIL | No `prep` program yet; Phase 5 adds the smart-dropout instructions. |
-| `name/family_and_style_max_length` | ERROR | The check itself crashes on this font; recheck in Phase 5. |
+The Phase 4 gate's open items are closed: `family/win_ascent_and_descent` (vertical metrics),
+`inconsistencies_between_fvar_STAT` (STAT), `smart_dropout` (prep), and `name/family_and_style_max_length`, which
+crashed under fontc's names and passes now.
 
 Fixed during Phase 4: `whitespace_glyphs` (nbspace added), `math_signs_width` (math signs share one advance),
 `unreachable_glyphs` (every glyph is reached by a feature or a component, and every glyph has a GDEF class),

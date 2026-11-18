@@ -13,14 +13,19 @@ from .master import Master
 
 FAMILY = "Orderly"
 COPYRIGHT = "Copyright 2026 The Orderly Project Authors (https://github.com/ossianravn/orderly)"
-VERSION = (0, 100)  # 0.100
+VERSION = (1, 0)  # 1.000: the first complete release of the planned scope (docs/production.md, "Version")
+DESIGNER = "Ossian Ravn"
+URL = "https://github.com/ossianravn/orderly"
 
-# Placeholder vertical metrics until Phase 5 sets them by the Google Fonts specification.
-LINE_ASC, LINE_DESC = 950, -250
+# Vertical metrics by the Google Fonts specification: typo and hhea equal, no line gap, capitals centred in the
+# line (ascender - cap height = -descender), 130 % of the em in all. 1000 clears every accented capital but the
+# rare Ǻ; the win metrics (computed from the outlines of all masters at build time) cover everything.
+LINE_ASC, LINE_DESC = 1000, -300
 
 
 def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAMILY, features: str = "",
-              kerning: tuple[dict, dict] | None = None) -> Path:
+              kerning: tuple[dict, dict] | None = None, win: tuple[int, int] = (-LINE_DESC, LINE_ASC)) -> Path:
+    """win: (winDescent, winAscent), the same in every master so the font carries no MVAR delta for them."""
     font = ufoLib2.Font()
     i = font.info
     i.familyName = family
@@ -30,14 +35,19 @@ def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAM
     i.ascender, i.descender = m.asc, m.desc
     i.versionMajor, i.versionMinor = VERSION
     i.copyright = COPYRIGHT
-    i.openTypeNameLicense = "This Font Software is licensed under the SIL Open Font License, Version 1.1."
+    i.openTypeNameLicense = ("This Font Software is licensed under the SIL Open Font License, Version 1.1. "
+                             "This license is available with a FAQ at: https://openfontlicense.org")
     i.openTypeNameLicenseURL = "https://openfontlicense.org"
     i.openTypeHeadCreated = "2026/11/18 00:00:00"
     i.openTypeOS2WeightClass = m.wght
     i.openTypeOS2TypoAscender, i.openTypeOS2TypoDescender, i.openTypeOS2TypoLineGap = LINE_ASC, LINE_DESC, 0
     i.openTypeHheaAscender, i.openTypeHheaDescender, i.openTypeHheaLineGap = LINE_ASC, LINE_DESC, 0
-    i.openTypeOS2WinAscent, i.openTypeOS2WinDescent = LINE_ASC, -LINE_DESC
+    i.openTypeOS2WinDescent, i.openTypeOS2WinAscent = win
     i.openTypeOS2Selection = [7]  # USE_TYPO_METRICS
+    i.openTypeOS2Type = []  # installable embedding (fsType 0)
+    i.openTypeNameDesigner, i.openTypeNameManufacturer = DESIGNER, DESIGNER
+    i.openTypeNameDesignerURL, i.openTypeNameManufacturerURL = URL, URL
+    i.openTypeNameVersion = f"Version {VERSION[0]}.{VERSION[1]:03d}"
     i.postscriptUnderlinePosition, i.postscriptUnderlineThickness = -100, 50
     order = [".notdef"] + [n for n in glyphs if n != ".notdef"]
     notdef = font.newGlyph(".notdef")
@@ -117,6 +127,7 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
         i = InstanceDescriptor()
         i.familyName, i.styleName = family, name
         i.name = f"{family} {name}"
+        i.postScriptFontName = f"{family}-{name}"
         i.location = {"Weight": d}
         if len(sizes) > 1:
             i.location["Optical size"] = sizes[0]

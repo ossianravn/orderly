@@ -79,5 +79,5 @@ def U(m: Master) -> Drawing:
     outer.add(tcurve((w - st, cy), (0, -1), (rx, bot + th), (-1, 0), ti))
     outer.add(tcurve((rx, bot + th), (-1, 0), (st, cy), (0, 1), ti))
     outer.to((st, m.cap))
-    return Drawing([Contour.of(outer)])
+    return Drawing([Contour.of(outer)], anchors={"ogonek": (rx + rx * 0.3, 0)})  # Ų: on the round foot
 

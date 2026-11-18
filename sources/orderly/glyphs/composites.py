@@ -58,7 +58,7 @@ def parts_for(ch: str) -> list[tuple[str, str | None]] | None:
         elif mk in BOTTOM:
             out.append((mk, "bottom"))
         else:  # capitals, and lowercase whose anchor is on the ascender (l h), take the flatter capital marks
-            out.append((mk + (".case" if upper or bname in ("l", "h") else ""), "top"))
+            out.append((mk + (".case" if upper or bname in ("l", "h", "k") else ""), "top"))
     return out
 
 

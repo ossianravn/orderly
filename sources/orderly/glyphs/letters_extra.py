@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import math
 
-from ..diag import stroke
+from ..diag import placed, stroke
 from ..geom import Contour, quad
 from ..master import Master
 from ..parts import Ell, box, dbowl, disc, mirror_x, ring, rotate180, shift
@@ -201,7 +201,7 @@ def _ezh(m: Master, h: float, bot: float, w: float, st: float, bar: float) -> li
     ei = eo.inset(st * m.rside, bar * m.rtop, m.tension_in)
     x = ei.cx + ei.rx * math.cos(math.radians(m.g("fig.ap") + 20))
     bowl = mirror_x([cut_round(eo, ei, x, x)], w * 0.5)
-    diag = stroke((w * 0.42, ym + bar * 0.2), (w * 0.95 - st * 0.55, h - bar * 0.5), st * m.diag)
+    diag = placed(("c", w * 0.5, ym + bar * 0.4), ("r", w * 0.95, h - bar * 0.5), st * m.diag)  # both ends buried
     return [top, diag] + bowl
 
 

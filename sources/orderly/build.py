@@ -13,6 +13,8 @@ from .export import export, woff2
 from .features import features
 from .font import build as build_glyphs
 from .kerning import compute as kern_compute
+from .production import finish, statics
+from .production import web as web_subsets
 from .master import Master
 from .sizes import TEXT
 from .weights import DISPLAY, WEIGHT_MAP, WEIGHT_NAMES
@@ -58,16 +60,30 @@ def build_variable() -> Path:
     fea = features(sets[0], CPSP)
     (BUILD / "features.fea").parent.mkdir(parents=True, exist_ok=True)
     (BUILD / "features.fea").write_text(fea, encoding="utf-8", newline="\n")
-    ufos = [write_ufo(m, g, ufo_path(m), features=fea, kerning=kern_compute(m, g)) for m, g in zip(MASTERS, sets)]
+    win = win_metrics(sets)
+    ufos = [write_ufo(m, g, ufo_path(m), features=fea, kerning=kern_compute(m, g), win=win)
+            for m, g in zip(MASTERS, sets)]
     ds = write_designspace(MASTERS, ufos, BUILD / "masters" / "Orderly.designspace", family="Orderly",
                            weight_map=WEIGHT_MAP, names=WEIGHT_NAMES)
     out = compile_font(ds, FONTS / "variable" / "Orderly[opsz,wght].ttf", BUILD / "fontc" / "variable")
+    finish(out)
     _write_metrics(MASTERS[1], sets[1])
     web = woff2(out, FONTS / "web" / "Orderly[opsz,wght].woff2")
+    web_subsets(out, FONTS / "web")
+    made = statics(out, FONTS / "static", FONTS / "web" / "static")
     weights = [(u, n) for (u, _), n in zip(WEIGHT_MAP, WEIGHT_NAMES)]
     export(MASTERS, sets, out, FONTS / "data", weights, languages(), WEIGHT_MAP)
-    print(f"built {out.relative_to(ROOT)}, {web.relative_to(ROOT)}, fonts/data/orderly.json, fonts/data/outlines.json")
+    print(f"built {out.relative_to(ROOT)}, {web.relative_to(ROOT)}, subsets and orderly.css, {len(made)} statics "
+          f"(TTF and WOFF2), fonts/data/orderly.json, fonts/data/outlines.json")
     return out
+
+
+def win_metrics(sets: list[dict]) -> tuple[int, int]:
+    """(winDescent, winAscent): the outlines' extremes over every glyph of every master, rounded outward."""
+    import math
+
+    ys = [p[1] for s in sets for g in s.values() for c in g.outline(s) for p in c.flat(8)]
+    return math.ceil(-min(ys)), math.ceil(max(ys))
 
 
 def languages() -> list[dict]:

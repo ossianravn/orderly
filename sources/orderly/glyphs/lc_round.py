@@ -35,7 +35,8 @@ def e(m: Master) -> Drawing:
     body = Contour.of(o, line(o.end, i.end), i.reversed())
     eye_path = ei.arc("S", "W", "N", "E", "S")
     ey = eye_path.crossings(1, y1)
-    return Drawing([body, Contour.of(eye_path.piece(ey[0], ey[1]))])
+    return Drawing([body, Contour.of(eye_path.piece(ey[0], ey[1]))],
+                   anchors={"ogonek": (eo.cx + eo.rx * 0.3, 0)})  # ę: on the round's foot, not past it
 
 
 def s_spec(m: Master, x0: float = 0.0) -> SSpec:

@@ -87,7 +87,7 @@ BLACK_PARAMS = {
     "q.w": 0.8, "q.ry": 0.86, "q.stem": 0.5, "excl.gap": 0.32, "amp.w": 0.8, "amp.loopk": 0.72,
     "amp.loop": 0.24, "amp.loopx": 0.38, "amp.loopw": 1.08, "amp.bowl": 0.6,
     "A.bar": 0.3,
-    "small.heavy": 1.1, "guil.size": 1.2, "guil.w": 0.74, "brace.r": 1.0,
+    "small.heavy": 1.1, "guil.size": 1.2, "guil.w": 0.74, "brace.r": 1.0, "5.ap": 28,
 }
 
 BLACK_DISPLAY = replace(

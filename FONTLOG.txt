@@ -1,0 +1,49 @@
+FONTLOG for Orderly
+===================
+
+This file provides detailed information on the Orderly font software. This information should be distributed
+along with the Orderly fonts and any derivative works.
+
+
+Basic Font Information
+----------------------
+
+Orderly is a geometric grotesk typeface: letters built from one circle, one stem and a few vertical cuts. It is a
+variable font with a weight axis (wght, 100 to 900) and an optical-size axis (opsz, 12 to 72): at 12 it is the
+Text design for reading sizes, at 72 the Display design for headlines. Static fonts of both designs are included
+as the families Orderly and Orderly Display, Thin to Black.
+
+The character set covers Google Fonts Latin Kernel and Latin Core, the Latin-script official languages of the EU
+and the Nordic countries (Sámi and Greenlandic included) and Turkish, with currency, math, arrows, fractions,
+superiors and inferiors. OpenType features: kern, mark, mkmk, ccmp, locl, case, cpsp, frac, numr, dnom, sups,
+subs, ordn, tnum, pnum, zero, ss01 (double-storey a) and ss02 (l with a curved foot).
+
+The font is drawn in code: its source is a Python program (sources/orderly/) in which a master is a set of
+numbers and a glyph is a function of a master. The program writes UFO masters, the font compiler fontc builds the
+variable font, and fontTools makes the statics and web fonts. One command, `uv run orderly build`, rebuilds every
+font file, and the same sources give the same bytes.
+
+Orderly is released under the SIL Open Font License, Version 1.1 (OFL.txt). The code that draws it and the
+specimen website are released under the MIT License (LICENSE).
+
+Repository: https://github.com/ossianravn/orderly
+Specimen: https://ossianravn.github.io/orderly/
+
+
+ChangeLog
+---------
+
+18 November 2026 (Ossian Ravn) Orderly version 1.000 (unreleased)
+- First complete version: variable font, eighteen statics, web fonts, the character set and features above.
+  See CHANGELOG.md for details.
+
+
+Acknowledgements
+----------------
+
+If you make modifications be sure to add your name (N), email (E), web-address (if you have one) (W) and
+description (D). This list is in alphabetical order.
+
+N: Ossian Ravn
+W: https://github.com/ossianravn
+D: Designer and maintainer. Drawn in code with Claude (Anthropic), which wrote the generator under his direction.

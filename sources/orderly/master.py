@@ -159,7 +159,8 @@ REGULAR_DISPLAY_PARAMS = {
     "2.rx": 1.0, "2.ry": 1.0, "2.diag": 1.0, "2.flat": 0.72, "2.te": 0.5, "2.tf": 0.62,  # 2 round: radius / half width, vertical / horizontal; diagonal weight
     "3.mid": 0.55, "3.upper": 0.88, "3.inset": 0.02, "3.waist": 0.3,  # 3: middle height, upper round, waist end
     "4.over": 0.55, "4.bar": 0.2,  # 4: crossbar beyond the stem / stem; crossbar bottom / cap
-    "5.stem": 0.06, "5.bowl": 0.6, "5.top": 0.92,  # 5: stem left / width; round top / cap; top bar / width
+    "5.stem": 0.06, "5.bowl": 0.6, "5.top": 0.92, "5.ap": 18,  # 5: stem left / width; round top / cap; top
+    # bar / width; least terminal angle (Black needs more than the other figures)
     "6.bowl": 0.64, "6.leave": 0.97, "6.end": 22, "6.endx": 0.8, "6.t0": 0.62, "6.t1": 0.5,  # 6 9 stem
     "7.foot": 0.2,  # 7 diagonal's foot / width
     "comma.x0": 0.2, "comma.x1": 0.18, "comma.len": 1.55, "comma.w": 0.6, "comma.thin": 0.4, "comma.angle": 28,  # / dot

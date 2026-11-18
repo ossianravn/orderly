@@ -1,0 +1,61 @@
+# Rebuild the fonts from the sources and fail when the committed fonts/ differ from what the sources produce;
+# then check them with fontspector (installed by its official setup action).
+name: Fonts
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.15"
+
+      - name: Build the fonts from the sources
+        run: uv run --frozen orderly build
+
+      - name: Fail when fonts/ differs from what the sources produce
+        run: |
+          changes="$(git status --porcelain -- fonts/)"
+          if [ -n "$changes" ]; then
+            echo "fonts/ is out of date with the sources. Run 'uv run orderly build' and commit fonts/:"
+            echo "$changes"
+            git diff --stat -- fonts/
+            exit 1
+          fi
+
+      - name: Install fontspector
+        uses: fonttools/setup-fontspector@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: latest
+
+      - name: fontspector, universal profile (fails on FAIL)
+        run: |
+          fontspector --profile universal --error-code-on fail --ghmarkdown universal.md \
+            "fonts/variable/Orderly[opsz,wght].ttf" fonts/static/Orderly-*.ttf
+          fontspector --profile universal --error-code-on fail --ghmarkdown universal-display.md \
+            fonts/static/OrderlyDisplay-*.ttf
+
+      - name: fontspector, Google Fonts profile (reported, does not fail the build)
+        if: always()
+        run: |
+          fontspector --profile googlefonts --error-code-on fatal --ghmarkdown googlefonts.md \
+            "fonts/variable/Orderly[opsz,wght].ttf" || true
+
+      - name: Reports
+        if: always()
+        run: |
+          for f in universal.md universal-display.md googlefonts.md; do
+            if [ -f "$f" ]; then cat "$f" >> "$GITHUB_STEP_SUMMARY"; fi
+          done

@@ -155,6 +155,19 @@ def brokenbar(m: Master) -> Drawing:
     return Drawing([box(0, y0, st, ym - g), box(0, ym + g, st, y1)])
 
 
+@glyph("uni25CC", 0x25CC, "lc")
+def dottedcircle(m: Master) -> Drawing:
+    """◌: twelve dots on an x-height circle; the base that shows a mark typed on its own."""
+    import math
+
+    d = dot_d(m) * 0.55
+    r = m.xh * 0.42
+    cx, cy = r + d / 2, m.xh / 2
+    dots = [disc(cx + r * math.cos(math.radians(30 * k)), cy + r * math.sin(math.radians(30 * k)), d, m.tension)
+            for k in range(12)]
+    return Drawing(dots, anchors={"top": (cx, m.xh), "bottom": (cx, 0), "ogonek": (cx + r * 0.6, 0)})
+
+
 SPACING = {"dieresis": (0xA8, "dieresiscomb"), "macron": (0xAF, "macroncomb"), "acute": (0xB4, "acutecomb"),
            "cedilla": (0xB8, "cedillacomb"), "circumflex": (0x2C6, "circumflexcomb"), "caron": (0x2C7, "caroncomb"),
            "breve": (0x2D8, "brevecomb"), "dotaccent": (0x2D9, "dotaccentcomb"), "ring": (0x2DA, "ringcomb"),

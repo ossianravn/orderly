@@ -1,6 +1,6 @@
 {
  "family": "Orderly",
- "version": "0.100",
+ "version": "1.000",
  "unitsPerEm": 1000,
  "metrics": {
   "ascender": 740,
@@ -11,8 +11,8 @@
    "72": 500
   },
   "line": {
-   "ascender": 950,
-   "descender": -250,
+   "ascender": 1000,
+   "descender": -300,
    "lineGap": 0
   }
  },
@@ -8912,32 +8912,32 @@
    "category": "symbol",
    "metrics": {
     "ThinText": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 88,
+     "advance": 147,
      "lsb": 0,
      "rsb": 0
     }
@@ -10160,6 +10160,44 @@
    }
   },
   {
+   "name": "uni25CC",
+   "unicode": 9676,
+   "char": "◌",
+   "category": "symbol",
+   "metrics": {
+    "ThinText": {
+     "advance": 566,
+     "lsb": 53,
+     "rsb": 53
+    },
+    "RegularText": {
+     "advance": 584,
+     "lsb": 43,
+     "rsb": 43
+    },
+    "BlackText": {
+     "advance": 601,
+     "lsb": 35,
+     "rsb": 35
+    },
+    "ThinDisplay": {
+     "advance": 525,
+     "lsb": 42,
+     "rsb": 42
+    },
+    "RegularDisplay": {
+     "advance": 533,
+     "lsb": 31,
+     "rsb": 31
+    },
+    "BlackDisplay": {
+     "advance": 572,
+     "lsb": 25,
+     "rsb": 25
+    }
+   }
+  },
+  {
    "name": "dieresis",
    "unicode": 168,
    "char": "¨",
@@ -10399,12 +10437,12 @@
      "rsb": 0
     },
     "RegularText": {
-     "advance": 289,
+     "advance": 370,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 291,
+     "advance": 473,
      "lsb": 0,
      "rsb": 0
     },
@@ -10414,12 +10452,12 @@
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 280,
+     "advance": 338,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 282,
+     "advance": 500,
      "lsb": 0,
      "rsb": 0
     }
@@ -12028,32 +12066,32 @@
    "category": "figure",
    "metrics": {
     "ThinText": {
-     "advance": 725,
+     "advance": 784,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 770,
+     "advance": 829,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 841,
+     "advance": 900,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 659,
+     "advance": 718,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 694,
+     "advance": 753,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 808,
+     "advance": 867,
      "lsb": 0,
      "rsb": 0
     }
@@ -12066,32 +12104,32 @@
    "category": "figure",
    "metrics": {
     "ThinText": {
-     "advance": 746,
+     "advance": 805,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 798,
+     "advance": 857,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 864,
+     "advance": 923,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 684,
+     "advance": 743,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 723,
+     "advance": 782,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 835,
+     "advance": 894,
      "lsb": 0,
      "rsb": 0
     }
@@ -12104,32 +12142,32 @@
    "category": "figure",
    "metrics": {
     "ThinText": {
-     "advance": 811,
+     "advance": 870,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 831,
+     "advance": 890,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 931,
+     "advance": 990,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 758,
+     "advance": 817,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 765,
+     "advance": 824,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 899,
+     "advance": 958,
      "lsb": 0,
      "rsb": 0
     }
@@ -12142,32 +12180,32 @@
    "category": "figure",
    "metrics": {
     "ThinText": {
-     "advance": 681,
+     "advance": 740,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 681,
+     "advance": 740,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 739,
+     "advance": 798,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 628,
+     "advance": 687,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 618,
+     "advance": 677,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 702,
+     "advance": 761,
      "lsb": 0,
      "rsb": 0
     }
@@ -12180,32 +12218,32 @@
    "category": "figure",
    "metrics": {
     "ThinText": {
-     "advance": 790,
+     "advance": 849,
      "lsb": 0,
      "rsb": 0
     },
     "RegularText": {
-     "advance": 803,
+     "advance": 862,
      "lsb": 0,
      "rsb": 0
     },
     "BlackText": {
-     "advance": 908,
+     "advance": 967,
      "lsb": 0,
      "rsb": 0
     },
     "ThinDisplay": {
-     "advance": 733,
+     "advance": 792,
      "lsb": 0,
      "rsb": 0
     },
     "RegularDisplay": {
-     "advance": 736,
+     "advance": 795,
      "lsb": 0,
      "rsb": 0
     },
     "BlackDisplay": {
-     "advance": 872,
+     "advance": 931,
      "lsb": 0,
      "rsb": 0
     }
@@ -20302,6 +20340,44 @@
      "advance": 286,
      "lsb": 35,
      "rsb": 27
+    }
+   }
+  },
+  {
+   "name": "iogonek.dotless",
+   "unicode": null,
+   "char": null,
+   "category": "alternate",
+   "metrics": {
+    "ThinText": {
+     "advance": 164,
+     "lsb": 68,
+     "rsb": 68
+    },
+    "RegularText": {
+     "advance": 206,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "BlackText": {
+     "advance": 246,
+     "lsb": 49,
+     "rsb": 49
+    },
+    "ThinDisplay": {
+     "advance": 132,
+     "lsb": 56,
+     "rsb": 56
+    },
+    "RegularDisplay": {
+     "advance": 168,
+     "lsb": 45,
+     "rsb": 45
+    },
+    "BlackDisplay": {
+     "advance": 236,
+     "lsb": 38,
+     "rsb": 38
     }
    }
   },

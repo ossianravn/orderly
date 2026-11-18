@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-from ..diag import stroke
+from ..diag import placed, stroke
 from ..geom import Contour, line, quad
 from ..master import Master
 from ..parts import Ell, dbowl
@@ -52,6 +52,6 @@ def Germandbls(m: Master) -> Drawing:
     w, st, b = m.w("B"), m.cstem, m.cbar
     ym = m.cap * 0.56
     top = quad((0, 0), (st, 0), (st, m.cap - b), (w * 0.86, m.cap - b), (w * 0.86, m.cap), (0, m.cap))
-    diag = stroke((w * 0.5, ym - b * 0.3), (w * 0.86 - st * 0.5, m.cap - b * 0.5), st * m.diag)
+    diag = placed(("c", w * 0.5, ym - b * 0.3), ("r", w * 0.86, m.cap - b * 0.5), st * m.diag)  # inside the bar
     bowl = dbowl(0, st, 0, ym, w, ym / 2 * 1.05, b, st * m.rside, m.tension, m.tension_in)
     return Drawing([top, diag] + bowl)

@@ -88,10 +88,34 @@ def symbols_page() -> str:
     return _page("symbols", b)
 
 
+def statics_page() -> str:
+    """Each static TTF beside the variable font at the same weight and optical size: they should match, with
+    overlaps removed. The last block loads only fonts/web/orderly.css (the two subsets)."""
+    from ..weights import WEIGHT_MAP, WEIGHT_NAMES
+
+    text = "Hamburgefonstiv Blåbærsyltetøj 0123 ŁŽŐ → ½"
+    faces, b = "", ""
+    for fam, opsz in (("Orderly", 12), ("OrderlyDisplay", 72)):
+        for (w, _), name in zip(WEIGHT_MAP, WEIGHT_NAMES):
+            key = f"{fam}-{name}"
+            faces += f"@font-face {{ font-family: '{key}'; src: url('/fonts/static/{key}.ttf'); }}\n"
+            b += (f"<div style='display:grid;grid-template-columns:14em 1fr 1fr;align-items:baseline'>"
+                  f"<div class='l'>{key}.ttf | variable</div><div style=\"font:36px '{key}'\">{html.escape(text)}</div>"
+                  f"<div style='font-size:36px;{_fv(w, opsz)}'>{html.escape(text)}</div></div>")
+    web = ("<div class='r'></div><div class='l'>fonts/web/orderly.css (Latin and Latin-extended subsets)</div>"
+           "<div style=\"font:40px 'Orderly Web';font-weight:700\">Ærø Łódź İstanbul Ŋ ½ → ∞ € Kárášjohka</div>")
+    css = (f"<style>{faces}</style><link rel='stylesheet' href='/fonts/web/orderly.css'>"
+           "<style>@font-face{font-family:'Orderly Web';src:url('/fonts/web/Orderly-latin.woff2') format('woff2');"
+           "unicode-range:U+0000-00FF}@font-face{font-family:'Orderly Web';src:url('/fonts/web/Orderly-latin-ext.woff2')"
+           " format('woff2');unicode-range:U+0100-FFFF}</style>")
+    return _page("statics", css + b + web)
+
+
 def phase4_pages() -> dict[str, str]:
     from fontTools.ttLib import TTFont
 
-    out = {"kerning": kerning_page(), "features": features_page(), "symbols": symbols_page()}
+    out = {"kerning": kerning_page(), "features": features_page(), "symbols": symbols_page(),
+           "statics": statics_page()}
     cmap = TTFont(FONT_FILE).getBestCmap() if FONT_FILE.exists() else {}
     chars = "".join(chr(u) for u in sorted(cmap) if u > 0x20 and not 0x300 <= u < 0x370)
     accented = "".join(c for c in chars if len(unicodedata.normalize("NFD", c)) > 1)

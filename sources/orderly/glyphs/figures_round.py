@@ -49,7 +49,7 @@ def five(m: Master) -> Drawing:
     ytop = m.cap * m.g("5.bowl")
     lo = Ell(w / 2, (ytop - m.os(m.cap)) / 2, w / 2, (ytop + m.os(m.cap)) / 2, m.tension)
     li = lo.inset(side, th, m.tension_in)
-    xl = term_x(li, m.g("fig.ap"), -1)
+    xl = term_x(li, max(m.g("fig.ap"), m.g("5.ap")), -1)  # its own floor, so the foot never meets the stem
     inner = li.arc("W", "N", "E", "S", "W").cut_x(xl, "head", -1)
     inner, j = join_into(inner, s, True, th * (1 - m.join), st * 0.5, +1, m.join_turn)
     outer = shoulder(j, lo.p("N"), m.tension).then(lo.arc("N", "E", "S", "W").cut_x(xl, "head", -1))

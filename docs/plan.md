@@ -241,6 +241,30 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 5 (production) at its gate (Claude Opus 5.5). Landed: vertical metrics by the Google Fonts
+  specification (typo = hhea 1000 / -300 / 0, line height 1.3, win 1142 / 335 from the outlines of all masters);
+  version 1.000 (proposal, reason in production); names, PostScript names for the nine `fvar` instances, `STAT`
+  (nine weights, Regular elided and linked to Bold; optical sizes 12pt elided and 72pt, the axis registry's
+  names), `avar`, `MVAR`, `gasp` and smart-dropout `prep`, `meta`; eighteen statics with overlaps removed (Orderly
+  and Orderly Display, Thin to Black, grouped by name IDs 1, 2, 16, 17) as TTF and WOFF2; the variable WOFF2 split
+  into Latin and Latin extended with `fonts/web/orderly.css`; `.github/workflows/fonts.yml` (rebuild, fail on any
+  difference in `fonts/`, fontspector); `README.md`, `CHANGELOG.md`, `FONTLOG.txt`. The checks also found and
+  fixed collisions in Black (tilde, breve, 5) and smaller faults (ogonek on ę Ų, ǩ, ⅔, Lithuanian į́, Ʒ ẞ spurs);
+  a dotted circle was added. 526 glyphs.
+
+  Checked: two builds give the same bytes for all 43 files in `fonts/`; `orderly check` clean; hyperglot 32/32;
+  fontbakery 1.1.0 universal profile 0 FAIL on the variable font and all eighteen statics, Google Fonts profile
+  (run with `uvx` in its own environment) 0 FAIL on all; accepted warnings are listed with reasons in production;
+  `OFL.txt` matches the official text (fontbakery's OFL body and copyright checks). Looked at: the statics beside
+  the variable font at every weight and both sizes, the subset stylesheet rendering Latin, Latin extended, arrows
+  and symbols, running text at 9 to 13 px. Not verified: whether a Linux build gives the same bytes (first CI
+  run), and fontspector's own results (it runs only in CI).
+
+  Name check (proposal for the maintainer, not decided): two fonts are already called Orderly, both small:
+  "Orderly" by Andi Moz, a hand-lettered script, free for personal use, on dafont since November 2024
+  (dafont.com/orderly.font), and "Orderly", a slanted pixel font by backyard321 on itch.io. Google Fonts,
+  Fontsource, Adobe Fonts, MyFonts and Fontspring show none. The maintainer decides whether to keep the name.
+
 - 2026-11-18: Phase 4 (character set and features) at its gate (Claude Opus 5.5, taking over from the previous
   implementer). Landed: currency ¢ £ ¥ € ƒ ¤ ₺ ₽ ₹; math × ÷ ≠ ≤ ≥ ± ≈ ¬ ∞ ◊ µ π Ω ∂ ∆ ∏ ∑ √ ∫ on one width and
   the figures' centre (the math axis moved from 0.46 to 0.5 of the cap height); arrows ← ↑ → ↓ ↖ ↗ ↘ ↙ ↔ ↕ at

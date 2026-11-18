@@ -100,6 +100,10 @@ _alternate({"l": "l.ss02"}, ".ss02")
 # locl
 
 
+glyph("iogonek.dotless", None, "lc")(  # Lithuanian į̀ į́ į̃: ccmp swaps it in before a top mark
+    lambda m: Drawing([], components=[("dotlessi", None), ("ogonekcomb", "ogonek")]))
+
+
 @glyph("i.loclTRK", None, "lc")
 def i_trk(m: Master) -> Drawing:
     return Drawing([], components=[("i", None)])

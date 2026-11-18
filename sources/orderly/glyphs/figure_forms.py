@@ -98,7 +98,7 @@ def fraction(m: Master) -> Drawing:
     st = fw(small(m))[0]
     run = m.cap * 0.42
     c = placed(("l", 0, 0), ("r", run, m.cap), st * m.diag)
-    adv = run * 0.3
+    adv = run * 0.5
     return Drawing(shift([c], adv / 2 - run / 2), advance=adv)
 
 
