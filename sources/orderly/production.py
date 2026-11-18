@@ -51,16 +51,35 @@ def _unhinted(font: TTFont) -> None:
     font["maxp"].maxStackElements = max(font["maxp"].maxStackElements, 2)
 
 
+def _overlaps(font: TTFont, name: str) -> bool:
+    """True when the glyph's contours (components resolved) overlap: their union covers less than their sum."""
+    import pathops
+    from fontTools.pens.areaPen import AreaPen
+    from fontTools.pens.recordingPen import DecomposingRecordingPen
+
+    gs = font.getGlyphSet()
+    rec = DecomposingRecordingPen(gs)
+    gs[name].draw(rec)
+    before, after, path = AreaPen(), AreaPen(), pathops.Path()
+    rec.replay(before)
+    rec.replay(path.getPen())
+    pathops.simplify(path, clockwise=path.clockwise).draw(after)
+    return abs(abs(before.value) - abs(after.value)) > 1.0
+
+
 def _flags(font: TTFont) -> None:
-    """OVERLAP_SIMPLE / OVERLAP_COMPOUND on every glyph (renderers then draw any contours that touch or overlap
-    with non-zero winding), and the WWS bit: the names follow the weight-width-slope model."""
+    """OVERLAP_SIMPLE (or OVERLAP_COMPOUND on the first component) on glyphs whose contours overlap, so renderers
+    fill them with non-zero winding; and the WWS bit: the names follow the weight-width-slope model."""
     glyf = font["glyf"]
     for name in font.getGlyphOrder():
         g = glyf[name]
+        if g.numberOfContours == 0:
+            continue
+        on = _overlaps(font, name)  # cleared where false: statics inherit the variable font's flags
         if g.isComposite():
-            g.components[0].flags |= 0x0400
-        elif g.numberOfContours > 0:
-            g.flags[0] |= 0x40
+            g.components[0].flags = (g.components[0].flags & ~0x0400) | (0x0400 if on else 0)
+        else:
+            g.flags[0] = (g.flags[0] & ~0x40) | (0x40 if on else 0)
     font["OS/2"].fsSelection |= 1 << 8
 
 

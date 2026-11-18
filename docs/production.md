@@ -258,9 +258,10 @@ or Cyrillic would be 1.100 or 2.000.
 - `STAT` (format 1 values): weight 100 Thin to 900 Black, Regular elided and linked to Bold; optical size 12pt
   and 72pt (the names the Google Fonts axis registry uses; optical-size values are never elided). Axis names
   Weight and Optical Size, as registered. Elided fallback name ID 2.
-- Every glyph carries the overlap flag (OVERLAP_SIMPLE, or OVERLAP_COMPOUND on its first component), so
-  renderers draw touching or overlapping contours with non-zero winding; fsSelection has the WWS bit (the names
-  follow the weight-width-slope model). The same in the statics.
+- Glyphs whose contours overlap (234 in the variable font: stem over bowl and the like; none in the statics,
+  whose overlaps are removed) carry the overlap flag (OVERLAP_SIMPLE, or OVERLAP_COMPOUND on the first
+  component), found by comparing each outline's area with that of its union (pathops). fsSelection has the WWS
+  bit (the names follow the weight-width-slope model), in the statics too.
 - Layout tables are packed by fontTools' own packer, never HarfBuzz's (`production.CFG`): fontTools uses the
   HarfBuzz repacker whenever `uharfbuzz` is importable, which the `qa` group installs, and the two give different
   bytes. Before this was pinned, local builds and CI disagreed on the statics and subsets (GSUB, GPOS only).
@@ -310,7 +311,7 @@ Accepted warnings and why:
 fontspector (CI, latest release, run 2026-11-18 on commit f45b5a4 before the fixes in the next paragraph):
 universal profile 0 FAIL on the variable font and Orderly statics (31 WARN) and on Orderly Display (23 WARN);
 Google Fonts profile on the variable font 0 FAIL, 12 WARN. Its warnings beyond fontbakery's were then fixed:
-`valid_glyphnames` (nbspace renamed uni00A0), `opentype/fsselection_wws` (WWS bit), `overlaps_bit` (overlap flags),
+`valid_glyphnames` (nbspace renamed uni00A0), `opentype/fsselection_wws` (WWS bit), `overlaps_bit` (overlap flags, only where contours overlap),
 `opentype/fvar/registered_axis_tags` ("Optical Size"), `googlefonts/STAT/opsz_not_elided`,
 `googlefonts/separator_glyphs` (empty U+2028 and U+2029 added). Left: `suspicious_sidebearings` on a few glyphs
 whose right side changes more than most across weights by design (the Black `l.ss02` hook is shorter, so its
