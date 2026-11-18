@@ -313,7 +313,7 @@ universal profile 0 FAIL on the variable font and Orderly statics (31 WARN) and 
 Google Fonts profile on the variable font 0 FAIL, 12 WARN. Its warnings beyond fontbakery's were then fixed:
 `valid_glyphnames` (nbspace renamed uni00A0), `opentype/fsselection_wws` (WWS bit), `overlaps_bit` (overlap flags, only where contours overlap),
 `opentype/fvar/registered_axis_tags` ("Optical Size"), `googlefonts/STAT/opsz_not_elided`,
-`googlefonts/separator_glyphs` (empty U+2028 and U+2029 added). Left: `suspicious_sidebearings` on a few glyphs
+`googlefonts/separator_glyphs` (empty U+2028 and U+2029 added). Final CI run (commit 0cc4038): universal profile 0 FAIL, 9 WARN (variable font and the Orderly statics) and 0 FAIL, 5 WARN (Orderly Display); Google Fonts profile 0 FAIL, 5 WARN. The workflow passes. Left: `overlaps_bit` on `6` and `nine.tf` in one static (overlap removal leaves a sliver fontspector finds and the area test does not), `suspicious_sidebearings` on a few glyphs
 whose right side changes more than most across weights by design (the Black `l.ss02` hook is shorter, so its
 advance drops; the ring and acute of `å Ǻ`; `↙`; `Ʒ`; `six.numr`), `contour_count` as above, and the Google
 Fonts warnings above. `fontdata_namecheck` (fontbakery, online) sometimes errors when its web service answers

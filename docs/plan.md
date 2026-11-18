@@ -258,7 +258,12 @@ Newest first. One entry per phase or review: date, what landed, how it was check
   `OFL.txt` matches the official text (fontbakery's OFL body and copyright checks). Looked at: the statics beside
   the variable font at every weight and both sizes, the subset stylesheet rendering Latin, Latin extended, arrows
   and symbols, running text at 9 to 13 px. Not verified: whether a Linux build gives the same bytes (first CI
-  run), and fontspector's own results (it runs only in CI).
+  run), and fontspector's own results (it runs only in CI). Later the same day: the first CI runs showed Linux
+  reproducing the variable font and the data byte for byte but not the statics and subsets (GSUB and GPOS only:
+  fontTools packs them with HarfBuzz's repacker when uharfbuzz is installed, which the `qa` group does); the build
+  now pins fontTools' own packer, and CI passes: the rebuild matches `fonts/` exactly, fontspector reports 0 FAIL
+  in both profiles. Its extra warnings were fixed (uni00A0, U+2028 U+2029, WWS bit, overlap flags, "Optical
+  Size", opsz never elided). Open: `ľ.ss02` in Black (a short hook, so its advance shrinks with weight).
 
   Name check (proposal for the maintainer, not decided): two fonts are already called Orderly, both small:
   "Orderly" by Andi Moz, a hand-lettered script, free for personal use, on dafont since November 2024
