@@ -26,10 +26,10 @@ ONC = skia.Color(220, 60, 50)
 OVERLAY = [skia.Color(220, 60, 50), skia.Color(40, 110, 220), skia.Color(30, 150, 80)]
 
 
-def to_path(g: Glyph, dx: float = 0.0, dy: float = 0.0) -> skia.Path:
+def to_path(g: Glyph, dx: float = 0.0, dy: float = 0.0, glyphs: dict | None = None) -> skia.Path:
     p = skia.Path()
     p.setFillType(skia.PathFillType.kWinding)
-    for c in g.contours:
+    for c in (g.outline(glyphs) if glyphs else g.contours):
         p.moveTo(c.segs[0][0][0] + dx, c.segs[0][0][1] + dy)
         for s in c.segs:
             if len(s) == 4:
@@ -109,7 +109,7 @@ def glyph_sheet(m: Master, names: list[str], out: Path, cols: int = 4, scale: fl
                 canvas.drawLine(-60, yy, g.advance + 60, yy, paint(METRIC, 1.0 / scale))
             canvas.drawLine(0, bot, 0, top, paint(SB, 1.0 / scale))
             canvas.drawLine(g.advance, bot, g.advance, top, paint(SB, 1.0 / scale))
-            path = to_path(g)
+            path = to_path(g, glyphs=glyphs)
             canvas.drawPath(path, paint(FILL if points else INK))
             if points:
                 canvas.drawPath(path, paint(INK, 1.3 / scale))
@@ -143,7 +143,7 @@ def overlay_sheet(masters: list[Master], names: list[str], out: Path, cols: int 
             for yy in (0, base.xh, base.cap):
                 canvas.drawLine(-60, yy, adv[n] + 60, yy, paint(METRIC, 1.0 / scale))
             for k, s in enumerate(sets):
-                canvas.drawPath(to_path(s[n]), paint(OVERLAY[k % 3], 1.6 / scale))
+                canvas.drawPath(to_path(s[n], glyphs=s), paint(OVERLAY[k % 3], 1.6 / scale))
             canvas.restore()
             canvas.drawString(n, x + 30, y + cell_h - 14, FONT, paint(INK))
             x += adv[n] * scale + 60
@@ -172,7 +172,7 @@ def text_sheet(m: Master, lines: list[str], out: Path, sizes=(48, 96), glyphs: d
                 canvas.save()
                 canvas.translate(x, y)
                 canvas.scale(s, -s)
-                canvas.drawPath(to_path(g), paint(INK))
+                canvas.drawPath(to_path(g, glyphs=glyphs), paint(INK))
                 canvas.restore()
                 x += g.advance * s
             y += sz * 0.35

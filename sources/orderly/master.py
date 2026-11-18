@@ -125,6 +125,11 @@ REGULAR_DISPLAY_PARAMS = {
     "t.top": 0.55,  # t's flat top: this fraction of the way from the x-height to the ascender
     "k.join": 0.3,  # k arm's centre line meets the stem edge at this fraction of the x-height
     "k.armin": 0.1,  # k arm's top stops this many stems short of the leg's foot
+    "mark.case": 0.82, "mark.gap": 0.1, "mark.h": 0.26, "mark.w": 0.92, "mark.dot": 0.9,  # marks
+    "mark.hat": 0.48, "mark.dots": 0.2, "mark.ring": 0.34,  # circumflex/caron width, dieresis spread, ring / x-height
+    "math.axis": 0.46, "math.w": 0.72,  # math symbols: axis / cap height; width / cap height
+    "dash.en": 0.5, "dash.em": 0.92,  # dash lengths / em
+    "bar.asc": 0.42, "eth.leave": 25,  # đ ħ bar height in the ascender; ð stem leaves the round at this angle
     "join.notch": 0.04,  # an outer join stays at least this far (/ x-height) inside the stem's end
     "join.deep": 0.2,  # and cuts at most this far (/ x-height) under the round's top
     "k.cut": 0.45,  # k K arm's buried end: vertical cut this fraction of the stem from its left edge

@@ -5,6 +5,7 @@
   proof [pages]      browser proofs of the compiled font -> proofs/browser/*.png
   serve              serve the proof pages on port 4813
   check              interpolation check of the six masters; instantiate every corner
+  languages          (qa group) check every listed language with hyperglot
   all                build, sheets and proofs
 """
 
@@ -41,6 +42,11 @@ def main() -> None:
         from .build import check_compat
 
         sys.exit(0 if check_compat() else 1)
+    if cmd == "languages":
+        from .build import FONTS
+        from .coverage import check
+
+        sys.exit(0 if check(str(FONTS / "variable" / "Orderly[opsz,wght].ttf")) else 1)
     if cmd in ("-h", "--help", "help"):
         print(__doc__)
 

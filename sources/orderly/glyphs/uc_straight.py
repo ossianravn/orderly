@@ -41,7 +41,8 @@ def F(m: Master) -> Drawing:
 @glyph("L", 0x4C, "uc")
 def L(m: Master) -> Drawing:
     w, st, b = m.w("L"), m.cstem, m.cbar
-    return Drawing([quad((0, 0), (w, 0), (w, b), (st, b), (st, m.cap), (0, m.cap))])
+    return Drawing([quad((0, 0), (w, 0), (w, b), (st, b), (st, m.cap), (0, m.cap))],
+                   anchors={"caronalt": (st + m.xh * 0.1, m.cap)})
 
 
 @glyph("T", 0x54, "uc")

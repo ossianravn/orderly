@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import ufoLib2
+from ufoLib2.objects import Component
 from fontTools.designspaceLib import AxisDescriptor, DesignSpaceDocument, InstanceDescriptor, SourceDescriptor
 
 from .font import Glyph
@@ -18,7 +19,8 @@ VERSION = (0, 100)  # 0.100
 LINE_ASC, LINE_DESC = 950, -250
 
 
-def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAMILY) -> Path:
+def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAMILY, features: str = "",
+              kerning: tuple[dict, dict] | None = None) -> Path:
     font = ufoLib2.Font()
     i = font.info
     i.familyName = family
@@ -53,9 +55,19 @@ def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAM
                     pen.addPoint(p, None)
                 pen.addPoint(seg[-1], "curve" if len(seg) == 4 else "line")
             pen.endPath()
+        for base, dx, dy in g.components:
+            ug.components.append(Component(base, transformation=(1, 0, 0, 1, dx, dy)))
         for k, (x, y) in g.anchors.items():
             ug.appendAnchor({"name": k, "x": x, "y": y})
     font.glyphOrder = order
+    font.lib["public.openTypeCategories"] = {n: ("mark" if g.zone == "mark" else "base") for n, g in glyphs.items()
+                                             if g.unicodes or g.zone == "mark"}
+    if features:
+        font.features.text = features
+    if kerning:
+        groups, pairs = kerning
+        font.groups.update(groups)
+        font.kerning.update(pairs)
     path.parent.mkdir(parents=True, exist_ok=True)
     font.save(path, overwrite=True)
     return path

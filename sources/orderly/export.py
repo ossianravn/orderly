@@ -91,7 +91,7 @@ def export(masters: list[Master], sets: list[dict[str, Glyph]], vf: Path, out_di
     outlines = {
         "unitsPerEm": 1000,
         "masters": [m.name for m in masters],
-        "glyphs": {n: {m.name: [{"part": c.part, "points": _points(c)} for c in s[n].contours]
+        "glyphs": {n: {m.name: [{"part": c.part, "points": _points(c)} for c in s[n].outline(s)]
                        for m, s in zip(masters, sets)} for n in order},
     }
     (out_dir / "outlines.json").write_text(json.dumps(outlines, separators=(",", ":")), encoding="utf-8", newline="\n")

@@ -18,6 +18,7 @@ class Drawing:
     contours: list[Contour]
     anchors: dict[str, tuple[float, float]] = field(default_factory=dict)
     advance: float | None = None  # fixed advance (space); otherwise spacing decides
+    components: list[tuple[str, str | None]] = field(default_factory=list)  # composite: base, then (mark, anchor)
 
 
 @dataclass(frozen=True)
@@ -45,5 +46,7 @@ def load() -> dict[str, Spec]:
     """Import every glyph module (registration happens on import) and return the registry in drawing order."""
     from . import control, lc_arch, lc_diag, lc_round, lc_stem, uc_bowl, uc_diag, uc_round, uc_straight  # noqa: F401
     from . import figures, figures_round, nordic, punct  # noqa: F401
+    from . import letters_extra, marks, symbols  # noqa: F401
+    from . import composites  # noqa: F401  (last: composites refer to the glyphs above)
 
     return REGISTRY

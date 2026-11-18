@@ -27,4 +27,6 @@ module-name = "orderly"
 [dependency-groups]
 qa = [
     "fontbakery==1.1.0",
+    "glyphsets==1.1.3",
+    "hyperglot==0.8.2",
 ]
