@@ -1,7 +1,7 @@
 ---
 import SectionHead from "./SectionHead.astro";
 import { BOX_H, BOX_W, cellDrawing, inspect } from "../lib/inspect";
-import { axis, categories, count, drawn, packed } from "../lib/data";
+import { axis, categories, count, drawn, glyphTotal, packed } from "../lib/data";
 
 const first = "a";
 const loc = { wght: axis("wght").default, opsz: axis("opsz").max };
@@ -26,7 +26,7 @@ const typed = (g: G) => !!g.char && !isMark(g);
 ---
 
 <section id="characters" class="sec" aria-labelledby="characters-h">
-  <SectionHead id="characters-h" title="Characters" lead={`${count(drawn.length, "glyph")}, and every one of them drawn from the same few parts.`}>
+  <SectionHead id="characters-h" title="Characters" lead={`${count(glyphTotal, "glyph")}, and every one of them drawn from the same few parts.`}>
     <dl slot="side" class="label at">
       <div><dt>Weight</dt><dd data-out="wght">{loc.wght}</dd></div>
       <div><dt>Optical size</dt><dd data-out="opsz" data-auto={String(loc.opsz)}>{loc.opsz}</dd></div>

@@ -27,6 +27,7 @@ export interface Language {
 export interface Meta {
   family: string;
   version: string;
+  glyphCount?: number;
   unitsPerEm: number;
   axes: Packed["axes"];
   instances: { name: string; wght: number }[];
@@ -61,6 +62,8 @@ export const axis = (tag: string) => meta.axes.find((a) => a.tag === tag)!;
 
 /** Glyphs with an outline, which is what a visitor counts as the character set. */
 export const drawn = meta.glyphs.filter((g) => g.category !== "space");
+// The number of glyphs in the compiled font, as the README states it; the grid shows the drawn ones.
+export const glyphTotal = meta.glyphCount ?? meta.glyphs.length;
 
 export const cmap = new Set(meta.glyphs.filter((g) => g.char).map((g) => g.char!));
 

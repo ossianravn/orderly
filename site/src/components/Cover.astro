@@ -1,5 +1,5 @@
 ---
-import { axis, drawn, files, kb, masterIndex, meta, repo, widthAt } from "../lib/data";
+import { axis, files, glyphTotal, kb, masterIndex, meta, repo, widthAt } from "../lib/data";
 
 const sections: [string, string][] = [
   ["weights", "Weights"],
@@ -21,7 +21,7 @@ const facts: [string, string][] = [
   ["Weight axis", `${wght.min} to ${wght.max}`],
   ["Optical size axis", `${opsz.min} to ${opsz.max}`],
   ["Named weights", String(meta.instances.length)],
-  ["Glyphs", String(drawn.length)],
+  ["Glyphs", String(glyphTotal)],
   ...(meta.languages.length ? ([["Languages", String(meta.languages.length)]] as [string, string][]) : []),
   ["Licence", "SIL OFL 1.1"],
   ["Version", meta.version],

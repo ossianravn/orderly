@@ -1,6 +1,6 @@
 ---
 import SectionHead from "./SectionHead.astro";
-import { drawn, files, kb, meta, repo } from "../lib/data";
+import { files, glyphTotal, kb, meta, repo } from "../lib/data";
 ---
 
 <section id="colophon" class="sec" aria-labelledby="colophon-h">
@@ -55,7 +55,7 @@ import { drawn, files, kb, meta, repo } from "../lib/data";
     </div>
   </div>
   <footer class="foot grid">
-    <p class="main label">Orderly {meta.version}, {drawn.length} glyphs. Set in Orderly.</p>
+    <p class="main label">Orderly {meta.version}, {glyphTotal} glyphs. Set in Orderly.</p>
   </footer>
 </section>
 
