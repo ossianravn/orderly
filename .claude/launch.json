@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "proofs",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "orderly", "serve"],
+      "port": 4813
+    },
+    {
+      "name": "site-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "site", "run", "dev", "--", "--port", "4811"],
+      "port": 4811
+    },
+    {
+      "name": "site-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "site", "run", "preview", "--", "--port", "4812"],
+      "port": 4812
+    }
+  ]
+}

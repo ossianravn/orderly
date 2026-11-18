@@ -226,5 +226,15 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 0 (pipeline proof) landed (Claude Opus 5.5, implementer). `uv` environment with pinned
+  versions, the generator skeleton in `sources/orderly/`, both proof tools (outline sheets from the generator with
+  skia; browser proofs of the compiled font with Playwright and Chrome on port 4813), `OFL.txt`, `.gitattributes`,
+  `.claude/launch.json`, [production](production.md). `H O n o` of the Regular Display master compile with fontc
+  2.0.1 to `fonts/static/OrderlyDisplay-Regular.ttf` with `uv run orderly build`. Checked: two builds give the same
+  bytes; the outline sheet and the browser proof (200 to 16 px, light and dark) were looked at;
+  `fontTools.varLib.interpolatable` finds no problem between the master and a throwaway light master, and the
+  two-master designspace compiles to a variable font. Open: the QA tool (fontspector) is not installed yet; see
+  production.
+
 - 2026-11-18: Plan, design brief and AGENTS.md written (Claude Fable 5.2, planner and reviewer). Repository cloned
   from GitHub. Implementation is delegated phase by phase to Claude Opus 5.5.

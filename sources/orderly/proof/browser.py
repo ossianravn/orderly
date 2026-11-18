@@ -1,0 +1,138 @@
+"""Browser proofs of the compiled font: HTML pages served on port 4813 and screenshotted by a real browser engine
+(Playwright driving the installed Chrome or Edge, else Playwright's Chromium), light and dark, to proofs/browser/.
+"""
+
+from __future__ import annotations
+
+import functools
+import html
+import http.server
+import threading
+from pathlib import Path
+
+from ..build import BUILD, FONTS, ROOT
+from .text import CTRL_LC, CTRL_UC, DANISH, ENGLISH, WORDS, spacing_strings
+
+PORT = 4813
+PAGES = BUILD / "proof-pages"
+OUT = ROOT / "proofs" / "browser"
+FONT_FILE = FONTS / "static" / "OrderlyDisplay-Regular.ttf"
+
+CSS = """
+@font-face { font-family: Orderly; src: url('/fonts/static/OrderlyDisplay-Regular.ttf?v=%(v)s'); }
+:root { color-scheme: light dark; --paper: #f6f7f9; --ink: #16171a; --mute: #8a8f98; --rule: #d9dce2; }
+@media (prefers-color-scheme: dark) { :root { --paper: #141518; --ink: #eceef2; --mute: #7d828c; --rule: #2c2f35; } }
+body { margin: 0; padding: 32px 40px; background: var(--paper); color: var(--ink); font-family: Orderly; }
+.l { font: 12px/1.2 system-ui, sans-serif; color: var(--mute); margin: 18px 0 4px; }
+.r { border-top: 1px solid var(--rule); margin: 22px 0 8px; }
+p { margin: 0; max-width: 34em; }
+.w { white-space: nowrap; line-height: 1.15; }
+"""
+
+
+def _page(title: str, body: str) -> str:
+    v = int(FONT_FILE.stat().st_mtime) if FONT_FILE.exists() else 0
+    return (f"<!doctype html><html><head><meta charset='utf-8'><title>{title}</title><style>{CSS % {'v': v}}"
+            f"</style></head><body>{body}</body></html>")
+
+
+def _line(text: str, px: int) -> str:
+    return f"<div class='l'>{px} px</div><div class='w' style='font-size:{px}px'>{html.escape(text)}</div>"
+
+
+def pages() -> dict[str, str]:
+    out = {}
+    body = "".join(_line(t, px) for t, px in (("HOno", 200), (f"{CTRL_LC} {CTRL_UC}", 96), (f"{CTRL_LC} {CTRL_UC}", 48),
+                                               (f"{CTRL_LC} {CTRL_UC}", 24), (f"{CTRL_LC} {CTRL_UC}", 16)))
+    out["control"] = _page("control", body)
+    body = ""
+    for px in (200, 96, 48):
+        body += "".join(_line(w, px) for w in WORDS[:4])
+    for px in (32, 24, 16):
+        body += "".join(_line(w, px) for w in WORDS)
+    out["words"] = _page("words", body)
+    body = ""
+    for px in (200, 96):
+        body += "".join(_line(w, px) for w in WORDS[4:])
+    out["words-nordic"] = _page("words-nordic", body)
+    body = ""
+    for px in (24, 20, 16, 13, 11):
+        for text in (DANISH, ENGLISH):
+            body += f"<div class='l'>{px} px</div><p style='font-size:{px}px;line-height:1.45'>{html.escape(text)}</p>"
+    out["paragraph"] = _page("paragraph", body)
+    lc = "abcdefghijklmnopqrstuvwxyzæøå"
+    uc = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ"
+    fig = "0123456789.,:;!?-'\"()/&"
+    body = "<div class='l'>36 px</div>" + "".join(
+        f"<div class='w' style='font-size:36px'>{html.escape(s)}</div>"
+        for s in spacing_strings(lc, True) + spacing_strings(uc, False) + spacing_strings(fig, False))
+    out["spacing"] = _page("spacing", body)
+    body = "".join(_line(s, 120) for s in (lc[:15], lc[15:], uc[:13], uc[13:], fig))
+    out["charset"] = _page("charset", body)
+    return out
+
+
+class _Quiet(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args) -> None:
+        pass
+
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
+
+def _server() -> http.server.ThreadingHTTPServer:
+    handler = functools.partial(_Quiet, directory=str(ROOT))
+    return http.server.ThreadingHTTPServer(("127.0.0.1", PORT), handler)
+
+
+def write_pages() -> list[str]:
+    PAGES.mkdir(parents=True, exist_ok=True)
+    names = []
+    for name, doc in pages().items():
+        (PAGES / f"{name}.html").write_text(doc, encoding="utf-8")
+        names.append(name)
+    return names
+
+
+def serve_forever() -> None:
+    write_pages()
+    print(f"proof pages at http://127.0.0.1:{PORT}/build/proof-pages/")
+    _server().serve_forever()
+
+
+def _launch(p):
+    for channel in ("chrome", "msedge", None):
+        try:
+            return p.chromium.launch(channel=channel) if channel else p.chromium.launch()
+        except Exception:  # noqa: BLE001 - try the next engine
+            continue
+    raise RuntimeError("no Chromium-based browser found; run `uv run playwright install chromium`")
+
+
+def render(only: list[str] | None = None, width: int = 1600) -> None:
+    from playwright.sync_api import sync_playwright
+
+    names = [n for n in write_pages() if only is None or n in only]
+    srv = _server()
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    OUT.mkdir(parents=True, exist_ok=True)
+    try:
+        with sync_playwright() as p:
+            browser = _launch(p)
+            print(f"browser: {browser.browser_type.name} {browser.version}")
+            for scheme in ("light", "dark"):
+                ctx = browser.new_context(viewport={"width": width, "height": 900}, color_scheme=scheme,
+                                          device_scale_factor=1)
+                page = ctx.new_page()
+                for n in names:
+                    page.goto(f"http://127.0.0.1:{PORT}/build/proof-pages/{n}.html")
+                    page.evaluate("document.fonts.ready.then(() => document.fonts.size)")
+                    page.wait_for_timeout(150)
+                    out = OUT / f"{n}-{scheme}.png"
+                    page.screenshot(path=str(out), full_page=True)
+                    print(f"wrote {out.relative_to(ROOT)}")
+                ctx.close()
+            browser.close()
+    finally:
+        srv.shutdown()

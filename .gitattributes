@@ -1,0 +1,10 @@
+# Text is stored with LF line endings everywhere.
+* text=auto eol=lf
+
+# Font binaries and images are binary: no line-ending conversion, no textual diff.
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.png binary
+*.jpg binary
