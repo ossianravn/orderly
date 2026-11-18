@@ -235,8 +235,8 @@ Newest first. One entry per phase or review: date, what landed, how it was check
   a two-master variable font; two builds give the same bytes. Open, and the implementer's weak spots: `I` and `l`
   differ only by height (the `ss02` l is Phase 4); `rn` and `cl` close up at 11 to 13 px in this Display master;
   `fl` and `ff` nearly touch (kerning, Phase 4); `T` and `J` leave holes beside `S` and `H` (kerning); the `s S`
-  spine is long and straight for a geometric face; `æ` is a little dark where the e meets the stem; the `6 9` loop
-  stroke meets its round in a sharp crotch on the left.
+  spine is long and straight for a geometric face; `æ` is a little dark where the e meets the stem; the tall
+  stroke of `6 9` meets its round in a sharp crotch on the left.
 
   Implementer's proposals for the reviewer, not decided:
   - Read the brief's capital widths as advance widths over the cap height. Settled: H 0.97, N 1.02, U 0.96, A V
