@@ -114,7 +114,7 @@ REGULAR_DISPLAY_PARAMS = {
     "Q.x0": 0.36, "Q.y0": 0.2,  # Q tail, upper end: x / O radius from the centre, y / cap height
     "Q.x1": 0.84, "Q.y1": -0.1,  # Q tail, lower end
     "D.round": 1.0,
-    "r.cut": 36,  # r's arm ends this many degrees past the top of the n's counter
+    "r.cut": 32,  # r's arm ends this many degrees past the top of the n's counter
     "dot.drop": 6,  # i j dots: top this far under the ascender
     "hook.ry": 0.85,  # hooks of t f j: vertical / horizontal outer radius
     "j.rx": 2.3,  # j hook's outer horizontal radius / stem
@@ -148,7 +148,7 @@ REGULAR_DISPLAY_PARAMS = {
     "3.mid": 0.55, "3.upper": 0.88, "3.inset": 0.02, "3.waist": 0.3,  # 3: middle height, upper round, waist end
     "4.over": 0.55, "4.bar": 0.2,  # 4: crossbar beyond the stem / stem; crossbar bottom / cap
     "5.stem": 0.06, "5.bowl": 0.6, "5.top": 0.92,  # 5: stem left / width; round top / cap; top bar / width
-    "6.bowl": 0.62, "6.tall": 1.0, "6.ap": 42,  # 6 9: round height / cap; tall stroke radius / half width; cut
+    "6.bowl": 0.62, "6.tall": 1.12, "6.ap": 42,  # 6 9: round height / cap; tall stroke radius / half width; cut
     "7.foot": 0.2,  # 7 diagonal's foot / width
     "comma.x0": 0.18, "comma.x1": 0.22, "comma.len": 1.6, "comma.w": 0.62, "comma.thin": 0.42,  # / dot
     "excl.w": 0.95, "excl.gap": 0.55,  # ! ?: stroke / stem; gap above the dot / dot
