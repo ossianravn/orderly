@@ -4,6 +4,7 @@
   sheets [glyphs]    outline sheets from the generator -> proofs/sheets/*.png
   proof [pages]      browser proofs of the compiled font -> proofs/browser/*.png
   grid names...      named glyphs filled, one row per master -> proofs/sheets/grid.png
+  fontdiff [paths]   built fonts against the committed ones, table by table
   serve              serve the proof pages on port 4813
   check              interpolation check of the six masters; instantiate every corner
   languages          (qa group) check every listed language with hyperglot
@@ -39,6 +40,10 @@ def main() -> None:
         from .proof.grid import grid
 
         grid(rest)
+    if cmd == "fontdiff":
+        from .fontdiff import main as fontdiff
+
+        fontdiff(rest)
     if cmd == "serve":
         from .proof.browser import serve_forever
 

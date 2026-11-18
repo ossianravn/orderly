@@ -30,6 +30,7 @@ jobs:
             echo "fonts/ is out of date with the sources. Run 'uv run orderly build' and commit fonts/:"
             echo "$changes"
             git diff --stat -- fonts/
+            uv run --frozen orderly fontdiff
             exit 1
           fi
 
