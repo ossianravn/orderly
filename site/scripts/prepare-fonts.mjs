@@ -1,10 +1,12 @@
 // Copies what the site serves from ../fonts into public/ (git-ignored) and packs the outlines
 // for the browser. Runs before dev and build. The font build owns ../fonts; this only reads it.
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, statSync, rmSync } from "node:fs";
+import { relative, resolve } from "node:path";
+import { zipSync } from "fflate";
 
 const site = process.cwd();
-const fonts = resolve(site, "../fonts");
+// ORDERLY_FONTS points at another fonts folder (checks only); the default is the font build's.
+const fonts = resolve(site, process.env.ORDERLY_FONTS ?? "../fonts");
 const out = resolve(site, "public");
 
 const need = [
@@ -58,3 +60,41 @@ const packed = {
 };
 writeFileSync(resolve(out, "data/glyphs.json"), JSON.stringify(packed));
 console.log(`prepare-fonts: ${Object.keys(glyphs).length} glyphs, version ${meta.version}`);
+
+// The family download: one zip of fonts/variable, fonts/static and fonts/web with the licence and a
+// short readme, made only once the font build writes static instances. Same input, same bytes.
+const downloads = resolve(out, "downloads");
+rmSync(downloads, { recursive: true, force: true });
+if (existsSync(resolve(fonts, "static"))) {
+  const when = new Date("2026-11-18T00:00:00Z");
+  const files = {};
+  const add = (dir) => {
+    for (const name of readdirSync(dir).sort()) {
+      const p = resolve(dir, name);
+      if (statSync(p).isDirectory()) add(p);
+      else files[`Orderly/${relative(fonts, p).replaceAll("\\", "/")}`] = [readFileSync(p), { mtime: when }];
+    }
+  };
+  for (const d of ["variable", "static", "web"]) if (existsSync(resolve(fonts, d))) add(resolve(fonts, d));
+  files["Orderly/OFL.txt"] = [readFileSync(resolve(site, "../OFL.txt")), { mtime: when }];
+  const range = (tag) => {
+    const a = meta.axes.find((x) => x.tag === tag);
+    return `${a.min} to ${a.max}`;
+  };
+  const readme = [
+    `Orderly ${meta.version}`,
+    "",
+    `A geometric grotesk with a weight axis (${range("wght")}) and an optical-size axis (${range("opsz")}).`,
+    "",
+    "variable/  the variable font, for apps that support variable fonts",
+    "static/    named instances, for apps that do not",
+    "web/       WOFF2 files for websites",
+    "",
+    "Fonts: SIL Open Font License 1.1 (OFL.txt). Source: https://github.com/ossianravn/orderly",
+    "",
+  ].join("\n");
+  files["Orderly/README.txt"] = [new TextEncoder().encode(readme), { mtime: when }];
+  mkdirSync(downloads, { recursive: true });
+  writeFileSync(resolve(downloads, "orderly.zip"), zipSync(files, { level: 9 }));
+  console.log(`prepare-fonts: orderly.zip with ${Object.keys(files).length} files`);
+}

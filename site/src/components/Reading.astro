@@ -1,10 +1,10 @@
 ---
 import SectionHead from "./SectionHead.astro";
 import { count, meta } from "../lib/data";
-import { texts, tiers } from "../lib/texts";
+import { order, texts, tiers } from "../lib/texts";
 
 const listed = new Map(meta.languages.map((l) => [l.tag, l.name]));
-const tags = Object.keys(texts).filter((t) => !listed.size || listed.has(t));
+const tags = order.filter((t) => texts[t] && (!listed.size || listed.has(t)));
 const items = tags.map((tag, i) => ({
   tag,
   name: listed.get(tag) ?? tag,
@@ -28,11 +28,11 @@ const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).fi
         rows.map((row) => (
           <div class="tier" style={`--cols: ${row.length}`}>
             {row.map((it) => (
-              <article lang={it.tag} class="para">
+              <article class="para">
                 <p class="label">
                   {it.name} <span class="num">{it.px} px</span>
                 </p>
-                <p class={`spec t${it.px}`}>{it.text}</p>
+                <p lang={it.tag} class={`spec t${it.px}`}>{it.text}</p>
               </article>
             ))}
           </div>

@@ -1,5 +1,5 @@
 // Build-time access to the font build's data. Everything the page states comes from here.
-import { readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Packed } from "./glyphs";
 
@@ -10,6 +10,12 @@ export interface Feature {
   tag: string;
   name: string;
   sample: string;
+  /** Optional, from the font build: what the feature is for, whether it is on by default, a language. */
+  group?: string;
+  default?: boolean;
+  lang?: string;
+  /** Tags this feature is shown with (pnum with tnum). */
+  with?: string[];
 }
 
 export interface Language {
@@ -38,6 +44,10 @@ export const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 export const files = {
   ttf: { href: `${base}fonts/orderly-variable.ttf`, name: "Orderly[opsz,wght].ttf" },
   woff2: { href: `${base}fonts/orderly.woff2`, name: "Orderly[opsz,wght].woff2" },
+  /** The whole family as one zip; only once the font build writes static instances. */
+  zip: existsSync(resolve(site, "public/downloads/orderly.zip"))
+    ? { href: `${base}downloads/orderly.zip`, name: `Orderly-${meta.version}.zip` }
+    : null,
 };
 
 export function kb(path: string): string {

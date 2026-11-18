@@ -1,0 +1,145 @@
+---
+// One OpenType feature: its sample set without and with it, the characters it changes marked.
+import type { Shown } from "../lib/featuregroups";
+
+interface Props {
+  item: Shown;
+  size?: "normal" | "large" | "compact";
+}
+const { item, size = "normal" } = Astro.props;
+const ffs = (tag: string, on: boolean) => `font-feature-settings: "${tag}" ${on ? 1 : 0}`;
+// Folded features with their own sample get a line; one that shares the host's sample is only named.
+const lines = item.folded.filter((f) => f.sample !== item.sample);
+const tags = [item.tag, ...item.folded.map((f) => f.tag)].join(", ");
+---
+
+<article class:list={["feat", size]} data-feature={item.tag}>
+  <header class="head">
+    <h4 class="name">{item.name}</h4>
+    <p class="label tags">{tags}</p>
+  </header>
+  {
+    item.diff.changed ? (
+      <div class="pair">
+        <p class="line">
+          <span class="label state">Off</span>
+          <span class="sample spec" lang={item.lang} style={ffs(item.tag, false)}>
+            {item.sample}
+          </span>
+        </p>
+        <p class="line">
+          <span class="label state">On</span>
+          <span class="sample spec" lang={item.lang} style={ffs(item.tag, true)}>
+            {item.diff.parts.map((p) => (p.changed ? <mark>{p.t}</mark> : p.t))}
+          </span>
+        </p>
+      </div>
+    ) : (
+      <p class="line">
+        <span class="label state">On</span>
+        <span class="sample spec" lang={item.lang} style={ffs(item.tag, true)}>
+          {item.sample}
+        </span>
+      </p>
+    )
+  }
+  {
+    lines.length > 0 && (
+      <dl class="folded">
+        {lines.map((f) => (
+          <div>
+            <dt class="label">{f.name}</dt>
+            <dd class="spec" style={ffs(f.tag, true)}>
+              {f.sample}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+</article>
+
+<style>
+  .feat {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--s2);
+    display: grid;
+    gap: var(--s2);
+    align-content: start;
+    min-width: 0;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--s2);
+  }
+  .name {
+    font-size: var(--f-body);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .tags {
+    color: var(--mark);
+  }
+  .pair {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .line {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+  .sample {
+    font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+  mark {
+    background: none;
+    color: var(--mark);
+  }
+  .folded {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1) var(--s4);
+    padding-left: 2.4rem;
+  }
+  .folded div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s2);
+  }
+  .folded dd {
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+  .large {
+    grid-column: 1 / -1;
+  }
+  .large .sample {
+    font-size: clamp(1.7rem, 5vw, 4.25rem);
+    line-height: 1.15;
+  }
+  .compact {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: var(--gap);
+  }
+  .compact .pair {
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    column-gap: var(--s5);
+  }
+  .compact .sample {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 760px) {
+    .compact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .compact .pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -41,7 +41,8 @@ export function initCharacters(): void {
     if (ck !== lastCells) {
       lastCells = ck;
       for (const el of cells.querySelectorAll<HTMLElement>("[data-draw]")) {
-        el.innerHTML = cellDrawing(data, el.dataset.draw!, { wght: Math.round(cellLoc.wght), opsz: Math.round(cellLoc.opsz) });
+        const at = { wght: Math.round(cellLoc.wght), opsz: Math.round(cellLoc.opsz) };
+        el.innerHTML = cellDrawing(data, el.dataset.draw!, at, el.dataset.mark !== undefined);
       }
     }
   };

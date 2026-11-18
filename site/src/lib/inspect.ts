@@ -72,8 +72,11 @@ export function inspect(data: Packed, name: string, loc: Location): Inspected | 
   return { body, facts };
 }
 
-/** A small drawing for a grid cell, for glyphs that cannot be typed (marks, alternates). */
-export function cellDrawing(data: Packed, name: string, loc: Location): string {
+/**
+ * A drawing for a grid cell, for glyphs that cannot be typed (marks, alternates). A combining mark
+ * sits on a dotted circle the height of the letters it goes on, the way it is shown in character charts.
+ */
+export function cellDrawing(data: Packed, name: string, loc: Location, mark = false): string {
   const s = shapeAt(data, name, loc);
   if (!s) return "";
   let xMin = Infinity,
@@ -82,7 +85,14 @@ export function cellDrawing(data: Packed, name: string, loc: Location): string {
     xMin = Math.min(xMin, c.pts[i * 2]);
     xMax = Math.max(xMax, c.pts[i * 2]);
   }
-  const w = Math.max(s.advance, xMax - xMin, 1);
+  if (!s.contours.length) xMin = xMax = 0;
   const dx = Math.round((1000 - (xMax + xMin)) / 2);
-  return `<svg viewBox="0 0 1000 1000" aria-hidden="true" data-w="${w}"><path transform="translate(${dx} 800) scale(1 -1)" d="${shapePath(s)}"/></svg>`;
+  let base = "";
+  if (mark) {
+    const h = name.endsWith(".case") ? data.metrics.capHeight : numberAt(data, "xHeight", loc);
+    base = `<circle class="base" cx="500" cy="${Math.round(800 - h / 2)}" r="${Math.round(h / 2 - 20)}"/>`;
+  }
+  // Marks reach above the cap height and below the baseline; their box is taller so none is cut off.
+  const box = mark ? "-100 -160 1200 1200" : "0 0 1000 1000";
+  return `<svg viewBox="${box}" aria-hidden="true">${base}<path transform="translate(${dx} 800) scale(1 -1)" d="${shapePath(s)}"/></svg>`;
 }

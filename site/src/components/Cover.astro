@@ -47,8 +47,15 @@ const facts: [string, string][] = [
         Orderly is a geometric grotesk drawn in code: one circle, one stem, and two axes, weight and optical size.
       </p>
       <div class="actions">
-        <a class="button primary" href={files.ttf.href} download={files.ttf.name}>Download Orderly</a>
-        <span class="label">Variable TTF, {kb("fonts/orderly-variable.ttf")}</span>
+        {
+          files.zip ? (
+            <a class="button primary" href={files.zip.href} download={files.zip.name}>Download Orderly</a>
+            <span class="label">Family, ZIP, {kb("downloads/orderly.zip")}</span>
+          ) : (
+            <a class="button primary" href={files.ttf.href} download={files.ttf.name}>Download Orderly</a>
+            <span class="label">Variable TTF, {kb("fonts/orderly-variable.ttf")}</span>
+          )
+        }
         <a class="source" href={repo}>Source on GitHub</a>
       </div>
       <dl class="facts">
@@ -155,15 +162,27 @@ const facts: [string, string][] = [
     .top {
       grid-template-columns: minmax(0, 1fr);
     }
+    /* One scrolling row on phones; the fade at the right edge says there is more. */
     nav {
       margin-inline: calc(-1 * var(--m));
       overflow-x: auto;
       scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+      mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+    }
+    nav::-webkit-scrollbar {
+      display: none;
     }
     nav ul {
       flex-wrap: nowrap;
       justify-content: flex-start;
-      padding-inline: var(--m);
+      padding-inline: var(--m) 3rem;
+      width: max-content;
+    }
+    nav a {
+      display: inline-block;
+      padding-block: 0.35rem;
     }
     nav li {
       flex: none;

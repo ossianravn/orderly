@@ -25,6 +25,14 @@ import { drawn, files, kb, meta, repo } from "../lib/data";
       <dl class="links">
         <div>
           <dt class="label">Download</dt>
+          {
+            files.zip && (
+              <dd>
+                <a href={files.zip.href} download={files.zip.name}>Family, ZIP</a>
+                <span class="size">{kb("downloads/orderly.zip")}</span>
+              </dd>
+            )
+          }
           <dd>
             <a href={files.ttf.href} download={files.ttf.name}>Variable TTF</a>
             <span class="size">{kb("fonts/orderly-variable.ttf")}</span>

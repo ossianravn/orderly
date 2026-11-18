@@ -1,139 +1,69 @@
 ---
 import SectionHead from "./SectionHead.astro";
+import FeatureBlock from "./FeatureBlock.astro";
 import { count, meta } from "../lib/data";
+import { groupFeatures } from "../lib/featuregroups";
 
-// Features the font build lists with a sample; layout-engine features without one are left out.
-const shown = meta.features.filter((f) => f.sample && f.sample.trim());
-// Features a browser applies by itself start switched on.
-const byDefault = new Set(["kern", "mark", "mkmk", "ccmp", "locl", "liga", "calt", "clig", "rlig"]);
+// Features the font build lists with a sample, grouped; layout-engine features without one are left out.
+const groups = groupFeatures(meta.features);
+const total = groups.reduce((n, g) => n + g.items.reduce((m, i) => m + 1 + i.folded.length, 0), 0);
 ---
 
 <section id="features" class="sec" aria-labelledby="features-h">
   <SectionHead
     id="features-h"
     title="Features"
-    lead={shown.length
-      ? `${count(shown.length, "OpenType feature")}, each beside an example.`
+    lead={total
+      ? `${count(total, "OpenType feature")}, each example set without the feature and with it.`
       : "No OpenType features in this build yet."}
   />
-  <ul class="list">
-    {
-      shown.map((f) => {
-        const on = byDefault.has(f.tag);
-        return (
-          <li class="feat grid" data-feature={f.tag}>
-            <div class="side">
-              <p class="label tag">{f.tag}</p>
-              <p class="fname">{f.name}</p>
-            </div>
-            <div class="main row">
-              <p class="sample spec" style={`font-feature-settings: "${f.tag}" ${on ? 1 : 0}`}>{f.sample}</p>
-              <label class="switch">
-                <input type="checkbox" role="switch" checked={on} data-tag={f.tag} />
-                <span class="visually-hidden">{f.name}</span>
-                <span class="track" aria-hidden="true"></span>
-              </label>
-            </div>
-          </li>
-        );
-      })
-    }
-  </ul>
+  {
+    groups.map((g) => (
+      <div class="group grid" data-group={g.id}>
+        <h3 class="side gname">{g.title}</h3>
+        <div class:list={["main", g.id === "always" ? "list" : "blocks"]}>
+          {g.items.map((item) =>
+            g.id === "always" ? (
+              <FeatureBlock item={item} size={item.tag === "kern" ? "large" : "compact"} />
+            ) : (
+              <FeatureBlock item={item} />
+            ),
+          )}
+        </div>
+      </div>
+    ))
+  }
 </section>
 
 <style>
   .sec {
     padding-top: var(--s7);
   }
-  .feat {
-    position: relative;
-    padding-block: var(--s3);
-    align-items: center;
+  .group + .group {
+    margin-top: var(--s6);
   }
-  .feat::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: var(--m);
-    right: var(--m);
-    border-top: 1px solid var(--rule);
+  .gname {
+    font-size: var(--f-body);
+    font-weight: 600;
+    line-height: 1.3;
+    padding-top: var(--s2);
   }
-  .tag {
-    color: var(--mark);
+  .blocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+    gap: var(--s5) var(--gap);
   }
-  .fname {
-    font-size: var(--f-small);
-  }
-  .row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .list {
+    display: grid;
     gap: var(--s4);
   }
-  .sample {
-    font-size: clamp(1.75rem, 4.2vw, 3.5rem);
-    line-height: 1.15;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-  .switch {
-    position: relative;
-    flex: none;
-    width: 3rem;
-    height: 1.75rem;
-    cursor: pointer;
-  }
-  .switch input {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .track {
-    position: absolute;
-    inset: 0;
-    border-radius: 1rem;
-    background: var(--track);
-    transition: background-color 200ms ease;
-    pointer-events: none;
-  }
-  .track::after {
-    content: "";
-    position: absolute;
-    top: 0.15rem;
-    left: 0.15rem;
-    width: 1.45rem;
-    height: 1.45rem;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
-    transition: transform 220ms var(--ease-out);
-  }
-  .switch input:checked + span + .track {
-    background: var(--ink);
-  }
-  .switch input:checked + span + .track::after {
-    transform: translateX(1.25rem);
-  }
-  .switch input:focus-visible + span + .track {
-    outline: 2px solid var(--mark);
-    outline-offset: 2px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .track,
-    .track::after {
-      transition: none;
-    }
-  }
   @media (max-width: 760px) {
-    .feat {
-      row-gap: var(--s2);
+    .gname {
+      padding-top: 0;
+      margin-bottom: var(--s2);
     }
-    .side {
-      display: flex;
-      gap: var(--s2);
-      align-items: baseline;
+    .group + .group {
+      margin-top: var(--s5);
     }
   }
 </style>
