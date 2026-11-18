@@ -2,7 +2,7 @@
 
 All notable changes to the Orderly fonts. Versions follow the font's version (`head.fontRevision`, name ID 5).
 
-## 1.000 (unreleased)
+## 1.000 (2026-11-18)
 
 The first complete version of the planned scope: one upright family with weight and optical-size axes.
 

@@ -66,7 +66,9 @@ console.log(`prepare-fonts: ${Object.keys(glyphs).length} glyphs, version ${meta
 const downloads = resolve(out, "downloads");
 rmSync(downloads, { recursive: true, force: true });
 if (existsSync(resolve(fonts, "static"))) {
-  const when = new Date("2026-11-18T00:00:00Z");
+  // fflate writes the zip's DOS time from local-time getters, so give it local midnight: every time
+  // zone then stores 2026-11-18 00:00 and the zip's bytes match on CI and on any machine.
+  const when = new Date(2026, 10, 18);
   const files = {};
   const add = (dir) => {
     for (const name of readdirSync(dir).sort()) {

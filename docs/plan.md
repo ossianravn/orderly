@@ -14,7 +14,8 @@ Decided by the maintainer on 2026-11-18 unless marked otherwise.
 
 | Topic         | Decision                                                                                                                                                                       |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Name          | Orderly. A web search found no typeface of that name (closest: "Order" by Typodermic). Phase 5 repeats the check against font catalogues.                                      |
+| Name          | Orderly, kept after the Phase 5 check: two small fonts share the name (a hand-lettered script on dafont, a pixel font on itch.io); Google Fonts, Fontsource, Adobe Fonts, MyFonts and Fontspring list none. |
+| Release       | Version 1.000 is tagged `v1.000` and published as a GitHub Release with the family zip once the site is live.                                                                 |
 | Family scope  | One upright variable font with two axes: weight (`wght`) and optical size (`opsz`). Italic is a later round.                                                                   |
 | Licence       | Fonts: SIL Open Font License 1.1 (`OFL.txt`). Code and website: MIT (`LICENSE`).                                                                                               |
 | Hosting       | GitHub Pages, deployed by a GitHub Action on push to `main`, at `https://ossianravn.github.io/orderly/`.                                                                       |
@@ -240,6 +241,29 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 ## Progress log
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
+
+- 2026-11-18: Phase 6 (website) at its gate, and release 1.000 (Claude Opus 5.5). Landed: the Astro 7 site in
+  `site/`, static, base `/orderly/`, with the ten sections in the brief's order and a fixed control bar (weight,
+  optical size auto or manual, appearance). Sizes, Construction and the glyph inspector draw the masters' outlines
+  from `fonts/data/outlines.json` and interpolate them in the browser. Every number comes from `orderly.json`.
+  Also: a phone pass down to 320 px with worst-case content; keyboard order (the bar before the specimens); the
+  Features section grouped (Figures, Alternates, Capitals, Always on), each example shown off and on; the family
+  zip download. `.github/workflows/pages.yml` builds `site/` and deploys it on every push to `main`. The
+  maintainer said "deploy it", and Pages was enabled with Actions as its source. The zip's timestamp is now local
+  midnight, because fflate writes zip times in local time, so the zip has the same bytes in every time zone (it
+  differed by one hour between CI and this machine). The maintainer kept the name and approved the release. The
+  release is `v1.000` with `Orderly-1.000.zip` attached.
+
+  Checked: `astro check` 0 errors, `npm run build` passes; the "Pages" run succeeds. The live `index.html` and
+  `data/glyphs.json` are byte-identical to a local build, and so is the zip, with the same 43 entries and CRCs. The
+  live page loads only from `ossianravn.github.io`: `fonts/orderly.woff2` 200 at load, and `data/glyphs.json` 200
+  when a drawing first comes near. The download is `Orderly-1.000.zip` (1.1 MB). Looked at, live: the cover and
+  Construction at 1440 px in light (weight 900 redraws the drawings with the Black stem of 160), Characters with
+  the inspector in dark, the cover in dark and In use in light at 390 px; no sideways scroll at either width.
+  Earlier in the phase, every section at 1440 and 390 px, light and dark. Lighthouse (mobile, on the local preview
+  of the same build): 100 in every category with `--disable-gpu`; default flags score about 73 on this machine,
+  and a blank page scores the same. Not re-run on the live URL: this session's permission classifier refused the
+  command. Not covered: a real phone, Safari, Firefox, a screen reader.
 
 - 2026-11-18: Polish pass after the Phase 4 and 5 review (Claude Opus 5.5). The heavy Thin `Ω` the reviewer saw
   was another font: the proof (and most input) uses U+03A9, the glyph was encoded only as U+2126, which shapers

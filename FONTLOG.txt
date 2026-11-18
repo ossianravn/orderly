@@ -33,7 +33,7 @@ Specimen: https://ossianravn.github.io/orderly/
 ChangeLog
 ---------
 
-18 November 2026 (Ossian Ravn) Orderly version 1.000 (unreleased)
+18 November 2026 (Ossian Ravn) Orderly version 1.000
 - First complete version: variable font, eighteen statics, web fonts, the character set and features above.
   See CHANGELOG.md for details.
 
