@@ -60,8 +60,7 @@ def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAM
         for k, (x, y) in g.anchors.items():
             ug.appendAnchor({"name": k, "x": x, "y": y})
     font.glyphOrder = order
-    font.lib["public.openTypeCategories"] = {n: ("mark" if g.zone == "mark" else "base") for n, g in glyphs.items()
-                                             if g.unicodes or g.zone == "mark"}
+    font.lib["public.openTypeCategories"] = {n: ("mark" if g.zone == "mark" else "base") for n, g in glyphs.items()}
     if features:
         font.features.text = features
     if kerning:

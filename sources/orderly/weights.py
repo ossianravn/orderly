@@ -40,7 +40,7 @@ def derived_widths(base: Master, stem: float, cstem: float, k: float, extra: dic
 
 
 # Black letters whose counters or arms need more room than the stroke count gives them.
-BLACK_EXTRA = {"a": 36, "a.ss01": 120, "r": 24, "two": 56, "three": 70, "five": 56, "four": 40, "question": 30,
+BLACK_EXTRA = {"a": 36, "a.ss01": -40, "r": 24, "two": 56, "three": 70, "five": 56, "four": 40, "question": 30,
                "s": 16, "S": 16}
 
 
@@ -55,6 +55,7 @@ THIN_PARAMS = {
     "Q.top": 0.95, "a2.bar": 1.0, "s.spinew": 1.08, "s.thin": 0.95,
     "join.deep": 0.5,
     "hook.ap": 40,  # a shorter tail, so the Thin t f j hooks do not end in a curl that reads as a dot
+    "small.heavy": 1.45, "brace.r": 4.0,
 }
 
 THIN_DISPLAY = replace(
@@ -77,7 +78,7 @@ BLACK_PARAMS = {
     "ring.w": 0.62, "ring.uc": 0.36, "ring.lc": 0.46, "ring.gap": 0.045,
     "slash.weight": 0.8, "1.flagw": 0.9, "paren.w": 0.92,
     "s.thin": 0.88, "s.spinew": 0.94, "s.side": 0.96, "s.steep": 0.5,
-    "Q.top": 0.6, "a2.bar": 0.74, "a2.bowl": 0.52, "B.midw": 0.82, "P.round": 1.4, "B.round": 1.4,
+    "Q.top": 0.6, "a2.bar": 0.74, "a2.bowl": 0.6, "B.midw": 0.82, "P.round": 1.4, "B.round": 1.4,
     "dot.drop": 0,
     "join.deep": 0.075,
     "e.barw": 0.8, "e.ap": 44, "g.ry": 0.62, "r.cut": 46, "fig.ap": 8,
@@ -86,6 +87,7 @@ BLACK_PARAMS = {
     "q.w": 0.8, "q.ry": 0.86, "q.stem": 0.5, "excl.gap": 0.32, "amp.w": 0.8, "amp.loopk": 0.72,
     "amp.loop": 0.24, "amp.loopx": 0.38, "amp.loopw": 1.08, "amp.bowl": 0.6,
     "A.bar": 0.3,
+    "small.heavy": 1.1, "guil.size": 1.2, "guil.w": 0.74, "brace.r": 1.0,
 }
 
 BLACK_DISPLAY = replace(

@@ -127,7 +127,7 @@ REGULAR_DISPLAY_PARAMS = {
     "k.armin": 0.1,  # k arm's top stops this many stems short of the leg's foot
     "mark.case": 0.82, "mark.gap": 0.1, "mark.h": 0.26, "mark.w": 0.92, "mark.dot": 0.9,  # marks
     "mark.hat": 0.48, "mark.dots": 0.2, "mark.ring": 0.34,  # circumflex/caron width, dieresis spread, ring / x-height
-    "math.axis": 0.46, "math.w": 0.72, "math.sb": 0.08,  # math: axis, width, side margin / cap height
+    "math.axis": 0.5, "math.w": 0.72, "math.sb": 0.08,  # math: axis, width, side margin / cap height
     "dash.en": 0.5, "dash.em": 0.92,  # dash lengths / em
     "bar.asc": 0.42, "eth.leave": 25,  # đ ħ bar height in the ascender; ð stem leaves the round at this angle
     "join.notch": 0.04,  # an outer join stays at least this far (/ x-height) inside the stem's end
@@ -178,6 +178,13 @@ REGULAR_DISPLAY_PARAMS = {
     "a2.hook": 0.5, "a2.hookry": 0.8,  # double-storey a: top hook radius / width, vertical / horizontal
     "a2.bowl": 0.6, "a2.bar": 0.92,  # its bowl's top / x-height; the bowl's top stroke / round top
     "8.mid": 0.54, "8.waist": 1.0, "8.upper": 0.9,  # 8: waist height / cap; waist weight / bar; upper width  # D's round: horizontal radius / half the cap height  # hook terminals of t f j g J, degrees past the bottom extreme
+    "small.heavy": 1.3,  # small forms (superiors, ordinals): stroke scale / size scale
+    "tf.sb": 0.075,  # tabular figures: side margin of the widest figure / cap height
+    "guil.size": 1.0, "guil.w": 0.9,  # guillemets: size; stroke / stem
+    "arrow.w": 1.0, "arrow.sb": 0.07,  # arrows: stroke / figure stem; side margin / cap height
+    "brace.r": 1.5, "brace.nose": 0.13,  # braces: turn radius / stem; nose depth / x-height
+    "ss.waist": 0.78,  # ß: the waist's centre / x-height
+    "Omega.open": 62,  # Ω: where the round is cut open, degrees from the foot on its inner edge
 }
 
 REGULAR_DISPLAY = Master(

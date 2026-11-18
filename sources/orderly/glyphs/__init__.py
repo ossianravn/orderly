@@ -46,7 +46,9 @@ def load() -> dict[str, Spec]:
     """Import every glyph module (registration happens on import) and return the registry in drawing order."""
     from . import control, lc_arch, lc_diag, lc_round, lc_stem, uc_bowl, uc_diag, uc_round, uc_straight  # noqa: F401
     from . import figures, figures_round, nordic, punct  # noqa: F401
-    from . import letters_extra, marks, quotes, symbols  # noqa: F401
-    from . import composites  # noqa: F401  (last: composites refer to the glyphs above)
+    from . import letters_extra, marks, quotes, sharp_s, symbols  # noqa: F401
+    from . import arrows, currency, figure_forms, math_letters, math_ops, signs  # noqa: F401
+    from . import composites  # noqa: F401  (composites refer to the glyphs above)
+    from . import forms  # noqa: F401  (last: alternates are made from the composites)
 
     return REGISTRY

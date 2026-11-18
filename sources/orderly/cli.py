@@ -3,6 +3,7 @@
   build              generator -> six UFO masters -> fonts/variable/Orderly[opsz,wght].ttf
   sheets [glyphs]    outline sheets from the generator -> proofs/sheets/*.png
   proof [pages]      browser proofs of the compiled font -> proofs/browser/*.png
+  grid names...      named glyphs filled, one row per master -> proofs/sheets/grid.png
   serve              serve the proof pages on port 4813
   check              interpolation check of the six masters; instantiate every corner
   languages          (qa group) check every listed language with hyperglot
@@ -34,6 +35,10 @@ def main() -> None:
         from .proof.sheets import look
 
         look(rest)
+    if cmd == "grid":
+        from .proof.grid import grid
+
+        grid(rest)
     if cmd == "serve":
         from .proof.browser import serve_forever
 

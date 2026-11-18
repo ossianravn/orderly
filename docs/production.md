@@ -14,6 +14,8 @@ Python runs through `uv`. From the repository root:
 | `uv run orderly sheets [group]`  | Outline sheets per master -> `proofs/sheets/{thin,regular,black}[-text]/`, overlays -> `proofs/sheets/overlay*-*.png`. |
 | `uv run orderly proof [page]`    | Browser proofs of the compiled font, light and dark -> `proofs/browser/*.png`.           |
 | `uv run orderly look n o --text "nnonn"` | Quick look while drawing: named glyphs large with points, strings filled.        |
+| `uv run orderly grid cent yen --text "HHTHH"` | Named glyphs (or strings) filled, one row per master, all six masters -> `proofs/sheets/grid.png`. The fastest way to judge a drawing everywhere. |
+| `uv run --group qa orderly languages` | hyperglot check of every listed language against the compiled font.                |
 | `uv run orderly check`           | Interpolation check of all six masters; instantiates the six weight and size corners.   |
 | `uv run orderly serve`           | Serves the proof pages on port 4813 (also `.claude/launch.json`, configuration `proofs`). |
 | `uv run orderly all`             | Build, sheets and browser proofs.                                                        |
@@ -66,8 +68,52 @@ Ruled by the planner (2026-11-18): no downloaded executables.
 zone (baseline to x-height for lowercase, to cap height otherwise) it measures the outline's distance from the
 glyph's own extreme in that zone, clipped to a depth (`sp_depth`, 3 % of the zone height); the sidebearing makes
 up the difference to a target area (`sp_area`, 0.09 of the zone height squared). Parts outside the zone (the
-hooks of j and f, the tails of g and y) may reach into the sidebearing. `ADJUST` holds hand corrections in units;
-in Phase 1 only J (-15 on the left). Resulting Regular Display values: n 45 | 40, o 34 | 34, H 63 | 63, O 47 | 47.
+hooks of j and f, the tails of g and y) may reach into the sidebearing. `ADJUST` holds hand corrections in units:
+J (-15 left), T (-12 each side, Phase 4). Resulting Regular Display values: n 45 | 40, o 34 | 34, H 63 | 63, O 47 | 47.
+
+Glyphs with a fixed advance instead of area spacing: math signs (one width: 0.72 cap height plus 0.08 each side),
+arrows (their square plus 0.07 each side), tabular figures (`tf.sb`: the widest figure plus 0.62 of the zero's own
+sidebearing each side), the fraction slash (negative sidebearings), spacing accents (0.08 x-height each side), the
+Catalan punt volat. Small forms (numerators, ordinals) are spaced by the area method of the small master
+(`small.py`) and opened by 10 %.
+
+## Kerning
+
+`kerning.py`, class-based, computed per master from the outlines. Two rules:
+
+- **Closing** (`PAIRS`): on scanlines through the pair's zone the gap between the inks is measured; a pair that
+  stays further apart than its sidebearings would bring it (open, slanted or overhanging sides: AV, To, LT, 7.)
+  closes by 0.42 of the difference, capped at 0.16 of the zone height; values under 8 units are dropped.
+- **Clearing** (`OPEN`): pairs that collide outside the zone (`ff fl fi fb fh fk fj`, `f) f? f’`, `(j [j`) open
+  until their inks are at least 0.75 of a stem apart anywhere from the descender to above the ascender.
+
+Classes: capitals (A T V W Y L P F K R X, the O family), lowercase (r v f k o c on the left; a o u v s x, the
+ascenders, i and j on the right), quotes, period and comma, dashes (with their `.case` forms), parentheses and
+brackets, and the figures 1 4 7. Accented letters join their base letter's class; moved and local forms
+(`hyphen.case`, `i.loclTRK`) and tabular figures stay out of every class, so tabular figures are never kerned.
+About 230 to 245 class pairs per master.
+
+## Features
+
+`features.py` writes the feature code from the glyph names (written to `build/features.fea` on every build);
+fontc adds `kern`, `mark` and `mkmk` from the masters' kerning and anchors. GSUB lookups apply in this order:
+
+| Feature | What it does |
+| --- | --- |
+| `locl` | Romanian and Moldovan (ROM MOL): Ş ş Ţ ţ to the comma-below Ș ș Ț ț. Turkish, Azeri, Crimean Tatar (TRK AZE CRT): i to `i.loclTRK`, so a following mark keeps its dot. Catalan (CAT): l·l and L·L take the tighter punt volat. Dutch (NLD): í j and Í J take the accented j (íj́ ÍJ́). Northern, Inari, Skolt and Lule Sámi (NSM ISM SKS LSM): Ŋ takes the N-form `Eng.loclNSM`. |
+| `ccmp` | i and j before a top mark become dotless; a top mark after a capital (or after another capital mark) takes its `.case` form. |
+| `frac` | Contextual: figure / figure becomes numerator ⁄ denominator; slashes in dates and paths (1/2/2026) are left alone. |
+| `numr` `dnom` `sups` `subs` | Figures to numerators, denominators, superiors (⁰¹²³⁴⁵⁶⁷⁸⁹), inferiors (₀…₉). |
+| `ordn` | a and o after a figure become ª º; `No.` becomes №. |
+| `tnum` `pnum` | Tabular figures on one width; back to proportional (the default). |
+| `zero` | Slashed zero, proportional and tabular. |
+| `case` | Hyphens, dashes, parentheses, brackets, braces, guillemets, ¡ ¿, colon, middle dot and bullet move up to sit with capitals and figures. |
+| `ss01` | Double-storey a (named "Double-storey a"), with every accented a. |
+| `ss02` | l with a curved foot (named "l with a curved foot"), with ĺ ľ ļ ł ŀ. |
+| `cpsp` | GPOS: 10 units more on each side of every capital. |
+
+Precomposed letters are composites (base plus marks placed by anchors), so `mark` and `mkmk` act only on combining
+sequences the font has no precomposed glyph for; shapers recompose the others.
 
 ## Axes
 
@@ -93,20 +139,41 @@ is Regular Text; its UFO style name is "Regular", so the font names itself Order
   "metrics": { "ascender": 740, "capHeight": 700, "descender": -200,
                "xHeight": { "12": 516, "72": 500 },          // per optical size, Regular masters
                "line": { "ascender": 950, "descender": -250, "lineGap": 0 } },
-  "axes": [ { "tag": "wght", "name": "Weight", "min": 100, "default": 400, "max": 900 },
+  "axes": [ { "tag": "wght", "name": "Weight", "min": 100, "default": 400, "max": 900,
+              "map": [ [100, 20], [200, 34], ..., [900, 160] ] },   // user weight -> design coordinate (avar)
             { "tag": "opsz", "name": "Optical size", "min": 12, "default": 12, "max": 72 } ],
   "instances": [ { "name": "Thin", "wght": 100 }, ... nine, at the default optical size ],
   "masters": [ { "id": "RegularText", "name": "Regular Text", "wght": 400, "opsz": 12,
                  "numbers": { "stem", "capStem", "bar", "capBar", "xHeight", "capHeight", "overshoot", "join",
                               "spacingArea", "dot" } }, ... six ],
-  "features": [ { "tag": "kern", "name": "Kerning", "sample": "AVATAR Tower Yacht" }, ... as compiled ],
-  "languages": [ { "tag": "da", "name": "Danish", ... } ],      // filled from Phase 4 on
+  "features": [ { "tag": "kern", "name": "Kerning", "sample": "AVATAR Tower Yacht",
+                  "default": true,                                // on unless switched off
+                  "group": "builtin",                             // builtin capitals figures alternates
+                  "lang": "ro",                                   // optional: BCP 47 tag the sample needs (locl)
+                  "with": ["tnum"] }, ... as compiled ],          // optional: features to keep on (pnum)
+  "languages": [ { "tag": "da", "iso639_3": "dan", "name": "Danish",
+                   "sample": "Høj bly gom vandt fræk sexquiz på wc. ..." } ],   // a line of real words
   "glyphs": [ { "name": "a", "unicode": 97, "char": "a",        // unicode and char are null when unencoded
-                "category": "lowercase",                          // uppercase lowercase figure punctuation
-                                                                   // symbol mark space alternate
+                "category": "lowercase",
                 "metrics": { "RegularText": { "advance": 535, "lsb": 39, "rsb": 50 }, ... per master id } } ]
 }
 ```
+
+The weight map's design coordinates are the Regular Display lowercase stem in font units: the masters sit at 20
+(Thin, user 100), 78 (Regular, 400) and 160 (Black, 900). To draw a user weight from the master outlines, map it
+through `map` (piecewise linear) and interpolate the outlines linearly in that design coordinate. The optical size
+axis is linear (user = design, 12 to 72).
+
+Glyph categories: `uppercase` (Lu), `lowercase` (Ll), `figure` (Nd, No such as ² ½, and unencoded figure forms:
+`.tf`, `.numr`, `.dnom`, `zero.zero`), `punctuation` (P*), `symbol` (everything else encoded, including spacing
+accents ^ ` ¨ ´ and the ordinals ª º), `mark` (combining marks and their unencoded `.case` and `.alt` forms),
+`space`, `alternate` (other unencoded glyphs: `a.ss01` and its composites, `l.ss02`, `.case` punctuation, `.locl`
+forms).
+
+Feature samples show a difference when the feature is switched alone, except where `lang` or `with` says what else
+the sample needs. The `mark`, `mkmk` and `ccmp` samples are combining sequences whose precomposed letter the font
+does not have (ẽ ỹ j́ X́): shapers recompose sequences the font has a precomposed glyph for, and those never reach
+the mark features.
 
 `outlines.json`:
 
@@ -145,13 +212,15 @@ ascent 950 and descent 250. Phase 5 sets them by the Google Fonts specification 
 
 ## QA results
 
-2026-11-18, Phase 4 (in progress), `Orderly[opsz,wght].ttf`, 363 glyphs.
+2026-11-18, Phase 4 gate, `Orderly[opsz,wght].ttf`, 524 glyphs (437 encoded).
 
 - `uv run --group qa fontbakery check-universal -l WARN --succinct fonts/variable/Orderly[opsz,wght].ttf`:
-  98 PASS, 3 FAIL, 1 ERROR, 1 WARN. The Google Fonts profile runs only in part: its `googlefonts` extra does not
-  resolve with uv (gfmetadata needs protobuf 6.33 or later against gflanguages' pins), so some of its checks error;
-  fontspector in CI (Phase 5) replaces it.
+  100 PASS, 3 FAIL, 1 ERROR, 0 WARN. The Google Fonts profile is Phase 5's.
 - `uv run --group qa orderly languages` (hyperglot 0.8.2): all 32 listed languages supported.
+- Glyph sets (glyphsets 1.1.3): GF Latin Kernel and GF Latin Core complete. GF Latin Plus is not a target; of it
+  the font has ¦ ¬ ± ² ³ µ ¹ ¼ ½ ¾ π † ‡ ‰ ⁄ ⁴–⁹ ₀–₉ ₹ ₺ ₽ № Ω ⅓ ⅔ ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ∂ ∆ ∏ ∑ √ ∞ ∫ ≈ ≠ ≤ ≥ ◊.
+  (The Phase 4 progress note of the previous implementer said Latin Core was complete before the spacing accents
+  and ¢ £ ¥ © ® × ÷ • € ™ § ¶ ª º existed; it was not.)
 
 Open findings and their status:
 
@@ -159,9 +228,11 @@ Open findings and their status:
 | --- | --- | --- |
 | `family/win_ascent_and_descent` | FAIL | Phase 5 sets vertical metrics by the Google Fonts specification. |
 | `inconsistencies_between_fvar_STAT` | FAIL | fontc's basic STAT lacks axis values for the instances; Phase 5 writes STAT. |
-| `smart_dropout` | FAIL | No `prep` program yet; Phase 5 adds the smart-dropout instructions (or ttfautohint's). |
-| `name/family_and_style_max_length` | ERROR | The check itself crashes on this font; recheck with fontspector in Phase 5. |
-| `unreachable_glyphs` | WARN | Accepted: the capital (`.case`) marks and `caroncomb.alt` are used only as components of accented capitals and ď ľ ť Ľ. |
+| `smart_dropout` | FAIL | No `prep` program yet; Phase 5 adds the smart-dropout instructions. |
+| `name/family_and_style_max_length` | ERROR | The check itself crashes on this font; recheck in Phase 5. |
 
-Fixed during Phase 4: `whitespace_glyphs` (nbspace added) and `math_signs_width` (math signs share one advance).
+Fixed during Phase 4: `whitespace_glyphs` (nbspace added), `math_signs_width` (math signs share one advance),
+`unreachable_glyphs` (every glyph is reached by a feature or a component, and every glyph has a GDEF class),
+`nested_components` (½ ¼ ¾ ⅓ ⅔ use the numerator glyph moved down, not the denominator composite),
+`overlapping_path_segments` (the braces' halves overlap in the nose without sharing an edge).
 

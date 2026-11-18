@@ -6,11 +6,10 @@ from __future__ import annotations
 import math
 
 from ..diag import edges, peak_poly, placed, stroke, vee_poly
-from ..geom import Contour, quad
+from ..geom import Contour, line, quad
 from ..master import Master
 from ..parts import Ell, box, disc, mirror_x, mirror_y, ring, rotate180, shift
-from ..shapes import lc_hook
-from ..strokes import s_curve
+from ..strokes import offsets, s_curve
 from . import Drawing, glyph
 from .marks import _shape
 from .punct import comma, exclam, low_dot, question
@@ -79,7 +78,9 @@ def greater(m: Master) -> Drawing:
 
 
 def _guil(m: Master, s: float) -> list:
-    return _chevron(m, m.xh * 0.4 * s, m.xh * 0.52 * s, m.xh * 0.5, m.stem * 0.9)
+    """A guillemet: the < chevron at x-height scale; heavy masters draw it larger and lighter (`guil.*`)."""
+    k = s * m.g("guil.size")
+    return _chevron(m, m.xh * 0.4 * k, m.xh * 0.52 * k, m.xh * 0.5, m.stem * m.g("guil.w"))
 
 
 @glyph("guilsinglleft", 0x2039, "pun")
@@ -95,7 +96,7 @@ def guilsinglright(m: Master) -> Drawing:
 @glyph("guillemotleft", 0xAB, "pun")
 def guillemotleft(m: Master) -> Drawing:
     one = _guil(m, 1)
-    return Drawing(one + shift(one, m.xh * 0.4 + m.stem * 0.55))
+    return Drawing(one + shift(one, m.xh * 0.4 * m.g("guil.size") + m.stem * 0.55))
 
 
 @glyph("guillemotright", 0xBB, "pun")
@@ -195,15 +196,20 @@ def asciicircum(m: Master) -> Drawing:
                               edges(("r", w, y0), ("r", w / 2 + t * 0.45, y0 + h), t, t * 0.9))])
 
 
-@glyph("asciitilde", 0x7E, "uc")
-@math_glyph
-def asciitilde(m: Master) -> Drawing:
+def tilde_shape(m: Master, h: float = 0.32) -> list:
+    """The tilde's wave at math width, centred on the math axis (~ and ≈)."""
     from dataclasses import replace
 
     big = replace(m, xh=m.cap * 1.25, bar=m.bar * 1.05)
-    cs = _shape("tildecomb", big, 0, m.cap * 0.32, m.bar * 1.0, 0)
+    cs = _shape("tildecomb", big, 0, m.cap * h, m.bar * 1.0, 0)
     ys = [p[1] for c in cs for p in c.flat(6)]
-    return Drawing(shift(cs, 0, mid(m) - (min(ys) + max(ys)) / 2))
+    return shift(cs, 0, mid(m) - (min(ys) + max(ys)) / 2)
+
+
+@glyph("asciitilde", 0x7E, "uc")
+@math_glyph
+def asciitilde(m: Master) -> Drawing:
+    return Drawing(tilde_shape(m))
 
 
 @glyph("grave", 0x60, "uc")
@@ -212,12 +218,20 @@ def grave(m: Master) -> Drawing:
 
 
 def _brace(m: Master) -> list:
-    """{ : the square bracket with a nose at its middle, so braces read as brackets of the family."""
-    st, b, w = m.stem, m.bar, m.xh * 0.46
+    """{ : a stroke from the top terminal turning down into a straight stem, then turning left into the nose; the
+    lower half is the upper mirrored, and the two meet in the nose. Turns are quarter rounds of the compass;
+    both ends are vertical cuts, the nose is where the halves' horizontal ends overlap."""
+    st, b = m.stem * 0.94, m.bar * 0.94
+    w = m.xh * 0.3 + m.stem * 1.4
     y0, y1 = m.desc * 0.72, m.asc + 20
-    ym, nx = (y0 + y1) / 2, m.xh * 0.12
-    return [quad((nx, y0), (w, y0), (w, y0 + b), (nx + st, y0 + b), (nx + st, y1 - b), (w, y1 - b), (w, y1), (nx, y1),
-                 (nx, ym + st * 0.7), (0, ym + b / 2), (0, ym - b / 2), (nx, ym - st * 0.7))]
+    ym, xs = (y0 + y1) / 2, w * 0.5
+    nodes = [((w, y1 - b / 2), (-1.0, 0.0), b), ((xs, y1 - b / 2 - (w - xs)), (0.0, -1.0), st),
+             ((xs, ym + xs), (0.0, -1.0), st), ((0.0, ym + b * 0.12), (-1.0, 0.0), b)]  # halves overlap in the
+    # nose without sharing an edge
+    left, right = offsets(nodes, [(m.tension, m.tension), (0.34, 0.34), (m.tension, m.tension)], m.tension_in / m.tension)
+    upper = Contour.of(right, line(right.end, left.end), left.reversed())
+    upper = upper if upper.area() > 0 else upper.reversed()
+    return [upper] + mirror_y([upper], ym)
 
 
 @glyph("braceleft", 0x7B, "pun")

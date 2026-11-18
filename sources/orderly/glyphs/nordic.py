@@ -30,7 +30,9 @@ def Aring(m: Master) -> Drawing:
     base = A(m).contours
     x0, x1 = _bounds_x(base)
     top = m.cap + m.osa(m.cap) + m.cap * m.g("ring.gap")
-    return Drawing(base + ring_mark(m, (x0 + x1) / 2, top, m.cap * m.g("ring.uc"), m.cbar * m.g("ring.w")))
+    d = m.cap * m.g("ring.uc")
+    return Drawing(base + ring_mark(m, (x0 + x1) / 2, top, d, m.cbar * m.g("ring.w")),
+                   anchors={"top": ((x0 + x1) / 2, top + d)})  # Ǻ: the acute sits over the ring
 
 
 @glyph("aring", 0xE5, "lc")
@@ -38,7 +40,9 @@ def aring(m: Master) -> Drawing:
     base = a(m).contours
     x0, x1 = _bounds_x(base)
     top = m.xh + m.os(m.xh) + m.xh * m.g("ring.gap")
-    return Drawing(base + ring_mark(m, (x0 + x1) / 2, top, m.xh * m.g("ring.lc"), m.bar * m.g("ring.w")))
+    d = m.xh * m.g("ring.lc")
+    return Drawing(base + ring_mark(m, (x0 + x1) / 2, top, d, m.bar * m.g("ring.w")),
+                   anchors={"top": ((x0 + x1) / 2, top + d)})
 
 
 def _slash(m: Master, cx: float, cy: float, r: float, weight: float) -> list:

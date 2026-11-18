@@ -14,6 +14,7 @@ from .master import Master
 # Hand adjustments in font units at the Regular weight, added to the computed sidebearing: name -> (left, right).
 ADJUST: dict[str, tuple[float, float]] = {
     "J": (-15, 0),  # the open top left of J reads as a hole beside H
+    "T": (-12, -12),  # the white under T's arms reads as a hole beside H in HHTHH
 }
 
 # Glyphs whose sidebearings copy another glyph's side: name -> (left source, right source); None keeps computed.

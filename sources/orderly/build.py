@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from .export import export, woff2
+from .features import features
 from .font import build as build_glyphs
 from .kerning import compute as kern_compute
 from .master import Master
@@ -43,16 +44,7 @@ def ufo_path(m: Master) -> Path:
 
 MASTERS = TEXT + DISPLAY  # Regular Text (wght 400, opsz 12) is the default master
 
-# Substitution features (kern, mark and mkmk are written by fontc from the masters' kerning and anchors)
-FEATURES = """
-languagesystem DFLT dflt;
-languagesystem latn dflt;
-
-feature ss01 {
-    featureNames { name "Double-storey a"; };
-    sub a by a.ss01;
-} ss01;
-"""
+CPSP = "<10 0 20 0>"  # capital spacing: 10 units more on each side of a capital
 
 
 def masters_ufos(masters: list[Master]) -> list[Path]:
@@ -63,14 +55,17 @@ def build_variable() -> Path:
     """Orderly: weight 100 to 900 and optical size 12 to 72 from six masters (Text and Display x three weights),
     then the web font and the site's data."""
     sets = [build_glyphs(m) for m in MASTERS]
-    ufos = [write_ufo(m, g, ufo_path(m), features=FEATURES, kerning=kern_compute(m, g)) for m, g in zip(MASTERS, sets)]
+    fea = features(sets[0], CPSP)
+    (BUILD / "features.fea").parent.mkdir(parents=True, exist_ok=True)
+    (BUILD / "features.fea").write_text(fea, encoding="utf-8", newline="\n")
+    ufos = [write_ufo(m, g, ufo_path(m), features=fea, kerning=kern_compute(m, g)) for m, g in zip(MASTERS, sets)]
     ds = write_designspace(MASTERS, ufos, BUILD / "masters" / "Orderly.designspace", family="Orderly",
                            weight_map=WEIGHT_MAP, names=WEIGHT_NAMES)
     out = compile_font(ds, FONTS / "variable" / "Orderly[opsz,wght].ttf", BUILD / "fontc" / "variable")
     _write_metrics(MASTERS[1], sets[1])
     web = woff2(out, FONTS / "web" / "Orderly[opsz,wght].woff2")
     weights = [(u, n) for (u, _), n in zip(WEIGHT_MAP, WEIGHT_NAMES)]
-    export(MASTERS, sets, out, FONTS / "data", weights, languages())
+    export(MASTERS, sets, out, FONTS / "data", weights, languages(), WEIGHT_MAP)
     print(f"built {out.relative_to(ROOT)}, {web.relative_to(ROOT)}, fonts/data/orderly.json, fonts/data/outlines.json")
     return out
 

@@ -16,25 +16,49 @@ from .font import Glyph
 from .master import Master
 from .ufo import FAMILY, LINE_ASC, LINE_DESC, VERSION
 
-FEATURE_NAMES = {
-    "kern": ("Kerning", "AVATAR Tower Yacht"), "mark": ("Mark positioning", "Å Ø Č ŋ"),
-    "mkmk": ("Mark to mark", "ǘ"), "ccmp": ("Glyph composition", "i̇ j́"), "locl": ("Localized forms", "ș ț İ"),
-    "case": ("Case-sensitive forms", "(HELLO) [NO]"), "cpsp": ("Capital spacing", "ORDERLY"),
-    "frac": ("Fractions", "1/2 3/4 5/8"), "numr": ("Numerators", "12345"), "dnom": ("Denominators", "12345"),
-    "sups": ("Superiors", "x2 m3"), "subs": ("Inferiors", "H2O"), "ordn": ("Ordinals", "1a 2o No"),
-    "tnum": ("Tabular figures", "1111 2048"), "pnum": ("Proportional figures", "1111 2048"),
-    "zero": ("Slashed zero", "0 100"), "ss01": ("Double-storey a", "Blåbærsyltetøj"),
-    "ss02": ("l with a curved foot", "Illegal Il1"),
+# tag -> (name, group, on by default, sample[, extra fields]). Mark samples use combining sequences whose
+# precomposed letter is not in the font (shapers recompose those that are), so mark, mkmk and ccmp visibly act.
+FEATURES = {
+    "kern": ("Kerning", "builtin", True, "AVATAR Tower Yacht"),
+    "mark": ("Mark positioning", "builtin", True, "ẽ ỹ g̃ ḿ n̄"),
+    "mkmk": ("Mark to mark", "builtin", True, "ẽ́ x̂̃ q̈̄"),
+    "ccmp": ("Glyph composition", "builtin", True, "j́ ǰ X́ Q̈ M̀"),
+    "locl": ("Localized forms", "builtin", True, "Ştefan Ţară", {"lang": "ro"}),
+    "case": ("Case-sensitive forms", "capitals", False, "«(ORDERLY)» – ¿QUÉ?"),
+    "cpsp": ("Capital spacing", "capitals", False, "ORDERLY"),
+    "frac": ("Fractions", "figures", False, "1/2 3/4 7/16"),
+    "numr": ("Numerators", "figures", False, "0123456789"),
+    "dnom": ("Denominators", "figures", False, "0123456789"),
+    "sups": ("Superiors", "figures", False, "E = mc2"),
+    "subs": ("Inferiors", "figures", False, "H2O CO2"),
+    "ordn": ("Ordinals", "figures", False, "1a 2o No. 5"),
+    "tnum": ("Tabular figures", "figures", False, "11:11 20:48"),
+    "pnum": ("Proportional figures", "figures", False, "11:11 20:48", {"with": ["tnum"]}),
+    "zero": ("Slashed zero", "figures", False, "0 100 2007"),
+    "ss01": ("Double-storey a", "alternates", False, "Blåbærsyltetøj på rugbrød"),
+    "ss02": ("l with a curved foot", "alternates", False, "Illegal Il1 lille"),
 }
+FEATURE_NAMES = {t: (v[0], v[3]) for t, v in FEATURES.items()}  # tag -> (name, sample), for the proofs
+
+
+def feature_entry(tag: str) -> dict:
+    name, group, default, sample, *extra = FEATURES.get(tag, (tag, "builtin", False, ""))
+    return {"tag": tag, "name": name, "sample": sample, "default": default, "group": group,
+            **(extra[0] if extra else {})}
+
+
+FIGURE_FORMS = (".tf", ".numr", ".dnom", ".zero")
 
 
 def _category(name: str, uni: int | None) -> str:
+    """uppercase lowercase figure punctuation symbol mark space alternate"""
     if uni is None:
-        base = name.split(".")[0]
-        return "lowercase" if base.islower() else "alternate"
+        if "comb" in name:
+            return "mark"
+        return "figure" if any(f in name for f in FIGURE_FORMS) else "alternate"
     c = unicodedata.category(chr(uni))
-    return {"Lu": "uppercase", "Ll": "lowercase", "Lo": "lowercase", "Nd": "figure", "Zs": "space",
-            "Mn": "mark", "Sk": "mark"}.get(c, "punctuation" if c.startswith("P") else "symbol")
+    return {"Lu": "uppercase", "Ll": "lowercase", "Nd": "figure", "No": "figure", "Zs": "space",
+            "Mn": "mark"}.get(c, "punctuation" if c.startswith("P") else "symbol")
 
 
 def _points(c) -> list[dict]:
@@ -51,7 +75,7 @@ def master_numbers(m: Master) -> dict:
 
 
 def export(masters: list[Master], sets: list[dict[str, Glyph]], vf: Path, out_dir: Path,
-           weight_names: list[tuple[int, str]], languages: list[dict]) -> None:
+           weight_names: list[tuple[int, str]], languages: list[dict], weight_map: list[tuple[int, float]]) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     font = TTFont(vf)
     fvar = font["fvar"]
@@ -78,12 +102,12 @@ def export(masters: list[Master], sets: list[dict[str, Glyph]], vf: Path, out_di
             "line": {"ascender": LINE_ASC, "descender": LINE_DESC, "lineGap": 0},
         },
         "axes": [{"tag": a.axisTag, "name": names[a.axisTag], "min": a.minValue, "default": a.defaultValue,
-                  "max": a.maxValue} for a in fvar.axes],
+                  "max": a.maxValue, **({"map": [list(p) for p in weight_map]} if a.axisTag == "wght" else {})}
+                 for a in fvar.axes],
         "instances": [{"name": name, "wght": w} for w, name in weight_names],
         "masters": [{"id": m.name, "name": m.style, "wght": m.wght, "opsz": m.opsz, "numbers": master_numbers(m)}
                     for m in masters],
-        "features": [{"tag": t, "name": FEATURE_NAMES.get(t, (t, ""))[0], "sample": FEATURE_NAMES.get(t, ("", ""))[1]}
-                     for t in sorted(tags)],
+        "features": [feature_entry(t) for t in sorted(tags)],
         "languages": languages,
         "glyphs": glyphs,
     }

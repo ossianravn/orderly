@@ -11,7 +11,7 @@ from . import Drawing, glyph
 @glyph("h", 0x68, "lc")
 def h(m: Master) -> Drawing:
     c, _ = n_arch(m, 0, m.w("n"))
-    return Drawing([box(0, 0, m.stem, m.asc), c])
+    return Drawing([box(0, 0, m.stem, m.asc), c], anchors={"top": (m.stem / 2, m.asc)})  # ĥ: over the ascender
 
 
 @glyph("m", 0x6D, "lc")

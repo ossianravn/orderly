@@ -57,13 +57,17 @@ def parts_for(ch: str) -> list[tuple[str, str | None]] | None:
             out.append((mk, "ogonek"))
         elif mk in BOTTOM:
             out.append((mk, "bottom"))
-        else:
-            out.append((mk + (".case" if upper else ""), "top"))
+        else:  # capitals, and lowercase whose anchor is on the ascender (l h), take the flatter capital marks
+            out.append((mk + (".case" if upper or bname in ("l", "h") else ""), "top"))
     return out
+
+
+PARTS: dict[str, list] = {}  # composite name -> its parts (the alternates in forms.py are made from these)
 
 
 def _register(ch: str, parts) -> None:
     zone = "uc" if ch.isupper() else "lc"
+    PARTS[name_of(ord(ch))] = parts
     glyph(name_of(ord(ch)), ord(ch), zone)(lambda m, parts=parts: Drawing([], components=list(parts)))
 
 

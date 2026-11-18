@@ -93,15 +93,31 @@ def build(m: Master, only: list[str] | None = None) -> dict[str, Glyph]:
     return out
 
 
-def _compose(n: str, spec, parts: list[tuple[str, str | None]], glyphs: dict[str, Glyph]) -> Glyph:
-    """Base first; each mark's `_name` anchor lands on the `name` anchor of the base, or of the previous mark."""
-    base = glyphs[parts[0][0]]
-    comps = [(base.name, 0, 0)]
-    anchors = dict(base.anchors)
+def _compose(n: str, spec, parts: list, glyphs: dict[str, Glyph]) -> Glyph:
+    """Base first; each mark's `_name` anchor lands on the `name` anchor of the base, or of the previous mark.
+
+    A part placed at a tuple (dx, dy) sits at that offset (the base too: `.case` forms are their base moved up);
+    a part placed at ">" follows the previous part's advance, and the composite's advance is then the sum (½).
+    """
+    bname, at0 = parts[0]
+    base = glyphs[bname]
+    bx, by = (round(at0[0]), round(at0[1])) if isinstance(at0, tuple) else (0, 0)
+    comps = [(base.name, bx, by)]
+    anchors = {k: (x + bx, y + by) for k, (x, y) in base.anchors.items()}
+    run = base.advance
     for mark, at in parts[1:]:
         mk = glyphs[mark]
-        if at is None:
-            comps.append((mark, 0, 0))
+        if isinstance(at, tuple) and at[0] == ">":  # after the previous part, moved down or up
+            comps.append((mark, run, round(at[1])))
+            run += mk.advance
+            continue
+        if at is None or isinstance(at, tuple):
+            dx, dy = (round(at[0]), round(at[1])) if at else (0, 0)
+            comps.append((mark, dx, dy))
+            continue
+        if at == ">":
+            comps.append((mark, run, 0))
+            run += mk.advance
             continue
         ax, ay = anchors[at]
         mx, my = mk.anchors["_" + at]
@@ -109,4 +125,6 @@ def _compose(n: str, spec, parts: list[tuple[str, str | None]], glyphs: dict[str
         comps.append((mark, dx, dy))
         if at in mk.anchors:  # stacking: the next mark sits on this one
             anchors[at] = (mk.anchors[at][0] + dx, mk.anchors[at][1] + dy)
-    return Glyph(n, spec.unicodes, spec.zone, [], base.advance, base.lsb, base.rsb, anchors, comps)
+    last = glyphs[comps[-1][0]]
+    rsb = last.rsb if run != base.advance else base.rsb
+    return Glyph(n, spec.unicodes, spec.zone, [], run, base.lsb + bx, rsb, anchors, comps)

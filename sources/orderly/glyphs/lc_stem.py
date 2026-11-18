@@ -26,7 +26,8 @@ def i(m: Master) -> Drawing:
 
 @glyph("l", 0x6C, "lc")
 def l_(m: Master) -> Drawing:
-    return Drawing([box(0, 0, m.stem, m.asc)])
+    """A plain stem; accents sit over the ascender (the anchor is at its top)."""
+    return Drawing([box(0, 0, m.stem, m.asc)], anchors={"top": (m.stem / 2, m.asc)})
 
 
 @glyph("j", 0x6A, "lc")

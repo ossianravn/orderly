@@ -241,6 +241,35 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 4 (character set and features) at its gate (Claude Opus 5.5, taking over from the previous
+  implementer). Landed: currency ¢ £ ¥ € ƒ ¤ ₺ ₽ ₹; math × ÷ ≠ ≤ ≥ ± ≈ ¬ ∞ ◊ µ π Ω ∂ ∆ ∏ ∑ √ ∫ on one width and
+  the figures' centre (the math axis moved from 0.46 to 0.5 of the cap height); arrows ← ↑ → ↓ ↖ ↗ ↘ ↙ ↔ ↕ at
+  the figure stem in a cap-height square; © ® ™ § ¶ † ‡ ‰ № ª º • ¦ and the twelve spacing accents; tabular
+  figures, slashed zero, numerators, denominators, superiors, inferiors, ⁄ ½ ¼ ¾ ⅓ ⅔ (small forms are drawn by the
+  ordinary glyph functions from a scaled master with heavier strokes, `small.py`); `.case` punctuation; `l.ss02`
+  and every accented a and l in `ss01` and `ss02`; `locl` for Romanian and Moldovan, Turkish, Azeri and Crimean
+  Tatar, Catalan, Dutch and Sámi (N-form Ŋ, the Sámi convention); `ccmp` for dotless i/j and capital marks in
+  combining sequences; `frac numr dnom sups subs ordn tnum pnum zero case cpsp`, all generated from glyph names
+  (`features.py`); kerning second pass with a clearing rule for `ff fl fi f) (j` (`kerning.py`). Redrawn: ß (the
+  3 on a stem; it no longer reads as a b with a flag), braces (real braces from the compass), Black guillemets
+  (larger, lighter), Black `a.ss01` and so `æ` (narrower, rounder bowl). Fixed: accents over the ascender in ĺ ĥ,
+  the acute over the ring in ǻ Ǻ, `T` spacing (-12 each side). 524 glyphs; GF Latin Kernel and Core complete (the
+  previous entry's "Core complete" was premature: the spacing accents and ¢ £ ¥ © ® × ÷ • € ™ § ¶ ª º were
+  missing); hyperglot confirms all 32 languages. Site data: `wght` map, categories for variants, feature `default`
+  `group` and optional `lang` / `with`, a sample line per language (production has the shapes).
+
+  Checked: `orderly check` clean (six masters, six corners); two builds give the same bytes; fontbakery universal
+  100 PASS with only the Phase 5 items failing. Looked at: every new glyph in all six masters (`orderly grid`), the
+  features page off and on in Chrome (every feature visibly acts; the Romanian, Turkish, Catalan, Dutch and Sámi
+  forms switch under their language), kerning in all six masters, the symbols page, the accented letters most at
+  risk (ascender accents, ogonek, cedilla, comma accents, ǻ), and the language page with a line of real words per
+  language. A proof bug was found and fixed: the old pages' Text and Display rows never set the optical size.
+
+  Weak spots: Black `a.ss01` keeps only a slit of a lower counter; `∞ ≈ ~` are small beside `+ =`; `Ω` is
+  serviceable, not refined; `(j` needs a large opening kern because j's tail is long; Black ¢ is crowded inside
+  its c; `@` sits low (unchanged). Not looked at: every accented letter in Thin at large size one by one (they
+  were seen at 40 px and in the risky-group grid).
+
 - 2026-11-18: Phase 4 in progress, not at its gate (Claude Opus 5.5). Landed: the site data export (web font,
   `orderly.json`, `outlines.json`, shapes in production); Black æ and e polish; Regular Text stem 90 (kept: its
   grey at 9 to 11 px matches Segoe UI more closely than 86 did); combining marks with capital forms; accented

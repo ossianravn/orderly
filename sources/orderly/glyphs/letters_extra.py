@@ -1,4 +1,4 @@
-"""Drawn letters beyond the basic Latin: ı ȷ đ Đ Ð ð þ Þ ł Ł ŋ Ŋ ħ Ħ ŧ Ŧ ß ẞ ĸ œ Œ ʒ Ʒ ǥ Ǥ ŀ Ŀ.
+"""Drawn letters beyond the basic Latin: ı ȷ đ Đ Ð ð þ Þ ł Ł ŋ Ŋ ħ Ħ ŧ Ŧ ß ẞ ĸ œ Œ ʒ Ʒ ǥ Ǥ ŀ Ŀ (ß ẞ are in sharp_s.py).
 
 Each is built from the parts of its relatives (stems, bowls, hooks, bars), so it reads as one of the family.
 """
@@ -241,29 +241,6 @@ def ldot(m: Master) -> Drawing:
 def Ldot(m: Master) -> Drawing:
     dd = m.stem * m.dot
     return Drawing(L(m).contours + [disc(m.cstem + dd * 1.1, m.cap * 0.5, dd, m.tension)])
-
-
-@glyph("germandbls", 0xDF, "lc")
-def germandbls(m: Master) -> Drawing:
-    """A stem rising into the hook of f, over a lower bowl like the lower half of B."""
-    fx = f(m).contours[0]  # the f's stem and hook, without its bar
-    x0 = m.stem * m.g("t.left")
-    w = m.w("n") * 0.98
-    ym = m.xh * 0.92
-    bowl = dbowl(x0, m.stem, 0, ym, x0 + w, ym / 2 * 1.05, m.bar * m.rtop, m.stem * m.rside, m.tension, m.tension_in)
-    return Drawing([fx] + bowl)
-
-
-@glyph("uni1E9E", 0x1E9E, "uc")
-def Germandbls(m: Master) -> Drawing:
-    """Capital sharp s: stem, flat top, a diagonal into a lower bowl."""
-    w, st, b = m.w("B"), m.cstem, m.cbar
-    ym = m.cap * 0.56
-    top = quad((0, 0), (st, 0), (st, m.cap - b), (w * 0.86, m.cap - b), (w * 0.86, m.cap), (0, m.cap))
-    diag = stroke((w * 0.5, ym - b * 0.3), (w * 0.86 - st * 0.5, m.cap - b * 0.5), st * m.diag)
-    bowl = dbowl(0, st, 0, ym, w, ym / 2 * 1.05, b, st * m.rside, m.tension, m.tension_in)
-    return Drawing([top, diag] + bowl)
-
 
 
 @glyph("IJ", 0x132, "uc")
