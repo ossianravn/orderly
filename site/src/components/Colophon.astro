@@ -1,0 +1,92 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { drawn, files, kb, meta, repo } from "../lib/data";
+---
+
+<section id="colophon" class="sec" aria-labelledby="colophon-h">
+  <SectionHead id="colophon-h" title="Colophon" />
+  <div class="grid">
+    <div class="main cols">
+      <div class="prose">
+        <p>
+          Orderly is by Ossian Ravn, drawn in code with Claude. Each letter is a short Python function of a few numbers:
+          the stem, the bar, the circle, how deeply a join is thinned. Six sets of those numbers make six masters, Thin,
+          Regular and Black, each in a Text and a Display design, and the variable font runs between them.
+        </p>
+        <p>
+          This page is set in Orderly and nothing else. Its numbers come from the same build that makes the font, and
+          its drawings are the font's own outlines.
+        </p>
+        <p>
+          The fonts are free to use, change and share under the SIL Open Font License 1.1. The code that draws them, and
+          this website, are under the MIT License.
+        </p>
+      </div>
+      <dl class="links">
+        <div>
+          <dt class="label">Download</dt>
+          <dd>
+            <a href={files.ttf.href} download={files.ttf.name}>Variable TTF</a>
+            <span class="size">{kb("fonts/orderly-variable.ttf")}</span>
+          </dd>
+          <dd>
+            <a href={files.woff2.href} download={files.woff2.name}>Web font, WOFF2</a>
+            <span class="size">{kb("fonts/orderly.woff2")}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="label">Source</dt>
+          <dd><a href={repo}>github.com/ossianravn/orderly</a></dd>
+        </div>
+        <div>
+          <dt class="label">Licences</dt>
+          <dd><a href={`${repo}/blob/main/OFL.txt`}>Fonts: SIL Open Font License 1.1</a></dd>
+          <dd><a href={`${repo}/blob/main/LICENSE`}>Code and site: MIT</a></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+  <footer class="foot grid">
+    <p class="main label">Orderly {meta.version}, {drawn.length} glyphs. Set in Orderly.</p>
+  </footer>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 32em) minmax(0, 1fr);
+    gap: var(--s5) var(--s6);
+  }
+  .links {
+    display: grid;
+    gap: var(--s4);
+    align-content: start;
+  }
+  .links dt {
+    margin-bottom: var(--s1);
+  }
+  .links dd + dd {
+    margin-top: 0.15rem;
+  }
+  .size {
+    color: var(--ink-2);
+    font-size: var(--f-small);
+    font-variant-numeric: tabular-nums;
+    margin-left: 0.3em;
+  }
+  .foot {
+    margin-top: var(--s6);
+  }
+  .foot p {
+    padding-top: var(--s3);
+    border-top: 1px solid var(--rule);
+  }
+  @media (max-width: 1000px) {
+    .cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

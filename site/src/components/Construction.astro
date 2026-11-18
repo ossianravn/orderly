@@ -1,0 +1,165 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { HEIGHT, panels } from "../lib/construct";
+import { axis, packed } from "../lib/data";
+
+const loc = { wght: axis("wght").default, opsz: axis("opsz").max };
+const copy: [string, string, string][] = [
+  ["compass", "One compass", "Every round is cut from the same circle, in the capitals and the lowercase alike."],
+  ["stem", "One stem", "One lowercase stem, a capital stem a little heavier, and a bar a little lighter, so the colour stays even."],
+  ["cuts", "Vertical cuts", "Every open curve ends in a vertical cut. There are no angled terminals."],
+  ["apexes", "Flat apexes", "Diagonals meet in a flat end, as wide as the weight needs, never in a point."],
+  ["dots", "Round dots", "Dots are circles from the same compass, a little heavier than the stem."],
+  ["joins", "Thinned joins", "Where a curve runs into a stem it narrows, so the join stays clear at every weight."],
+  ["overshoot", "Overshoot", "Rounds pass the baseline and the cap height by a little, so that they look as tall as the flat letters."],
+  ["alternate", "Two a's", "The single-storey a is the default. The double-storey a is the alternate, for text that needs a and o far apart."],
+];
+const drawn = copy.map(([id, title, text]) => ({ id, title, text, ...panels[id](packed, loc) }));
+---
+
+<section id="construction" class="sec" aria-labelledby="construction-h">
+  <SectionHead
+    id="construction-h"
+    title="Construction"
+    lead="Orderly keeps a few rules, and every letter follows them. Each drawing is the font's own outline, with the rule it shows marked."
+  >
+    <dl slot="side" class="label at">
+      <div><dt>Weight</dt><dd data-out="wght">{loc.wght}</dd></div>
+      <div><dt>Optical size</dt><dd data-out="opsz" data-auto={String(loc.opsz)}>{loc.opsz}</dd></div>
+    </dl>
+  </SectionHead>
+  <div class="panels" data-construction>
+    {
+      drawn.map((p) => (
+        <figure class="panel" data-panel={p.id}>
+          <div class="art">
+            <svg
+              viewBox={`0 0 ${Math.round(p.w)} ${HEIGHT}`}
+              style={`--vw: ${Math.round(p.w)}`}
+              aria-hidden="true"
+              set:html={p.body}
+            />
+          </div>
+          <figcaption>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            {p.facts.length > 0 && (
+              <dl class="label facts">
+                {p.facts.map(([k, v]) => (
+                  <div>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .at {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: var(--s2);
+  }
+  .at div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 10rem;
+  }
+  .at dd {
+    color: var(--ink);
+  }
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
+    gap: var(--s5) var(--gap);
+    padding-inline: var(--m);
+  }
+  .panel {
+    border-top: 1px solid var(--rule);
+    padding-top: var(--s3);
+  }
+  .art {
+    height: 15rem;
+    display: flex;
+    align-items: flex-end;
+  }
+  .art svg {
+    width: min(100%, calc(var(--vw) * 0.2px));
+    height: auto;
+    max-height: 100%;
+    overflow: visible;
+  }
+  .art :global(.g) {
+    fill: var(--ink);
+  }
+  .art :global(.line) {
+    fill: none;
+    stroke: var(--mark);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .art :global(.m) {
+    stroke: var(--rule);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .art :global(.mk) {
+    fill: none;
+    stroke: var(--mark);
+    stroke-width: 1.25;
+    vector-effect: non-scaling-stroke;
+  }
+  .art :global(.cut) {
+    stroke: var(--mark);
+    stroke-width: 4;
+    stroke-linecap: butt;
+    vector-effect: non-scaling-stroke;
+  }
+  .art :global(.t) {
+    font-size: 58px;
+    fill: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .art :global(.t.mark) {
+    fill: var(--mark);
+  }
+  figcaption {
+    margin-top: var(--s3);
+    display: grid;
+    gap: var(--s2);
+    align-content: start;
+  }
+  h3 {
+    font-size: var(--f-body);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  figcaption p {
+    font-size: var(--f-small);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 30em;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem var(--s3);
+  }
+  .facts div {
+    display: flex;
+    gap: 0.4em;
+  }
+  .facts dd {
+    color: var(--ink);
+  }
+</style>

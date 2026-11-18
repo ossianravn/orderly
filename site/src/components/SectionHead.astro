@@ -1,0 +1,49 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  lead?: string;
+}
+const { id, title, lead } = Astro.props;
+---
+
+<div class="head grid">
+  <div class="side">
+    <h2 id={id} class="name">{title}</h2>
+    <slot name="side" />
+  </div>
+  <div class="main">
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</div>
+
+<style>
+  .head {
+    position: relative;
+    padding-top: var(--s3);
+    margin-bottom: var(--s5);
+    row-gap: var(--s3);
+  }
+  .head::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--m);
+    right: var(--m);
+    border-top: 1px solid var(--rule-strong);
+  }
+  .name {
+    font-size: var(--f-label);
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-top: 0.45em;
+  }
+  .side {
+    display: grid;
+    align-content: start;
+    gap: var(--s1);
+  }
+</style>

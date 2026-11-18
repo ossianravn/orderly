@@ -1,0 +1,80 @@
+---
+// A poster for a book swap: the weight axis at full stretch.
+---
+
+<figure class="poster" aria-label="Poster for a book swap">
+  <div class="top">
+    <p>Fjordby Bibliotek</p>
+    <p>Byttemarked</p>
+  </div>
+  <p class="big" aria-label="Bog for bog">
+    <span class="heavy">Bog</span>
+    <span class="thin">for</span>
+    <span class="heavy">bog</span>
+  </p>
+  <div class="bottom">
+    <p class="when">Lørdag 7. marts<br />kl. 10–15</p>
+    <p class="what">Tag en bog med, og gå hjem med en anden. Gratis adgang, kaffe i læsesalen.</p>
+  </div>
+</figure>
+
+<style>
+  .poster {
+    --bg: #c2381c;
+    --fg: #fbf7f5;
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: 0.4rem;
+    aspect-ratio: 4 / 5;
+    padding: clamp(1rem, 5cqi, 2rem);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    container-type: inline-size;
+    overflow: hidden;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-bottom: 0.6rem;
+    border-bottom: 1.5px solid var(--fg);
+  }
+  .big {
+    align-self: center;
+    display: grid;
+    font-size: 30cqi;
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+    margin-left: -0.05em;
+  }
+  .heavy {
+    font-weight: 900;
+  }
+  .thin {
+    font-weight: 100;
+    font-size: 0.62em;
+    line-height: 1.05;
+    padding-left: 0.08em;
+  }
+  .bottom {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.2rem;
+    align-items: end;
+    padding-top: 0.75rem;
+    border-top: 1.5px solid var(--fg);
+  }
+  .when {
+    font-size: clamp(1rem, 6cqi, 1.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .what {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    max-width: 22em;
+  }
+</style>

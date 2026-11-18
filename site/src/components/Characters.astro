@@ -1,0 +1,255 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { BOX_H, BOX_W, cellDrawing, inspect } from "../lib/inspect";
+import { axis, categories, drawn, packed } from "../lib/data";
+
+const first = "a";
+const loc = { wght: axis("wght").default, opsz: axis("opsz").max };
+const cellLoc = { wght: loc.wght, opsz: 28 };
+const shown = inspect(packed, first, loc)!;
+// Unicode order within each group; glyphs without a code point last, in the font's order.
+const byCode = (a: { unicode: number | null }, b: { unicode: number | null }) =>
+  (a.unicode ?? Infinity) - (b.unicode ?? Infinity);
+const groups = categories
+  .map(([cat, title]) => ({ cat, title, glyphs: drawn.filter((g) => g.category === cat).sort(byCode) }))
+  .filter((g) => g.glyphs.length);
+const known = new Set(categories.map(([c]) => c));
+const other = drawn.filter((g) => !known.has(g.category));
+if (other.length) groups.push({ cat: "other", title: "Other", glyphs: other });
+const typed = (g: (typeof drawn)[number]) => g.char && g.category !== "mark";
+---
+
+<section id="characters" class="sec" aria-labelledby="characters-h">
+  <SectionHead id="characters-h" title="Characters" lead={`${drawn.length} glyphs, and every one of them drawn from the same few parts.`}>
+    <dl slot="side" class="label at">
+      <div><dt>Weight</dt><dd data-out="wght">{loc.wght}</dd></div>
+      <div><dt>Optical size</dt><dd data-out="opsz" data-auto={String(loc.opsz)}>{loc.opsz}</dd></div>
+    </dl>
+  </SectionHead>
+  <div class="grid body">
+    <div class="main split">
+      <fieldset class="sets" data-cells>
+        <legend class="visually-hidden">Choose a glyph</legend>
+        {
+          groups.map((grp) => (
+            <div class="set">
+              <h3 class="label">
+                {grp.title} <span class="num">{grp.glyphs.length}</span>
+              </h3>
+              <div class="cells">
+                {grp.glyphs.map((g) => (
+                  <label class="cell" title={g.name}>
+                    <input type="radio" name="glyph" value={g.name} checked={g.name === first} aria-label={g.name} />
+                    {typed(g) ? (
+                      <span class="ch spec" aria-hidden="true">{g.char}</span>
+                    ) : (
+                      <span class="ch drawn" data-draw={g.name} set:html={cellDrawing(packed, g.name, cellLoc)} />
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </fieldset>
+      <aside class="inspector" aria-label="Glyph inspector" data-inspector>
+        <svg viewBox={`0 0 ${BOX_W} ${BOX_H}`} role="img" aria-label={`Outline of ${first}`} set:html={shown.body} />
+        <dl class="facts">
+          {
+            shown.facts.map(([k, v]) => (
+              <div>
+                <dt class="label">{k}</dt>
+                <dd class="num">{v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .at {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: var(--s2);
+  }
+  .at div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 10rem;
+  }
+  .at dd {
+    color: var(--ink);
+  }
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 27rem;
+    gap: var(--gap);
+    align-items: start;
+  }
+  .sets {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    display: grid;
+    gap: var(--s4);
+  }
+  .set h3 {
+    margin-bottom: var(--s2);
+  }
+  .set h3 .num {
+    color: var(--ink);
+    margin-left: 0.4em;
+  }
+  .cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(3.25rem, 1fr));
+    border-left: 1px solid var(--rule);
+    border-top: 1px solid var(--rule);
+  }
+  .cell {
+    position: relative;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+  }
+  .cell input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .ch {
+    font-size: 1.75rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .drawn {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .drawn :global(svg) {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+  .cell:has(input:checked) {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cell:has(input:focus-visible) {
+    outline: 2px solid var(--mark);
+    outline-offset: -2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cell:hover {
+      background: var(--paper-2);
+    }
+    .cell:has(input:checked):hover {
+      background: var(--ink);
+    }
+  }
+  .inspector {
+    position: sticky;
+    top: var(--s4);
+    display: grid;
+    gap: var(--s3);
+  }
+  .inspector svg {
+    width: 100%;
+    height: auto;
+    border-top: 1px solid var(--rule-strong);
+  }
+  .inspector :global(.g) {
+    fill: var(--ink);
+    fill-opacity: 0.12;
+    stroke: var(--ink);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .inspector :global(.m) {
+    stroke: var(--rule);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .inspector :global(.adv) {
+    fill: none;
+    stroke: var(--mark);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+    vector-effect: non-scaling-stroke;
+  }
+  .inspector :global(.t) {
+    font-size: 40px;
+    fill: var(--ink-2);
+    font-weight: 500;
+  }
+  .inspector :global(.hd) {
+    stroke: var(--ink-2);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .inspector :global(.on) {
+    fill: var(--mark);
+  }
+  .inspector :global(.off) {
+    fill: var(--paper);
+    stroke: var(--mark);
+    stroke-width: 1.25;
+    vector-effect: non-scaling-stroke;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: var(--s2) var(--s4);
+  }
+  .facts dd {
+    margin-top: 0.15rem;
+  }
+  @media (max-width: 1000px) {
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .inspector {
+      grid-row: 1;
+      top: 0;
+      z-index: 2;
+      grid-template-columns: 12rem minmax(0, 1fr);
+      align-items: start;
+      gap: var(--s3);
+      background: var(--paper);
+      padding-block: var(--s2);
+      margin-inline: calc(-1 * var(--m));
+      padding-inline: var(--m);
+      border-bottom: 1px solid var(--rule);
+    }
+    .facts {
+      grid-template-columns: repeat(2, auto);
+      gap: var(--s1) var(--s3);
+    }
+    .facts dd {
+      margin-top: 0;
+    }
+    .cells {
+      grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+    }
+    .ch {
+      font-size: 1.5rem;
+    }
+    .drawn {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+</style>

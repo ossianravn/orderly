@@ -1,0 +1,264 @@
+---
+import { axis, meta } from "../lib/data";
+const w = axis("wght");
+const o = axis("opsz");
+---
+
+<form
+  class="bar"
+  id="bar"
+  aria-label="Specimen settings"
+  data-expanded="false"
+  data-instances={JSON.stringify(meta.instances)}
+>
+  <div class="group weight">
+    <label class="label" for="c-wght">Weight</label>
+    <input id="c-wght" class="range" type="range" min={w.min} max={w.max} step="1" value={w.default} />
+    <output class="value num" for="c-wght" data-out="wght">{w.default}</output>
+  </div>
+  <div class="extra" id="bar-extra">
+    <div class="group opsz">
+      <span class="label" id="l-opsz">Optical size</span>
+      <div class="seg" role="radiogroup" aria-labelledby="l-opsz">
+        <label><input type="radio" name="opsz-mode" value="auto" checked /><span>Auto</span></label>
+        <label><input type="radio" name="opsz-mode" value="manual" /><span>Manual</span></label>
+      </div>
+      <input
+        id="c-opsz"
+        class="range short"
+        type="range"
+        min={o.min}
+        max={o.max}
+        step="1"
+        value={o.max}
+        aria-labelledby="l-opsz"
+        disabled
+      />
+      <output class="value num" for="c-opsz" data-out="opsz-set">{o.max}</output>
+    </div>
+    <div class="group theme">
+      <span class="label" id="l-theme">Appearance</span>
+      <div class="seg" role="radiogroup" aria-labelledby="l-theme">
+        <label><input type="radio" name="theme" value="system" checked /><span>System</span></label>
+        <label><input type="radio" name="theme" value="light" /><span>Light</span></label>
+        <label><input type="radio" name="theme" value="dark" /><span>Dark</span></label>
+      </div>
+    </div>
+  </div>
+  <button class="more" type="button" aria-expanded="false" aria-controls="bar-extra" aria-label="More settings">
+    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+      <path d="M3 6h9M15 6h2M3 14h2M8 14h9" />
+      <circle cx="13.5" cy="6" r="1.75" />
+      <circle cx="6.5" cy="14" r="1.75" />
+    </svg>
+  </button>
+</form>
+
+<style>
+  .bar {
+    display: none;
+    position: fixed;
+    z-index: 20;
+    left: 50%;
+    bottom: max(var(--s3), env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    align-items: center;
+    gap: var(--s4);
+    padding: var(--s2) var(--s4);
+    background: var(--bar-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--bar-edge);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+    font-size: var(--f-small);
+    white-space: nowrap;
+  }
+  :global(.js) .bar {
+    display: flex;
+  }
+  .extra {
+    display: contents;
+  }
+  .group {
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+  }
+  .group + .group,
+  .extra > .group:first-child {
+    padding-left: var(--s4);
+    border-left: 1px solid var(--rule);
+  }
+  .label {
+    color: var(--ink-2);
+  }
+  .value {
+    display: inline-block;
+    width: 2.6ch;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 8.5rem;
+    height: 1.75rem;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    touch-action: pan-y;
+    --p: 37.5%;
+  }
+  .range.short {
+    width: 5.5rem;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--ink) var(--p), var(--track) var(--p));
+  }
+  .range::-moz-range-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--ink) var(--p), var(--track) var(--p));
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: calc(1.5px - 0.55rem);
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+  }
+  .range::-moz-range-thumb {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+  }
+  .range:focus-visible {
+    outline: none;
+  }
+  .range:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--mark);
+    outline-offset: 2px;
+  }
+  .range:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--mark);
+    outline-offset: 2px;
+  }
+  .range:disabled {
+    cursor: default;
+    opacity: 0.35;
+  }
+  .seg {
+    display: inline-flex;
+    padding: 2px;
+    border-radius: 0.55rem;
+    background: var(--paper-2);
+  }
+  .seg label {
+    position: relative;
+    cursor: pointer;
+  }
+  .seg input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .seg span {
+    display: block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.45rem;
+    color: var(--ink-2);
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .seg input:checked + span {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 0 0 0.5px var(--bar-edge);
+  }
+  .seg input:focus-visible + span {
+    outline: 2px solid var(--mark);
+    outline-offset: 1px;
+  }
+  .more {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.25rem -0.5rem -0.25rem 0;
+    border: 0;
+    border-radius: 0.6rem;
+    background: transparent;
+    cursor: pointer;
+  }
+  .more svg {
+    margin: auto;
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .more[aria-expanded="true"] {
+    background: var(--paper-2);
+  }
+
+  @media (max-width: 1060px) {
+    .bar {
+      left: var(--s2);
+      right: var(--s2);
+      transform: none;
+      flex-wrap: wrap;
+      gap: var(--s2) var(--s3);
+      padding: var(--s1) var(--s3);
+      max-width: 34rem;
+      margin-inline: auto;
+    }
+    .weight {
+      flex: 1;
+      order: 2;
+    }
+    .weight .range {
+      flex: 1;
+      width: auto;
+      min-width: 0;
+    }
+    .more {
+      display: grid;
+      order: 3;
+    }
+    .extra {
+      display: none;
+      order: 1;
+      flex-basis: 100%;
+      padding-block: var(--s2);
+      border-bottom: 1px solid var(--rule);
+    }
+    .bar[data-expanded="true"] .extra {
+      display: grid;
+      gap: var(--s3);
+    }
+    .extra > .group:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .group + .group {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .extra .label {
+      min-width: 6.5rem;
+    }
+    .opsz .range {
+      flex: 1;
+      width: auto;
+      min-width: 0;
+    }
+  }
+</style>

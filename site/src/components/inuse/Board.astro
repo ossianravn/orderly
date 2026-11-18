@@ -1,0 +1,134 @@
+---
+// A departure board at an invented station. Tabular figures and arrows.
+const rows: [string, string, string, string, boolean][] = [
+  ["10:42", "Østerkær", "7", "", false],
+  ["10:48", "Fjordby via Ålund", "3", "Ny tid 10:53", true],
+  ["10:51", "Hvidmose", "7", "", false],
+  ["11:02", "Sølvbjerg", "1", "Aflyst", true],
+  ["11:12", "Lufthavnen", "4", "", false],
+];
+---
+
+<figure class="board" aria-label="Departure board">
+  <div class="head">
+    <p><span class="title">Afgange</span> <span class="sub">Departures</span></p>
+    <p class="where"><span class="sub">Lindhøj St.</span> <span class="clock">10:39</span></p>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Tid</th><th>Til</th><th>Spor</th><th>Bemærkning</th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map(([t, to, track, note, alert]) => (
+          <tr>
+            <td class="t">{t}</td>
+            <td class="to">
+              <span class="arrow">→</span> {to}
+              {note && <span class:list={["inline", { alert }]}>{note}</span>}
+            </td>
+            <td class="track">{track}</td>
+            <td class:list={["note", { alert }]}>{note}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</figure>
+
+<style>
+  .board {
+    --bg: #0f1113;
+    --fg: #eef0f1;
+    --dim: #8d959c;
+    --alert: #ff7556;
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: 0.4rem;
+    padding: clamp(1rem, 2.4vw, 1.75rem);
+    font-variant-numeric: tabular-nums;
+    container-type: inline-size;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid #2a2f34;
+  }
+  .title {
+    font-size: clamp(1.25rem, 4.2cqi, 2rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .sub {
+    color: var(--dim);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-left: 0.5em;
+  }
+  .where {
+    white-space: nowrap;
+  }
+  .clock {
+    font-size: clamp(1.25rem, 4.2cqi, 2rem);
+    font-weight: 500;
+    margin-left: 0.4em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.4rem;
+  }
+  th {
+    text-align: left;
+    color: var(--dim);
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem 0.35rem 0;
+  }
+  td {
+    padding: 0.42rem 0.75rem 0.42rem 0;
+    border-top: 1px solid #1f2327;
+    font-size: clamp(0.95rem, 3.3cqi, 1.6rem);
+    line-height: 1.2;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .to {
+    width: 100%;
+  }
+  .arrow {
+    color: var(--dim);
+  }
+  .track {
+    text-align: center;
+  }
+  .note {
+    font-size: clamp(0.8rem, 2.4cqi, 1.1rem);
+    padding-right: 0;
+  }
+  .alert {
+    color: var(--alert);
+  }
+  .inline {
+    display: none;
+  }
+  @container (max-width: 30rem) {
+    th:last-child,
+    td.note {
+      display: none;
+    }
+    .inline {
+      display: block;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      padding-left: 1.35em;
+    }
+  }
+</style>

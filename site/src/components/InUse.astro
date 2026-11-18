@@ -1,0 +1,66 @@
+---
+import SectionHead from "./SectionHead.astro";
+import Board from "./inuse/Board.astro";
+import IndexCard from "./inuse/IndexCard.astro";
+import Label from "./inuse/Label.astro";
+import Poster from "./inuse/Poster.astro";
+---
+
+<section id="in-use" class="sec" aria-labelledby="in-use-h">
+  <SectionHead
+    id="in-use-h"
+    title="In use"
+    lead="Orderly is made for things that have to be found again: a timetable, a catalogue card, a label on a bottle, a notice on the library door."
+  />
+  <div class="pieces">
+    <div class="poster"><Poster /></div>
+    <div class="board"><Board /></div>
+    <div class="card"><IndexCard /></div>
+    <div class="rx"><Label /></div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .pieces {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "p p p p p b b b b b b b"
+      "p p p p p c c c c l l l";
+    gap: var(--gap);
+    padding-inline: var(--m);
+    align-items: start;
+  }
+  .poster {
+    grid-area: p;
+  }
+  .board {
+    grid-area: b;
+  }
+  .card {
+    grid-area: c;
+    align-self: end;
+  }
+  .rx {
+    grid-area: l;
+    align-self: end;
+  }
+  @media (max-width: 1100px) {
+    .pieces {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "b b"
+        "p c"
+        "p l";
+    }
+  }
+  @media (max-width: 700px) {
+    .pieces {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "b" "p" "c" "l";
+    }
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { axis } from "../lib/data";
+
+const size = 72;
+const text = "Hver ting på sin plads.\nAllt har sin plats.\nKaikki paikallaan.\nAllt á sínum stað.";
+---
+
+<section id="try" class="sec" aria-labelledby="try-h">
+  <SectionHead id="try-h" title="Try it">
+    <dl slot="side" class="label at">
+      <div><dt>Weight</dt><dd data-out="wght">{axis("wght").default}</dd></div>
+      <div><dt>Optical size</dt><dd data-out="opsz" data-auto={String(size)}>{size}</dd></div>
+    </dl>
+    <div class="size">
+      <label class="label" for="t-size">Size</label>
+      <input id="t-size" class="range" type="range" min="12" max="200" step="1" value={size} />
+      <output class="num" for="t-size" data-size-out>{size} px</output>
+    </div>
+  </SectionHead>
+  <div class="grid">
+    <div class="main">
+      <label class="visually-hidden" for="t-text">Text set in Orderly</label>
+      <textarea id="t-text" class="spec" spellcheck="false" rows="4" style={`--size: ${size}px`}>{text}</textarea>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .at {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: var(--s2);
+  }
+  .at div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 10rem;
+  }
+  .at dd {
+    color: var(--ink);
+  }
+  .size {
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    padding-top: 0.2rem;
+  }
+  .size output {
+    display: inline-block;
+    width: 3.6em;
+    text-align: right;
+    font-size: var(--f-small);
+  }
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12rem;
+    height: 1.75rem;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    touch-action: pan-y;
+    --p: 31.8%;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--ink) var(--p), var(--track) var(--p));
+  }
+  .range::-moz-range-track {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--ink) var(--p), var(--track) var(--p));
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: calc(1.5px - 0.55rem);
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+  }
+  .range::-moz-range-thumb {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+  }
+  .range:focus-visible {
+    outline: none;
+  }
+  .range:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--mark);
+    outline-offset: 2px;
+  }
+  textarea {
+    display: block;
+    width: 100%;
+    min-height: 3em;
+    field-sizing: content;
+    resize: none;
+    border: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    border-radius: 0;
+    padding: 0.15em 0 0.25em;
+    background: transparent;
+    font-size: var(--size);
+    line-height: 1.12;
+    letter-spacing: -0.005em;
+    caret-color: var(--mark);
+  }
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--ink);
+  }
+</style>

@@ -1,0 +1,93 @@
+/* Orderly site tokens.
+   Type and space follow golden-ratio typography for a 17 px body in Orderly (mu 2.12, x 0.74, x-mode none):
+   scale 17 * phi^(n/2); line height 1.6 at a 32 em measure (about 68 characters); space units from the
+   27.2 px body line times phi^n. Exception: labels at 12 px, between steps -1 and -2, uppercase and tracked. */
+
+:root {
+  --paper: #f3f5f6;
+  --paper-2: #e8ebed;
+  --ink: #121417;
+  --ink-2: #5a6168;
+  --rule: #c9ced3;
+  --rule-strong: #121417;
+  --mark: #c2381c;
+  --on-mark: #f3f5f6;
+  --bar-bg: rgb(243 245 246 / 0.8);
+  --bar-edge: rgb(18 20 23 / 0.1);
+  --shadow: 0 1px 2px rgb(18 20 23 / 0.06), 0 10px 30px rgb(18 20 23 / 0.12);
+  --track: #cfd4d8;
+  color-scheme: light;
+
+  --f-label: 0.75rem;
+  --f-small: 0.835rem;
+  --f-body: 1.0625rem;
+  --f-lead: 1.35rem;
+  --f-h3: 1.72rem;
+  --f-xl: 2.78rem;
+  --f-2xl: 4.5rem;
+  --lh-body: 1.6;
+  --lh-lead: 1.42;
+  --lh-tight: 1.12;
+
+  --s1: 0.4rem;
+  --s2: 0.65rem;
+  --s3: 1.05rem;
+  --s4: 1.7rem;
+  --s5: 2.75rem;
+  --s6: 4.45rem;
+  --s7: 7.2rem;
+
+  --m: clamp(1rem, 4.4vw, 4rem);
+  --label-col: 11.5rem;
+  --gap: var(--s5);
+  --measure: 32em;
+  --radius: 0.65rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --wght: 400;
+  --opsz: 72;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111315;
+    --paper-2: #1a1d20;
+    --ink: #e9ecee;
+    --ink-2: #9aa1a8;
+    --rule: #2d3237;
+    --rule-strong: #e9ecee;
+    --mark: #ff7556;
+    --on-mark: #111315;
+    --bar-bg: rgb(26 29 32 / 0.8);
+    --bar-edge: rgb(233 236 238 / 0.1);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.45);
+    --track: #3a4046;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #111315;
+  --paper-2: #1a1d20;
+  --ink: #e9ecee;
+  --ink-2: #9aa1a8;
+  --rule: #2d3237;
+  --rule-strong: #e9ecee;
+  --mark: #ff7556;
+  --on-mark: #111315;
+  --bar-bg: rgb(26 29 32 / 0.8);
+  --bar-edge: rgb(233 236 238 / 0.1);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.45);
+  --track: #3a4046;
+  color-scheme: dark;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --f-body: 1rem;
+    --f-lead: 1.2rem;
+    --gap: var(--s4);
+  }
+}

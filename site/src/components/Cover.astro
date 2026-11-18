@@ -1,0 +1,189 @@
+---
+import { axis, drawn, files, kb, masterIndex, meta, repo, widthAt } from "../lib/data";
+
+const sections: [string, string][] = [
+  ["weights", "Weights"],
+  ["sizes", "Sizes"],
+  ["construction", "Construction"],
+  ["in-use", "In use"],
+  ["reading", "Reading"],
+  ["features", "Features"],
+  ["characters", "Characters"],
+  ["try", "Try it"],
+  ["colophon", "Colophon"],
+];
+
+const wght = axis("wght");
+const opsz = axis("opsz");
+// The name is sized so that, at Regular Display, it runs a little past the right edge.
+const nameEm = widthAt(meta.family, masterIndex("RegularDisplay")) / meta.unitsPerEm;
+const facts: [string, string][] = [
+  ["Weight axis", `${wght.min} to ${wght.max}`],
+  ["Optical size axis", `${opsz.min} to ${opsz.max}`],
+  ["Named weights", String(meta.instances.length)],
+  ["Glyphs", String(drawn.length)],
+  ...(meta.languages.length ? ([["Languages", String(meta.languages.length)]] as [string, string][]) : []),
+  ["Licence", "SIL OFL 1.1"],
+  ["Version", meta.version],
+];
+---
+
+<header class="top grid">
+  <a class="wordmark" href="#top" aria-label="Orderly, top of the page">Orderly</a>
+  <nav class="main" aria-label="Sections">
+    <ul>{sections.map(([id, name]) => <li><a href={`#${id}`}>{name}</a></li>)}</ul>
+  </nav>
+</header>
+
+<section id="top" class="cover" aria-labelledby="cover-name">
+  <h1 id="cover-name" class="name spec" style={`--name-em: ${nameEm.toFixed(3)}`}>{meta.family}</h1>
+  <div class="info grid">
+    <dl class="side readout label" aria-label="Current specimen settings">
+      <div><dt>Weight</dt><dd><span data-out="wght">400</span> <span data-out="wname">Regular</span></dd></div>
+      <div><dt>Optical size</dt><dd><span data-out="opsz" data-auto="72">72</span> <span data-out="omode">auto</span></dd></div>
+    </dl>
+    <div class="main">
+      <p class="lead">
+        Orderly is a geometric grotesk drawn in code: one circle, one stem, and two axes, weight and optical size.
+      </p>
+      <div class="actions">
+        <a class="button primary" href={files.ttf.href} download={files.ttf.name}>Download Orderly</a>
+        <span class="label">Variable TTF, {kb("fonts/orderly-variable.ttf")}</span>
+        <a class="source" href={repo}>Source on GitHub</a>
+      </div>
+      <dl class="facts">
+        {facts.map(([k, v]) => <div><dt class="label">{k}</dt><dd class="num">{v}</dd></div>)}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .top {
+    align-items: baseline;
+    padding-block: var(--s3);
+    row-gap: var(--s2);
+  }
+  .wordmark {
+    font-weight: 600;
+    text-decoration: none;
+    font-size: var(--f-body);
+  }
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1) var(--s4);
+    justify-content: flex-end;
+  }
+  nav a {
+    font-size: var(--f-small);
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .cover {
+    padding-bottom: var(--s6);
+  }
+  .name {
+    font-size: calc((100vw - var(--m)) * 1.05 / var(--name-em));
+    line-height: 1;
+    letter-spacing: -0.01em;
+    padding-left: var(--m);
+    margin: var(--s5) 0 var(--s5) -0.04em;
+    overflow-x: clip;
+    white-space: nowrap;
+  }
+  .info {
+    row-gap: var(--s4);
+  }
+  .readout {
+    display: grid;
+    align-content: start;
+    gap: var(--s3);
+    padding-top: 0.5em;
+  }
+  .readout dt {
+    color: var(--ink-2);
+  }
+  .readout dd {
+    color: var(--ink);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s3);
+    margin-top: var(--s4);
+  }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 var(--s3);
+    border-radius: var(--radius);
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform 160ms var(--ease-out), background-color 160ms ease;
+  }
+  .button:active {
+    transform: scale(0.97);
+  }
+  .primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .primary:hover {
+      background: var(--mark);
+      color: var(--on-mark);
+    }
+  }
+  .source {
+    margin-left: var(--s2);
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s4) var(--s5);
+    margin-top: var(--s5);
+    padding-top: var(--s3);
+    border-top: 1px solid var(--rule);
+  }
+  .facts dd {
+    margin-top: var(--s1);
+  }
+  @media (max-width: 760px) {
+    .top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    nav {
+      margin-inline: calc(-1 * var(--m));
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav ul {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      padding-inline: var(--m);
+    }
+    nav li {
+      flex: none;
+    }
+    .name {
+      margin-block: var(--s4);
+    }
+    .readout {
+      order: 2;
+      grid-template-columns: auto auto;
+      justify-content: start;
+      gap: var(--s4);
+    }
+    .source {
+      margin-left: 0;
+    }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s3) var(--s4);
+    }
+  }
+</style>

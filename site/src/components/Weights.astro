@@ -1,0 +1,112 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { axis, meta } from "../lib/data";
+
+const w = axis("wght");
+const phrase = "Kartotek, køreplan, hyldemeter, rækkefølge, årgang";
+---
+
+<section id="weights" class="sec" aria-labelledby="weights-h">
+  <SectionHead
+    id="weights-h"
+    title="Weights"
+    lead={`${meta.instances.length} named weights, ${meta.instances[0].name} to ${meta.instances.at(-1)!.name}, on one axis from ${w.min} to ${w.max}.`}
+  />
+  <div class="ladder" data-ladder>
+  <ol>
+    {
+      meta.instances.map((i) => (
+        <li>
+          <button
+            type="button"
+            class="rung"
+            data-w={i.wght}
+            aria-pressed={i.wght === w.default ? "true" : "false"}
+            aria-label={`${i.name}, ${i.wght}`}
+          >
+            <span class="who">
+              <span class="label">{i.name}</span>
+              <span class="label num">{i.wght}</span>
+            </span>
+            <span class="word" style={`font-weight: ${i.wght}`} aria-hidden="true">
+              {phrase}
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="cursor" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s6);
+  }
+  .ladder {
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .rung {
+    display: grid;
+    grid-template-columns: var(--label-col) minmax(0, 1fr);
+    column-gap: var(--gap);
+    align-items: center;
+    width: 100%;
+    padding: 0 0 0 var(--m);
+    border: 0;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    touch-action: pan-y;
+  }
+  .rung:focus-visible {
+    outline-offset: -2px;
+  }
+  .who {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s2);
+    border-top: 1px solid var(--rule);
+    padding-top: 0.35rem;
+    align-self: stretch;
+  }
+  .rung[aria-pressed="true"] .who .label {
+    color: var(--mark);
+  }
+  .word {
+    font-size: clamp(2.1rem, 5.4vw, 5.25rem);
+    line-height: 1.16;
+    white-space: nowrap;
+    overflow-x: clip;
+    padding-bottom: 0.04em;
+    font-optical-sizing: auto;
+  }
+  .cursor {
+    position: absolute;
+    left: calc(var(--m) - 0.6rem);
+    top: 0;
+    width: 3px;
+    height: calc(100% / var(--rungs, 9));
+    border-radius: 2px;
+    background: var(--mark);
+    transform: translateY(var(--y, 300%));
+    pointer-events: none;
+  }
+  @media (max-width: 760px) {
+    .rung {
+      grid-template-columns: 5.6rem minmax(0, 1fr);
+      column-gap: var(--s2);
+    }
+    .who {
+      flex-direction: column;
+      justify-content: start;
+      gap: 0;
+    }
+    .cursor {
+      left: 0.3rem;
+    }
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ControlBar from "../components/ControlBar.astro";
+import Cover from "../components/Cover.astro";
+import Weights from "../components/Weights.astro";
+import Sizes from "../components/Sizes.astro";
+import Construction from "../components/Construction.astro";
+import InUse from "../components/InUse.astro";
+import Reading from "../components/Reading.astro";
+import Features from "../components/Features.astro";
+import Characters from "../components/Characters.astro";
+import TryIt from "../components/TryIt.astro";
+import Colophon from "../components/Colophon.astro";
+---
+
+<Layout>
+  <Cover />
+  <main id="main">
+    <Weights />
+    <Sizes />
+    <Construction />
+    <InUse />
+    <Reading />
+    <Features />
+    <Characters />
+    <TryIt />
+    <Colophon />
+  </main>
+  <ControlBar />
+</Layout>

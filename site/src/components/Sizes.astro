@@ -1,0 +1,191 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { compare, fmt, ROW_HEIGHT } from "../lib/compare";
+import { axis, packed } from "../lib/data";
+
+const word = "Rækkefølge";
+const w = axis("wght");
+const o = axis("opsz");
+const { rows, width } = compare(packed, word, w.default);
+const waterfall = [11, 14, 18, 24, 32, 48, 72];
+const sample = "Hylde 14, række 3";
+---
+
+<section id="sizes" class="sec" aria-labelledby="sizes-h">
+  <SectionHead
+    id="sizes-h"
+    title="Sizes"
+    lead={`Two designs on one axis. Text, at ${o.min}, is for reading: a taller x-height, sturdier stems, more room. Display, at ${o.max}, is the pure geometry for headlines.`}
+  />
+
+  <div class="compare" data-compare data-word={word}>
+    {
+      rows.map((r, i) => (
+        <figure class="row grid" data-row={i}>
+          <figcaption class="side">
+            <p class="kind">{r.label}</p>
+            <dl class="label facts">
+              <div><dt>opsz</dt><dd>{r.opsz}</dd></div>
+              <div><dt>x-height</dt><dd data-f="xh">{fmt(r.xh)}</dd></div>
+              <div><dt>Stem</dt><dd data-f="stem">{fmt(r.stem)}</dd></div>
+              <div><dt>Width</dt><dd data-f="w">{fmt(r.w)}</dd></div>
+            </dl>
+          </figcaption>
+          <div class="main">
+            <svg
+              class="draw"
+              viewBox={`0 0 ${Math.round(width)} ${ROW_HEIGHT}`}
+              role="img"
+              aria-label={`${word} in the ${r.label} design`}
+              set:html={r.body}
+            />
+          </div>
+        </figure>
+      ))
+    }
+  </div>
+
+  <div class="water">
+    <div class="grid wf-head">
+      <p class="side label">Size</p>
+      <div class="main cols">
+        <p class="label">Optical sizing on</p>
+        <p class="label">Off</p>
+      </div>
+    </div>
+    {
+      waterfall.map((px) => (
+        <div class="grid wf-row">
+          <p class="side label num">{px} px</p>
+          <div class="main cols" style={`font-size: ${px / 16}rem`}>
+            <p class="on" data-tag="On">{sample}</p>
+            <p class="off" data-tag="Off">{sample}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .compare {
+    display: grid;
+    gap: var(--s3);
+    margin-bottom: var(--s6);
+  }
+  .row {
+    margin: 0;
+    align-items: start;
+  }
+  .kind {
+    font-weight: 600;
+    margin-bottom: var(--s2);
+  }
+  .facts {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .facts div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 10rem;
+  }
+  .facts dd {
+    color: var(--ink);
+  }
+  .draw {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .draw :global(.g) {
+    fill: var(--ink);
+  }
+  .draw :global(.m) {
+    stroke: var(--rule);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .draw :global(.mk) {
+    stroke: var(--mark);
+    stroke-width: 1.25;
+    vector-effect: non-scaling-stroke;
+  }
+  .draw :global(.ghost) {
+    stroke: var(--mark);
+    stroke-width: 1.25;
+    stroke-dasharray: 3 4;
+    vector-effect: non-scaling-stroke;
+  }
+  .water {
+    display: grid;
+  }
+  .water > .grid {
+    margin-inline: var(--m);
+    padding-inline: 0;
+  }
+  .wf-head {
+    padding-bottom: var(--s2);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .wf-row {
+    border-top: 1px solid var(--rule);
+    padding-block: var(--s2);
+    align-items: baseline;
+  }
+  .wf-row .cols p {
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow-x: clip;
+    font-weight: var(--wght);
+  }
+  .on {
+    font-optical-sizing: auto;
+  }
+  .off {
+    font-variation-settings: "opsz" 12;
+  }
+  @media (max-width: 760px) {
+    .row {
+      row-gap: var(--s2);
+    }
+    .facts {
+      grid-template-columns: repeat(4, auto);
+      justify-content: start;
+      column-gap: var(--s3);
+    }
+    .facts div {
+      display: grid;
+    }
+    .wf-head {
+      display: none;
+    }
+    .wf-row .cols {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .wf-row .cols p::before {
+      content: attr(data-tag);
+      display: inline-block;
+      width: 2.5rem;
+      font-size: var(--f-label);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .wf-row {
+      row-gap: 0.15rem;
+    }
+    .cols {
+      gap: var(--s3);
+    }
+  }
+</style>

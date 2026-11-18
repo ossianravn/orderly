@@ -1,0 +1,93 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { meta } from "../lib/data";
+import { texts, tiers } from "../lib/texts";
+
+const listed = new Map(meta.languages.map((l) => [l.tag, l.name]));
+const tags = Object.keys(texts).filter((t) => !listed.size || listed.has(t));
+const items = tags.map((tag, i) => ({
+  tag,
+  name: listed.get(tag) ?? tag,
+  text: texts[tag],
+  px: tiers[Math.min(i, tiers.length - 1)],
+}));
+const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).filter((r) => r.length);
+---
+
+<section id="reading" class="sec" aria-labelledby="reading-h">
+  <SectionHead
+    id="reading-h"
+    title="Reading"
+    lead={`Text sizes, in ${items.length} of the ${meta.languages.length || items.length} languages the font covers.`}
+  />
+  <div class="grid">
+    <div class="main tiers">
+      {
+        rows.map((row) => (
+          <div class="tier" style={`--cols: ${row.length}`}>
+            {row.map((it) => (
+              <article lang={it.tag} class="para">
+                <p class="label">
+                  {it.name} <span class="num">{it.px} px</span>
+                </p>
+                <p class={`spec t${it.px}`}>{it.text}</p>
+              </article>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-top: var(--s7);
+  }
+  .tiers {
+    display: grid;
+    gap: var(--s5);
+  }
+  .tier {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--s5) var(--gap);
+    align-items: start;
+  }
+  .para {
+    display: grid;
+    gap: var(--s2);
+    padding-top: var(--s2);
+    border-top: 1px solid var(--rule);
+  }
+  .para .label .num {
+    color: var(--ink);
+    margin-left: 0.4em;
+  }
+  .para p:last-child {
+    max-width: 32em;
+    hyphens: auto;
+    text-wrap: pretty;
+  }
+  .t20 {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+  .t16 {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  .t13 {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .t11 {
+    font-size: 0.6875rem;
+    line-height: 1.65;
+  }
+  @media (max-width: 900px) {
+    .tier {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

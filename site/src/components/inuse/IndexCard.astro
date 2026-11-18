@@ -1,0 +1,85 @@
+---
+// A library catalogue card, typed long ago and still in its drawer.
+---
+
+<div class="wrap">
+<figure class="card" aria-label="Library index card">
+  <p class="call">839.8<br />Søl</p>
+  <div class="entry">
+    <p class="author">Sølvbjerg, Ingrid</p>
+    <p class="body">
+      Orden i små rum : om skuffer, hylder og kartoteker / Ingrid Sølvbjerg ; tegninger af Åse Holm. – Fjordby :
+      Forlaget Ålund, 1987. – 214 s. : ill. ; 21 cm
+    </p>
+    <p class="subjects">1. Opbevaring 2. Hjemmets indretning I. Titel</p>
+  </div>
+  <p class="stamp">Udlånt 12.3. – retur 9.4.</p>
+  <span class="hole" aria-hidden="true"></span>
+</figure>
+</div>
+
+<style>
+  /* A physical card: everything scales with its width (125 x 75 mm), set at 26rem wide. */
+  .wrap {
+    container-type: inline-size;
+  }
+  .card {
+    --ink: #1b1d20;
+    --line: #d5dde4;
+    --u: calc(100cqi / 26);
+    position: relative;
+    aspect-ratio: 5 / 3;
+    background-color: #fbfcfc;
+    background-image: linear-gradient(transparent calc(var(--u) * 21.6 - 1px), var(--line) 0);
+    background-size: 100% calc(var(--u) * 21.6);
+    background-position: 0 calc(var(--u) * 16);
+    color: var(--ink);
+    border-top: calc(var(--u) * 5) solid #c2381c;
+    border-radius: 0.25rem;
+    padding: calc(var(--u) * 16) calc(var(--u) * 20) 0;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 6px 18px rgb(0 0 0 / 0.08);
+    display: grid;
+    grid-template-columns: calc(var(--u) * 72) 1fr;
+    align-content: start;
+    font-size: calc(var(--u) * 13);
+    line-height: calc(var(--u) * 21.6);
+    overflow: hidden;
+  }
+  .call {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .author {
+    font-weight: 600;
+  }
+  .body,
+  .subjects {
+    text-indent: 1.5em;
+  }
+  .stamp {
+    position: absolute;
+    right: calc(var(--u) * 18);
+    bottom: calc(var(--u) * 30);
+    font-size: calc(var(--u) * 11);
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c2381c;
+    border: 1.5px solid currentColor;
+    border-radius: 0.2rem;
+    padding: 0.15em 0.4em;
+    transform: rotate(-2deg);
+  }
+  .hole {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--u) * 10);
+    width: calc(var(--u) * 13);
+    height: calc(var(--u) * 13);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25);
+  }
+</style>

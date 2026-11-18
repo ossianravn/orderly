@@ -1,0 +1,101 @@
+---
+// A pharmacy label: the smallest type on the page, and the one that most needs to be read.
+---
+
+<figure class="label-rx" aria-label="Pharmacy label">
+  <div class="top">
+    <p class="shop">Sölvbergs apotek</p>
+    <p class="tel">Storgatan 14, 0123-456 78</p>
+  </div>
+  <p class="who">Freja Lindqvist</p>
+  <p class="drug">Ibuprofen 400 mg tabletter</p>
+  <p class="dose">1 tablett 3 gånger dagligen vid behov. Högst 6 tabletter per dygn. Tas med vatten, gärna i samband med måltid.</p>
+  <div class="warn">
+    <svg viewBox="0 0 20 18" width="20" height="18" aria-hidden="true"><path d="M10 1.5 18.5 16.5h-17Z" /></svg>
+    <p>Kan påverka förmågan att framföra fordon.</p>
+  </div>
+  <dl class="foot">
+    <div><dt>Förskr.</dt><dd>Nils Åberg</dd></div>
+    <div><dt>Rp</dt><dd>4417-22</dd></div>
+    <div><dt>Antal</dt><dd>100 st</dd></div>
+    <div><dt>Exp.</dt><dd>2026-11-18</dd></div>
+  </dl>
+</figure>
+
+<style>
+  .label-rx {
+    background: #ffffff;
+    color: #17191c;
+    border-radius: 0.35rem;
+    padding: 0.9rem 1rem 0.8rem;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 6px 18px rgb(0 0 0 / 0.08);
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    font-variant-numeric: tabular-nums;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.2rem;
+    border-bottom: 1.5px solid #17191c;
+  }
+  .shop {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tel {
+    font-size: 0.5625rem;
+    color: #4d535a;
+  }
+  .who {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .drug {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .dose {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  .warn {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin-top: 0.15rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+  .warn svg {
+    flex: none;
+    fill: #fff;
+    stroke: #c2381c;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.9rem;
+    margin-top: 0.3rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid #d0d5da;
+    font-size: 0.5625rem;
+    line-height: 1.3;
+  }
+  .foot div {
+    display: flex;
+    gap: 0.3em;
+  }
+  .foot dt {
+    color: #4d535a;
+  }
+</style>
