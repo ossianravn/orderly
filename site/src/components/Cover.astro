@@ -40,7 +40,7 @@ const facts: [string, string][] = [
   <div class="info grid">
     <dl class="side readout label" aria-label="Current specimen settings">
       <div><dt>Weight</dt><dd><span data-out="wght">400</span> <span data-out="wname">Regular</span></dd></div>
-      <div><dt>Optical size</dt><dd><span data-out="opsz" data-auto="72">72</span> <span data-out="omode">auto</span></dd></div>
+      <div><dt>Optical size</dt><dd><span data-out="opsz" data-auto={String(opsz.max)}>{opsz.max}</span> <span data-out="omode">auto</span></dd></div>
     </dl>
     <div class="main">
       <p class="lead">

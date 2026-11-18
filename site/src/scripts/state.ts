@@ -13,7 +13,9 @@ export interface State {
 }
 
 const root = document.documentElement;
-export const state: State = { wght: 400, opszMode: "auto", opsz: 72, theme: "system" };
+// Starting values come from the bar's inputs, which the build set from the font's axes.
+const start = (id: string, fallback: number) => Number(document.querySelector<HTMLInputElement>(id)?.value ?? fallback);
+export const state: State = { wght: start("#c-wght", 400), opszMode: "auto", opsz: start("#c-opsz", 72), theme: "system" };
 
 try {
   const t = localStorage.getItem("orderly-theme");
@@ -105,9 +107,15 @@ export function stopGlide(): void {
   cancelAnimationFrame(tween);
 }
 
+// The optical-size axis, as the page was built with it (the bar carries it from the font data).
+const [OPSZ_MIN, OPSZ_MAX] = (document.getElementById("bar")?.dataset.opszRange ?? "12,72").split(",").map(Number);
+
+/** The optical size a browser picks for text at `px` when optical sizing is auto. */
+export const autoOpsz = (px: number) => Math.min(OPSZ_MAX, Math.max(OPSZ_MIN, px));
+
 /** Where a drawing at `px` per em sits in the design space, given the bar's settings. */
 export function locationFor(px: number): Location {
-  const opsz = state.opszMode === "manual" ? state.opsz : Math.min(72, Math.max(12, px));
+  const opsz = state.opszMode === "manual" ? state.opsz : autoOpsz(px);
   return { wght: state.wght, opsz };
 }
 

@@ -1,4 +1,6 @@
 // Try it: the size slider sets the size of the editable text; weight and optical size come from the bar.
+import { autoOpsz } from "./state";
+
 export function initTryIt(): void {
   const size = document.querySelector<HTMLInputElement>("#t-size");
   const text = document.querySelector<HTMLTextAreaElement>("#t-text");
@@ -12,7 +14,7 @@ export function initTryIt(): void {
     text.style.setProperty("--size", `${v}px`);
     if (out) out.textContent = `${v} px`;
     if (opsz) {
-      opsz.dataset.auto = String(Math.min(72, Math.max(12, v)));
+      opsz.dataset.auto = String(autoOpsz(v));
       if (document.documentElement.dataset.opsz !== "manual") opsz.textContent = opsz.dataset.auto;
     }
     const p = ((v - Number(size.min)) / (Number(size.max) - Number(size.min))) * 100;
