@@ -69,7 +69,13 @@ import { drawn, files, kb, meta, repo } from "../lib/data";
     margin-bottom: var(--s1);
   }
   .links dd + dd {
-    margin-top: 0.15rem;
+    margin-top: 0.35rem;
+  }
+  /* Stacked links each get a 24 px touch target. */
+  .links a {
+    display: inline-block;
+    min-height: 1.5rem;
+    padding-block: 0.1rem;
   }
   .size {
     color: var(--ink-2);

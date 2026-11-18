@@ -55,14 +55,14 @@ export function initLadder(): void {
   ladder.addEventListener("pointerup", end);
   ladder.addEventListener("pointercancel", end);
   ladder.addEventListener("click", (e) => {
+    const keyboard = e.detail === 0;
+    // The click that ends a drag is not a choice of rung; a keyboard click always is.
+    const afterDrag = moved && !keyboard;
+    moved = false;
     const rung = (e.target as Element).closest<HTMLButtonElement>(".rung");
-    if (!rung) return;
-    if (moved) {
-      moved = false;
-      return;
-    }
-    // A click from the keyboard (detail 0) sets the weight at once; pointer clicks glide.
-    glideWeight(Number(rung.dataset.w), e.detail === 0);
+    if (!rung || afterDrag) return;
+    // From the keyboard the weight is set at once; a pointer click glides there.
+    glideWeight(Number(rung.dataset.w), keyboard);
   });
 
   subscribe((s) => {
