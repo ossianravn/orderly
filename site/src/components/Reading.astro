@@ -12,6 +12,11 @@ const items = tags.map((tag, i) => ({
   px: tiers[Math.min(i, tiers.length - 1)],
 }));
 const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).filter((r) => r.length);
+// Every language the font build lists, each with its own sample line, in alphabetical order.
+const samples = meta.languages
+  .filter((l) => typeof l.sample === "string" && l.sample)
+  .map((l) => ({ tag: l.tag, name: l.name, sample: l.sample as string }))
+  .sort((a, b) => a.name.localeCompare(b.name, "en"));
 ---
 
 <section id="reading" class="sec" aria-labelledby="reading-h">
@@ -40,6 +45,23 @@ const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).fi
       }
     </div>
   </div>
+  {
+    samples.length > 0 && (
+      <div class="grid every">
+        <h3 class="side label">{count(samples.length, "language")}</h3>
+        <ul class="main langs">
+          {samples.map((l) => (
+            <li>
+              <span class="label">{l.name}</span>
+              <span lang={l.tag} class="spec line">
+                {l.sample}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
 </section>
 
 <style>
@@ -86,6 +108,30 @@ const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).fi
   .t11 {
     font-size: 0.6875rem;
     line-height: 1.65;
+  }
+  .every {
+    margin-top: var(--s6);
+    row-gap: var(--s2);
+  }
+  .every h3 {
+    padding-top: var(--s2);
+  }
+  .langs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+    column-gap: var(--gap);
+  }
+  .langs li {
+    display: grid;
+    align-content: start;
+    gap: 0.1rem;
+    padding-block: var(--s2);
+    border-top: 1px solid var(--rule);
+  }
+  .langs .line {
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    text-wrap: pretty;
   }
   @media (max-width: 900px) {
     .tier {

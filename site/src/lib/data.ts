@@ -50,9 +50,11 @@ export const files = {
     : null,
 };
 
+/** A served file's size, in KB below a megabyte and in MB with one decimal above. */
 export function kb(path: string): string {
   const bytes = statSync(resolve(site, "public", path)).size;
-  return `${Math.round(bytes / 1024)} KB`;
+  const k = bytes / 1024;
+  return k < 1000 ? `${Math.round(k)} KB` : `${(k / 1024).toFixed(1)} MB`;
 }
 
 export const axis = (tag: string) => meta.axes.find((a) => a.tag === tag)!;
