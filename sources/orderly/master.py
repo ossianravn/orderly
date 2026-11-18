@@ -121,6 +121,9 @@ REGULAR_DISPLAY_PARAMS = {
     "t.top": 0.55,  # t's flat top: this fraction of the way from the x-height to the ascender
     "k.join": 0.3,  # k arm's centre line meets the stem edge at this fraction of the x-height
     "k.armin": 0.1,  # k arm's top stops this many stems short of the leg's foot
+    "k.cut": 0.45,  # k K arm's buried end: vertical cut this fraction of the stem from its left edge
+    "g.rx": 0.5,  # g tail's outer radius / the bowl's width
+    "q.w": 1.0, "amp.w": 1.0, "amp.loopk": 1.0,  # ? and & stroke weights / the stem; & loop / & stroke
     "k.leg": 0.34,  # k leg leaves the arm this fraction of the way up from the stem
     "w.weight": 0.95, "x.weight": 0.96, "z.weight": 1.0,  # diagonal weight / the diagonal weight
     "w.apex": 0.25,  # w's bottom apexes: centre / width
@@ -174,21 +177,3 @@ REGULAR_DISPLAY = Master(
     widths=MappingProxyType(REGULAR_DISPLAY_WIDTHS),
     params=MappingProxyType(REGULAR_DISPLAY_PARAMS),
 )
-
-
-def scaled_master(base: Master, name: str, style: str, wght: int, stem_scale: float) -> Master:
-    """A master with every weight scaled. Used only to prove compatibility, not a drawn master."""
-    s = stem_scale
-    return replace(
-        base,
-        name=name,
-        style=style,
-        wght=wght,
-        stem=base.stem * s,
-        cstem=base.cstem * s,
-        bar=base.bar * s,
-        cbar=base.cbar * s,
-    )
-
-
-MASTERS = [REGULAR_DISPLAY]

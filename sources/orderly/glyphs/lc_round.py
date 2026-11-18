@@ -110,5 +110,6 @@ def a_ss01(m: Master) -> Drawing:
 def g(m: Master) -> Drawing:
     bowl, xe = lc_bowl(m, 0)
     bot = m.desc - m.os(-m.desc)
-    tail = lc_hook(m, 0, m.xh, bot, rx=xe * 0.5, ry=(xe * 0.5) * 0.72, ap=m.g("hook.ap"))
+    rx = xe * m.g("g.rx")
+    tail = lc_hook(m, 0, m.xh, bot, rx=rx, ry=rx * 0.72, ap=m.g("hook.ap"))
     return Drawing(mirror_x([bowl, tail], xe / 2))

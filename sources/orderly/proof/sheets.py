@@ -10,7 +10,7 @@ import skia
 
 from ..build import ROOT
 from ..font import Glyph, build
-from ..master import REGULAR_DISPLAY, Master, scaled_master
+from ..master import REGULAR_DISPLAY, Master
 
 OUT = ROOT / "proofs" / "sheets"
 FONT = skia.Font(skia.Typeface("Segoe UI"), 15)
@@ -185,12 +185,21 @@ def _save(surface, out: Path) -> Path:
     return out
 
 
-def look(args: list[str]) -> None:
-    """Quick look while drawing: the named glyphs large with points, and a string of them filled.
+MASTER_KEYS = {"thin": "THIN_DISPLAY", "regular": "REGULAR_DISPLAY", "black": "BLACK_DISPLAY"}
 
-    uv run orderly look n o [--text "nnonn oonoo"] [--scale 0.8]
+
+def master_named(key: str) -> Master:
+    from .. import weights
+
+    return getattr(weights, MASTER_KEYS[key]) if key != "regular" else REGULAR_DISPLAY
+
+
+def look(args: list[str]) -> None:
+    """Quick look while drawing: the named glyphs large with points, and strings of them filled.
+
+    uv run orderly look n o [--text "nnonn|oonoo"] [--scale 0.8] [--master thin|regular|black|all]
     """
-    scale, text = 0.8, None
+    scale, text, key = 0.8, None, "regular"
     names = []
     it = iter(args)
     for a in it:
@@ -198,34 +207,41 @@ def look(args: list[str]) -> None:
             scale = float(next(it))
         elif a == "--text":
             text = next(it)
+        elif a == "--master":
+            key = next(it)
         else:
             names.append(a)
-    m = REGULAR_DISPLAY
-    glyphs = build(m)
-    if names:
-        p = glyph_sheet(m, names, OUT / "look.png", cols=max(1, int(1500 / (scale * 700))), scale=scale, glyphs=glyphs)
-        print(f"wrote {p.relative_to(ROOT)}")
-    if text:
-        lines = text.split("|")
-        p = text_sheet(m, lines, OUT / "look-text.png", sizes=(40, 120), glyphs=glyphs)
-        print(f"wrote {p.relative_to(ROOT)}")
+    keys = list(MASTER_KEYS) if key == "all" else [key]
+    for k in keys:
+        m = master_named(k)
+        glyphs = build(m)
+        tag = "" if len(keys) == 1 else f"-{k}"
+        if names:
+            p = glyph_sheet(m, names, OUT / f"look{tag}.png", cols=max(1, int(1500 / (scale * 900))), scale=scale,
+                            glyphs=glyphs)
+            print(f"wrote {p.relative_to(ROOT)}")
+        if text:
+            p = text_sheet(m, text.split("|"), OUT / f"look-text{tag}.png", sizes=(40, 110), glyphs=glyphs)
+            print(f"wrote {p.relative_to(ROOT)}")
 
 
 def render_all(names: list[str] | None = None) -> None:
-    """Every sheet: glyph groups with points, filled groups, strings, and the compatibility overlay."""
+    """Every sheet for each Display master (points, filled), strings, and the three masters overlaid."""
     from .text import GROUPS, SPACING_LINES
 
-    m = REGULAR_DISPLAY
-    glyphs = build(m)
-    groups = {k: v for k, v in GROUPS.items() if names is None or k in names}
-    for key, members in groups.items():
-        present = [n for n in members if n in glyphs]
-        if present:
-            p = glyph_sheet(m, present, OUT / f"{key}.png", glyphs=glyphs)
-            glyph_sheet(m, present, OUT / f"{key}-fill.png", cols=8, scale=0.22, points=False, glyphs=glyphs)
-            print(f"wrote {p.relative_to(ROOT)}")
-    text_sheet(m, SPACING_LINES, OUT / "strings.png", glyphs=glyphs)
-    light = scaled_master(m, "CompatLight", "Compat Light", 100, 0.35)
-    present = [n for n in GROUPS["control"] if n in glyphs]
-    overlay_sheet([m, light], present, OUT / "overlay-compat.png")
-    print(f"wrote {OUT.relative_to(ROOT)}/strings.png, overlay-compat.png")
+    for key in MASTER_KEYS:
+        m = master_named(key)
+        glyphs = build(m)
+        out = OUT / key
+        groups = {k: v for k, v in GROUPS.items() if names is None or k in names}
+        for gk, members in groups.items():
+            present = [n for n in members if n in glyphs]
+            if present:
+                glyph_sheet(m, present, out / f"{gk}.png", glyphs=glyphs)
+                glyph_sheet(m, present, out / f"{gk}-fill.png", cols=8, scale=0.22, points=False, glyphs=glyphs)
+        text_sheet(m, SPACING_LINES, out / "strings.png", glyphs=glyphs)
+        print(f"wrote {out.relative_to(ROOT)}/*.png")
+    masters = [master_named(k) for k in MASTER_KEYS]
+    for gk in ("control", "lc-rounds", "uc-rounds", "uc-diagonal", "figures"):
+        overlay_sheet(masters, GROUPS[gk], OUT / f"overlay-{gk}.png", cols=5, scale=0.42)
+    print(f"wrote {OUT.relative_to(ROOT)}/overlay-*.png")

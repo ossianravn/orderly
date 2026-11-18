@@ -10,11 +10,11 @@ Python runs through `uv`. From the repository root:
 | Command                          | Does                                                                                     |
 | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | `uv sync`                        | Installs the pinned environment (`pyproject.toml`, `uv.lock`).                           |
-| `uv run orderly build`           | Generator -> UFO in `build/masters/` -> `fonts/static/OrderlyDisplay-Regular.ttf`.      |
-| `uv run orderly sheets [group]`  | Outline sheets from the generator -> `proofs/sheets/*.png` (no compile needed).          |
+| `uv run orderly build`           | Generator -> UFOs and designspace in `build/masters/` -> `fonts/static/OrderlyDisplay-Regular.ttf` and `fonts/variable/OrderlyDisplay[wght].ttf`. |
+| `uv run orderly sheets [group]`  | Outline sheets per master -> `proofs/sheets/{thin,regular,black}/`, overlays -> `proofs/sheets/overlay-*.png`. |
 | `uv run orderly proof [page]`    | Browser proofs of the compiled font, light and dark -> `proofs/browser/*.png`.           |
 | `uv run orderly look n o --text "nnonn"` | Quick look while drawing: named glyphs large with points, strings filled.        |
-| `uv run orderly check`           | Interpolation check against a throwaway light master, and a variable-font compile.      |
+| `uv run orderly check`           | Interpolation check of the Thin, Regular and Black Display masters.                     |
 | `uv run orderly serve`           | Serves the proof pages on port 4813 (also `.claude/launch.json`, configuration `proofs`). |
 | `uv run orderly all`             | Build, sheets and browser proofs.                                                        |
 
@@ -69,12 +69,19 @@ up the difference to a target area (`sp_area`, 0.09 of the zone height squared).
 hooks of j and f, the tails of g and y) may reach into the sidebearing. `ADJUST` holds hand corrections in units;
 in Phase 1 only J (-15 on the left). Resulting Regular Display values: n 45 | 40, o 34 | 34, H 63 | 63, O 47 | 47.
 
+## Weight axis
+
+`weights.py` defines the Thin and Black Display masters from Regular's numbers. The designspace's design
+coordinates are the lowercase stem (20, 78, 186); its axis map takes user weights to stems (100 20, 200 35, 300 54,
+400 78, 500 96, 600 116, 700 137, 800 160, 900 186), which fontc writes as `avar`, and the nine named instances
+come from the same map. fontc also writes `STAT` (basic, to be reviewed in Phase 5) and `MVAR` (the Black x-height
+is 506).
+
 ## Interpolation check
 
-`uv run orderly check` writes the real master and a throwaway light master (all weights times 0.35) to
-`build/compat/`, runs `fontTools.varLib.interpolatable` on them, and compiles the pair to a variable font with
-fontc. The light master is not a design; it only proves that every glyph function draws the same contours and
-points for a different set of numbers.
+`uv run orderly check` writes the three Display masters to `build/masters/` and runs
+`fontTools.varLib.interpolatable` on them. A glyph function that would draw different points in another master
+fails here (or, for the cases the code guards, at build time with a message).
 
 ## Vertical metrics
 

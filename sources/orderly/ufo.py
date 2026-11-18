@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import ufoLib2
-from fontTools.designspaceLib import AxisDescriptor, DesignSpaceDocument, SourceDescriptor
+from fontTools.designspaceLib import AxisDescriptor, DesignSpaceDocument, InstanceDescriptor, SourceDescriptor
 
 from .font import Glyph
 from .master import Master
@@ -70,20 +70,32 @@ def _draw_notdef(g, m: Master) -> None:
         pen.endPath()
 
 
-def write_designspace(masters: list[Master], ufos: list[Path], path: Path, family: str = FAMILY) -> Path:
+def write_designspace(masters: list[Master], ufos: list[Path], path: Path, family: str = FAMILY,
+                      weight_map: list[tuple[int, float]] | None = None, names: list[str] | None = None) -> Path:
+    """Designspace with a weight axis. With weight_map (user weight -> lowercase stem) the design coordinates
+    are stems, the axis map becomes the font's avar, and names gives one named instance per mapped weight."""
     doc = DesignSpaceDocument()
     w = AxisDescriptor()
     w.tag, w.name = "wght", "Weight"
     w.minimum = min(m.wght for m in masters)
     w.maximum = max(m.wght for m in masters)
     w.default = 400 if w.minimum <= 400 <= w.maximum else w.minimum
+    if weight_map:
+        w.map = [(float(u), float(d)) for u, d in weight_map]
     doc.addAxis(w)
+    design = dict(weight_map or [])
     for m, ufo in zip(masters, ufos):
         s = SourceDescriptor()
         s.path = str(ufo)
         s.filename = ufo.name
         s.familyName, s.styleName = family, m.style
-        s.location = {"Weight": m.wght}
+        s.location = {"Weight": design.get(m.wght, m.wght)}
         doc.addSource(s)
+    for (u, d), name in zip(weight_map or [], names or []):
+        i = InstanceDescriptor()
+        i.familyName, i.styleName = family, name
+        i.name = f"{family} {name}"
+        i.location = {"Weight": d}
+        doc.addInstance(i)
     doc.write(str(path))
     return path

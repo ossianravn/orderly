@@ -229,6 +229,29 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 2 (weight) landed (Claude Opus 5.5). Thin and Black Display masters (`sources/orderly/weights.py`)
+  and the variable font `fonts/variable/OrderlyDisplay[wght].ttf`: `wght` 100 to 900, default 400, nine named
+  instances Thin to Black, `avar` from a user-to-stem map, STAT and MVAR from fontc. Checked:
+  `fontTools.varLib.interpolatable` on Thin, Regular and Black reports no problem; the ladder of nine weights (96
+  and 32 px), words and character sets of Thin and Black (200, 96, 32 px), their spacing strings, and overlays of
+  the three masters were looked at, light and dark. Weak spots: Black `e s a.ss01` have small but open counters;
+  the Black `?` hook narrows where it turns into the stem; Black `3` and the `2 3 5` terminals cut close to the
+  counter, so their arms are short; Thin `t`'s hook terminal is small and reads as a dot at 32 px.
+
+  Settled numbers (implementer's choice, the generator is the source of truth):
+
+  | Master  | stem / cap stem | bar / cap bar | round side, top | join | apex / stem | dot / stem | spacing area | x-height |
+  | ------- | --------------- | ------------- | --------------- | ---- | ----------- | ---------- | ------------ | -------- |
+  | Thin    | 20 / 22         | 19 / 20.5     | 1.08, 1.03      | 0.08 | 1.5         | 1.9        | 0.112        | 500      |
+  | Regular | 78 / 84         | 70 / 76       | 1.07, 1.03      | 0.24 | 0.8         | 1.2        | 0.09         | 500      |
+  | Black   | 186 / 196       | 128 / 134     | 1.03, 0.94      | 0.44 | 0.42        | 1.1        | 0.072        | 506      |
+
+  Widths: each glyph's Regular width plus its count of vertical strokes (`VSTEMS`) times the stem change times 0.55
+  (Thin) or 0.9 (Black); rounds count less, so `O` stays a circle in Black and its counter goes oval. Weight map
+  (user weight to lowercase stem, the mean of an arithmetic and a geometric step): 100 20, 200 35, 300 54, 400 78,
+  500 96, 600 116, 700 137, 800 160, 900 186. Black needs its own numbers for hook radii, `e`'s bar, the bowls'
+  rounds of `P R B`, the `& ?` strokes and the ring of `Å å`; Thin for hook radii, dots, quotes and the comma.
+
 - 2026-11-18: Phase 1 review fixes (Claude Opus 5.5). `s S` redrawn from a skeleton of two stacked rounds and a
   short curved spine (west extreme of the upper round at 72 %, east extreme of the lower at 28 %, spine 1.06 of
   the stem, apertures as c and C). Double-storey `a.ss01` drawn (feature wiring waits for Phase 4) and `æ` built

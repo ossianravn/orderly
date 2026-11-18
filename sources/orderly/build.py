@@ -10,7 +10,8 @@ import sys
 from pathlib import Path
 
 from .font import build as build_glyphs
-from .master import MASTERS, REGULAR_DISPLAY, Master, scaled_master
+from .master import REGULAR_DISPLAY, Master
+from .weights import DISPLAY, WEIGHT_MAP, WEIGHT_NAMES
 from .ufo import write_designspace, write_ufo
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,19 +54,26 @@ def _write_metrics(m: Master, glyphs) -> None:
     (BUILD / f"metrics-{m.name}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
 
 
+def masters_ufos(masters: list[Master]) -> list[Path]:
+    return [write_ufo(m, build_glyphs(m), ufo_path(m)) for m in masters]
+
+
+def build_variable() -> Path:
+    """The Display design on a weight axis, 100 to 900, from the Thin, Regular and Black masters."""
+    ufos = masters_ufos(DISPLAY)
+    ds = write_designspace(DISPLAY, ufos, BUILD / "masters" / "OrderlyDisplay.designspace", family="Orderly Display",
+                           weight_map=WEIGHT_MAP, names=WEIGHT_NAMES)
+    out = compile_font(ds, FONTS / "variable" / "OrderlyDisplay[wght].ttf", BUILD / "fontc" / "variable")
+    print(f"built {out.relative_to(ROOT)}")
+    return out
+
+
 def check_compat() -> bool:
-    """Prove the masters interpolate: a throwaway light master beside each real one, checked and compiled."""
-    real = MASTERS[0]
-    light = scaled_master(real, "CompatLight", "Compat Light", 100, 0.35)
-    ufos = []
-    for m in (light, real):
-        ufos.append(write_ufo(m, build_glyphs(m), BUILD / "compat" / f"Orderly-{m.name}.ufo"))
-    ds = write_designspace([light, real], ufos, BUILD / "compat" / "Orderly-compat.designspace")
-    print("interpolatable check:")
+    """Prove the masters interpolate: fontTools' interpolatable check on the three Display masters."""
+    ufos = masters_ufos(DISPLAY)
     r = subprocess.run([sys.executable, "-m", "fontTools.varLib.interpolatable", *map(str, ufos)], capture_output=True,
                        text=True)
     report = (r.stdout + r.stderr).strip()
+    print("interpolatable check (Thin, Regular, Black):")
     print(report or "  no problems reported")
-    out = compile_font(ds, BUILD / "compat" / "Orderly-compat-VF.ttf", BUILD / "compat" / "fontc")
-    print(f"compiled variable font {out.relative_to(ROOT)}")
     return r.returncode == 0 and not report

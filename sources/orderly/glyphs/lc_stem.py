@@ -69,7 +69,7 @@ def kay(m: Master, w: float, h: float, st: float, top: float, join: float) -> li
     top_w = hwidth((st, y0), (w, h), t)
     c1 = (w - m.g("k.armin") * st - top_w / 2, h)
     c0 = (st, y0)
-    arm = branch(c0, c1, t * thin, t, st * 0.45)
+    arm = branch(c0, c1, t * thin, t, st * m.g("k.cut"))
     f_ = m.g("k.leg")
     l1 = (c0[0] + (c1[0] - c0[0]) * f_, c0[1] + (c1[1] - c0[1]) * f_)
     bot_w = hwidth(l1, (w, 0), t)

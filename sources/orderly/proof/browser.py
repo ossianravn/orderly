@@ -16,10 +16,13 @@ from .text import CTRL_LC, CTRL_UC, DANISH, ENGLISH, WORDS, spacing_strings
 PORT = 4813
 PAGES = BUILD / "proof-pages"
 OUT = ROOT / "proofs" / "browser"
-FONT_FILE = FONTS / "static" / "OrderlyDisplay-Regular.ttf"
+FONT_FILE = FONTS / "variable" / "OrderlyDisplay[wght].ttf"
+WEIGHTS = [(100, "Thin"), (200, "ExtraLight"), (300, "Light"), (400, "Regular"), (500, "Medium"),
+           (600, "SemiBold"), (700, "Bold"), (800, "ExtraBold"), (900, "Black")]
 
 CSS = """
-@font-face { font-family: Orderly; src: url('/fonts/static/OrderlyDisplay-Regular.ttf?v=%(v)s'); }
+@font-face { font-family: Orderly; font-weight: 100 900;
+  src: url('/fonts/variable/OrderlyDisplay%%5Bwght%%5D.ttf?v=%(v)s'); }
 :root { color-scheme: light dark; --paper: #f6f7f9; --ink: #16171a; --mute: #8a8f98; --rule: #d9dce2; }
 @media (prefers-color-scheme: dark) { :root { --paper: #141518; --ink: #eceef2; --mute: #7d828c; --rule: #2c2f35; } }
 body { margin: 0; padding: 32px 40px; background: var(--paper); color: var(--ink); font-family: Orderly; }
@@ -30,14 +33,15 @@ p { margin: 0; max-width: 34em; }
 """
 
 
-def _page(title: str, body: str) -> str:
+def _page(title: str, body: str, weight: int = 400) -> str:
     v = int(FONT_FILE.stat().st_mtime) if FONT_FILE.exists() else 0
     return (f"<!doctype html><html><head><meta charset='utf-8'><title>{title}</title><style>{CSS % {'v': v}}"
-            f"</style></head><body>{body}</body></html>")
+            f"body {{ font-weight: {weight}; }}</style></head><body>{body}</body></html>")
 
 
-def _line(text: str, px: int) -> str:
-    return f"<div class='l'>{px} px</div><div class='w' style='font-size:{px}px'>{html.escape(text)}</div>"
+def _line(text: str, px: int, label: str = "") -> str:
+    return (f"<div class='l'>{px} px {label}</div><div class='w' style='font-size:{px}px;line-height:1.3'>"
+            f"{html.escape(text)}</div>")
 
 
 def pages() -> dict[str, str]:
@@ -69,6 +73,22 @@ def pages() -> dict[str, str]:
     out["spacing"] = _page("spacing", body)
     body = "".join(_line(s, 120) for s in (lc[:15], lc[15:], uc[:13], uc[13:], fig))
     out["charset"] = _page("charset", body)
+    for wt, key in ((100, "thin"), (900, "black")):
+        out[f"charset-{key}"] = _page(f"charset {key}", body, wt)
+        b = ""
+        for px in (200, 96, 32):
+            b += "".join(_line(w, px) for w in (WORDS[:6] if px < 200 else WORDS[:4]))
+        out[f"words-{key}"] = _page(f"words {key}", b, wt)
+        b = "<div class='l'>36 px</div>" + "".join(
+            f"<div class='w' style='font-size:36px'>{html.escape(x)}</div>"
+            for x in spacing_strings(lc, True) + spacing_strings(uc, False) + spacing_strings(fig, False))
+        out[f"spacing-{key}"] = _page(f"spacing {key}", b, wt)
+    for px in (96, 32):
+        b = ""
+        for text in ("Hamburgefonstiv", "HAMBURGEFONSTIV", "Orderly 0123456789", "Blåbærsyltetøj på rugbrød"):
+            b += "".join(f"<div class='l'>{px} px {name} {wt}</div><div class='w' style='font-size:{px}px;"
+                         f"font-weight:{wt};line-height:1.25'>{html.escape(text)}</div>" for wt, name in WEIGHTS)
+        out[f"ladder-{px}"] = _page(f"ladder {px}", b)
     return out
 
 

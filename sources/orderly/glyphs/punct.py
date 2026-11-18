@@ -74,7 +74,8 @@ def exclam(m: Master) -> Drawing:
 def question(m: Master) -> Drawing:
     """The 2's round, carried down on its right into a short centred stem, over the dot."""
     w = m.w("question")
-    st, side, th = m.stem, m.stem * m.rside, m.bar * m.rtop
+    k = m.g("q.w")  # the hook is drawn a little lighter than the stem in heavy weights
+    st, side, th = m.stem * k, m.stem * m.rside * k, m.bar * m.rtop * k
     d = dot_d(m)
     rx = w / 2
     top = m.cap + m.os(m.cap)
@@ -153,20 +154,21 @@ def ampersand(m: Master) -> Drawing:
     """A small loop; from its lower right a larger bowl runs down the left, round the bottom and up the right to a
     vertical cut; a straight leg runs from the loop's left side to the baseline at the bottom right."""
     w = m.w("ampersand")
-    st, b = m.cstem * m.fig, m.cbar * m.fig
+    st, b = m.cstem * m.fig * m.g("amp.w"), m.cbar * m.fig * m.g("amp.w")
     side, th = st * m.rside, b * m.rtop
     t, ti = m.tension, m.tension_in
     os = m.os(m.cap)
     ru = m.cap * m.g("amp.loop")
     uo = Ell(w * m.g("amp.loopx"), m.cap + os - ru, ru * m.g("amp.loopw"), ru, t)
-    us = side * 0.92
-    ui = uo.inset(us, th, ti)
-    um = uo.inset(us / 2, th / 2, t)  # the loop's skeleton
+    lk = m.g("amp.loopk")  # the small loop is drawn lighter in heavy weights so its counter stays open
+    us, uth = side * 0.92 * lk, th * lk
+    ui = uo.inset(us, uth, ti)
+    um = uo.inset(us / 2, uth / 2, t)  # the loop's skeleton
     hb = m.cap * m.g("amp.bowl")
     lo = Ell(w * m.g("amp.bowlx"), (hb - os) / 2, w * m.g("amp.bowlw") / 2, (hb + os) / 2, t)
     q = um.arc("E", "S")
     pj, dj = q.at(q.crossings(0, um.cx + um.rx * m.g("amp.leave"))[0])
-    wj = (us + th) / 2 * 0.9
+    wj = (us + uth) / 2 * 0.9
     nodes = [
         (pj, dj, wj),
         ((lo.cx - lo.rx + side / 2, lo.cy), (0.0, -1.0), side),
