@@ -10,7 +10,7 @@ from . import Drawing, glyph
 
 @glyph("space", 0x20, "pun")
 def space(m: Master) -> Drawing:
-    return Drawing([], advance=round(m.xh * 0.46))
+    return Drawing([], advance=round(m.xh * m.space))
 
 
 @glyph("H", 0x48, "uc")

@@ -1,10 +1,10 @@
 """Command line: uv run orderly <command>.
 
-  build              generator -> UFO -> fonts/static/OrderlyDisplay-Regular.ttf, fonts/variable/OrderlyDisplay[wght].ttf
+  build              generator -> six UFO masters -> fonts/variable/Orderly[opsz,wght].ttf
   sheets [glyphs]    outline sheets from the generator -> proofs/sheets/*.png
   proof [pages]      browser proofs of the compiled font -> proofs/browser/*.png
   serve              serve the proof pages on port 4813
-  check              interpolation check of the Thin, Regular and Black masters
+  check              interpolation check of the six masters; instantiate every corner
   all                build, sheets and proofs
 """
 
@@ -18,9 +18,8 @@ def main() -> None:
     cmd = args[0] if args else "all"
     rest = args[1:]
     if cmd in ("build", "all"):
-        from .build import build_static, build_variable
+        from .build import build_variable
 
-        build_static()
         build_variable()
     if cmd in ("sheets", "all"):
         from .proof.sheets import render_all

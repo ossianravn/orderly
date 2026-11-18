@@ -10,11 +10,11 @@ Python runs through `uv`. From the repository root:
 | Command                          | Does                                                                                     |
 | -------------------------------- | ---------------------------------------------------------------------------------------- |
 | `uv sync`                        | Installs the pinned environment (`pyproject.toml`, `uv.lock`).                           |
-| `uv run orderly build`           | Generator -> UFOs and designspace in `build/masters/` -> `fonts/static/OrderlyDisplay-Regular.ttf` and `fonts/variable/OrderlyDisplay[wght].ttf`. |
-| `uv run orderly sheets [group]`  | Outline sheets per master -> `proofs/sheets/{thin,regular,black}/`, overlays -> `proofs/sheets/overlay-*.png`. |
+| `uv run orderly build`           | Generator -> six UFO masters and a designspace in `build/masters/` -> `fonts/variable/Orderly[opsz,wght].ttf`. |
+| `uv run orderly sheets [group]`  | Outline sheets per master -> `proofs/sheets/{thin,regular,black}[-text]/`, overlays -> `proofs/sheets/overlay*-*.png`. |
 | `uv run orderly proof [page]`    | Browser proofs of the compiled font, light and dark -> `proofs/browser/*.png`.           |
 | `uv run orderly look n o --text "nnonn"` | Quick look while drawing: named glyphs large with points, strings filled.        |
-| `uv run orderly check`           | Interpolation check of the Thin, Regular and Black Display masters.                     |
+| `uv run orderly check`           | Interpolation check of all six masters; instantiates the six weight and size corners.   |
 | `uv run orderly serve`           | Serves the proof pages on port 4813 (also `.claude/launch.json`, configuration `proofs`). |
 | `uv run orderly all`             | Build, sheets and browser proofs.                                                        |
 
@@ -69,18 +69,25 @@ up the difference to a target area (`sp_area`, 0.09 of the zone height squared).
 hooks of j and f, the tails of g and y) may reach into the sidebearing. `ADJUST` holds hand corrections in units;
 in Phase 1 only J (-15 on the left). Resulting Regular Display values: n 45 | 40, o 34 | 34, H 63 | 63, O 47 | 47.
 
-## Weight axis
+## Axes
 
-`weights.py` defines the Thin and Black Display masters from Regular's numbers. The designspace's design
-coordinates are the lowercase stem (20, 78, 186); its axis map takes user weights to stems (100 20, 200 35, 300 54,
-400 78, 500 96, 600 116, 700 137, 800 160, 900 186), which fontc writes as `avar`, and the nine named instances
-come from the same map. fontc also writes `STAT` (basic, to be reviewed in Phase 5) and `MVAR` (the Black x-height
-is 506).
+Six masters: {Thin, Regular, Black} x {Text (opsz 12), Display (opsz 72)} in `weights.py` and `sizes.py`. The
+weight axis's design coordinates are the Display lowercase stem (20, 78, 160); its map (100 20, 200 34, 300 52,
+400 78, 500 94, 600 110, 700 127, 800 143, 900 160) becomes `avar`, and the nine named instances (at opsz 12) come
+from the same map. The optical-size axis runs 12 to 72 in its own units (CSS px), default 12. The default master
+is Regular Text; its UFO style name is "Regular", so the font names itself Orderly Regular. fontc writes `STAT`
+(basic, Phase 5 reviews it) and `MVAR` (x-heights 500 to 520).
+
+## Browser proofs
+
+`uv run orderly proof` renders every page light and dark at device scale 1, and the small-size page also at 2.
+The `optical-auto` page checks, in Chrome, that `font-optical-sizing: auto` draws each size exactly as the fixed
+`opsz` of that size (clamped to 12..72) and differently from the far end of the axis, and prints the result.
 
 ## Interpolation check
 
-`uv run orderly check` writes the three Display masters to `build/masters/` and runs
-`fontTools.varLib.interpolatable` on them. A glyph function that would draw different points in another master
+`uv run orderly check` writes the six masters to `build/masters/`, runs
+`fontTools.varLib.interpolatable` on them and instantiates the corners. A glyph function that would draw different points in another master
 fails here (or, for the cases the code guards, at build time with a message).
 
 ## Vertical metrics

@@ -53,6 +53,8 @@ class Master:
 
     # Dots: diameter / stem.
     dot: float = 1.2
+    # Word space / x-height.
+    space: float = 0.46
 
     # Body widths (outer extremes, font units); each glyph reads its own.
     widths: MappingProxyType = field(default_factory=lambda: MappingProxyType({}))

@@ -22,7 +22,7 @@ def write_ufo(m: Master, glyphs: dict[str, Glyph], path: Path, family: str = FAM
     font = ufoLib2.Font()
     i = font.info
     i.familyName = family
-    i.styleName = m.style
+    i.styleName = m.style.removesuffix(" Text")  # the default master (Regular Text) names the font Regular
     i.unitsPerEm = 1000
     i.capHeight, i.xHeight = m.cap, m.xh
     i.ascender, i.descender = m.asc, m.desc
@@ -72,8 +72,11 @@ def _draw_notdef(g, m: Master) -> None:
 
 def write_designspace(masters: list[Master], ufos: list[Path], path: Path, family: str = FAMILY,
                       weight_map: list[tuple[int, float]] | None = None, names: list[str] | None = None) -> Path:
-    """Designspace with a weight axis. With weight_map (user weight -> lowercase stem) the design coordinates
-    are stems, the axis map becomes the font's avar, and names gives one named instance per mapped weight."""
+    """Designspace with a weight axis and, when the masters differ in optical size, an opsz axis.
+
+    With weight_map (user weight -> Display lowercase stem) the weight design coordinates are stems, the axis
+    map becomes the font's avar, and `names` gives one named instance per mapped weight at the default size.
+    """
     doc = DesignSpaceDocument()
     w = AxisDescriptor()
     w.tag, w.name = "wght", "Weight"
@@ -83,6 +86,12 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
     if weight_map:
         w.map = [(float(u), float(d)) for u, d in weight_map]
     doc.addAxis(w)
+    sizes = sorted({m.opsz for m in masters})
+    if len(sizes) > 1:
+        o = AxisDescriptor()
+        o.tag, o.name = "opsz", "Optical size"
+        o.minimum, o.maximum, o.default = sizes[0], sizes[-1], sizes[0]
+        doc.addAxis(o)
     design = dict(weight_map or [])
     for m, ufo in zip(masters, ufos):
         s = SourceDescriptor()
@@ -90,12 +99,16 @@ def write_designspace(masters: list[Master], ufos: list[Path], path: Path, famil
         s.filename = ufo.name
         s.familyName, s.styleName = family, m.style
         s.location = {"Weight": design.get(m.wght, m.wght)}
+        if len(sizes) > 1:
+            s.location["Optical size"] = m.opsz
         doc.addSource(s)
     for (u, d), name in zip(weight_map or [], names or []):
         i = InstanceDescriptor()
         i.familyName, i.styleName = family, name
         i.name = f"{family} {name}"
         i.location = {"Weight": d}
+        if len(sizes) > 1:
+            i.location["Optical size"] = sizes[0]
         doc.addInstance(i)
     doc.write(str(path))
     return path

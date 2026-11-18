@@ -230,6 +230,34 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 3 (optical size) landed (Claude Opus 5.5). Three Text masters (`sources/orderly/sizes.py`)
+  beside the three Display masters; one variable font `fonts/variable/Orderly[opsz,wght].ttf`, family Orderly,
+  `wght` 100 to 900 and `opsz` 12 to 72, default Regular at opsz 12 (Text), nine named weights at opsz 12. The
+  Display-only variable font and the lone static were removed. Checked: interpolatable on all six masters reports
+  no problem; the corners wght 100 / 400 / 900 x opsz 12 / 72 instantiate; two builds give the same bytes; in
+  Chrome 157, `font-optical-sizing: auto` renders each size from 9 to 96 px pixel-identical to the fixed opsz the
+  size calls for (clamped to 12..72) and different from the other end (`uv run orderly proof optical-auto`
+  prints the comparison). Looked at: Danish and English paragraphs at 9, 11, 13, 16 px in Text, Display and Segoe
+  UI columns at device scale 1 and 2, headlines at 72 to 180 px, opsz steps 12 to 72 at 64 px. Text reads clearly
+  better than Display at 9 to 13 px; next to Segoe UI it sets about 10 % wider and a shade lighter, and its
+  geometric single-storey a and round o make it a little less familiar at 9 px, but it is comfortably readable
+  from 11 px. Display is finer and tighter at 72 px and up.
+
+  Settled numbers (implementer's choice; the generator is the source of truth):
+
+  | Master          | stem / cap | bar / cap | x-height | join | dot / stem | apertures c, C | spacing area | n sidebearings | space |
+  | --------------- | ---------- | --------- | -------- | ---- | ---------- | -------------- | ------------ | -------------- | ----- |
+  | Thin Text       | 28 / 30    | 26 / 28   | 516      | 0.12 | 1.75       | 50, 47         | 0.132        | 68, 63         | 279   |
+  | Regular Text    | 86 / 92    | 76 / 82   | 516      | 0.30 | 1.32       | 50, 47         | 0.112        | 58, 52         | 268   |
+  | Black Text      | 148 / 156  | 106 / 112 | 520      | 0.46 | 1.16       | 56, 54         | 0.094        | 49, 42         | 250   |
+  | Thin Display    | 20 / 22    | 19 / 20.5 | 500      | 0.08 | 1.9        | 42, 40         | 0.112        | 56, 51         | 230   |
+  | Regular Display | 78 / 84    | 70 / 76   | 500      | 0.24 | 1.2        | 42, 40         | 0.09         | 45, 40         | 230   |
+  | Black Display   | 160 / 168  | 114 / 120 | 504      | 0.40 | 1.12       | 52, 50         | 0.076        | 38, 31         | 232   |
+
+  Text widths are the Display sibling's plus the stroke growth and `TEXT_EXTRA` (narrow letters and rounds gain
+  10 to 18 units). Figure terminals open from 18 to 26 degrees in Regular Text. Open: the Text masters were judged
+  in running text and character strings, not glyph by glyph at large size; Black Text `e` and `s` are tight at 9 px.
+
 - 2026-11-18: Heavy end reworked after the Phase 2 review (Claude Opus 5.5). Black Display at a lowercase stem of
   160 (capital 168, bars 114 / 120, x-height 504, spacing area 0.076, widths re-derived with factor 0.95 plus
   extra room for a a.ss01 r s S 2 3 4 5 ?); weight map 100 20, 200 34, 300 52, 400 78, 500 94, 600 110, 700 127,

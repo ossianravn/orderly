@@ -16,13 +16,18 @@ from .text import CTRL_LC, CTRL_UC, DANISH, ENGLISH, WORDS, spacing_strings
 PORT = 4813
 PAGES = BUILD / "proof-pages"
 OUT = ROOT / "proofs" / "browser"
-FONT_FILE = FONTS / "variable" / "OrderlyDisplay[wght].ttf"
+FONT_FILE = FONTS / "variable" / "Orderly[opsz,wght].ttf"
 WEIGHTS = [(100, "Thin"), (200, "ExtraLight"), (300, "Light"), (400, "Regular"), (500, "Medium"),
            (600, "SemiBold"), (700, "Bold"), (800, "ExtraBold"), (900, "Black")]
 
 CSS = """
 @font-face { font-family: Orderly; font-weight: 100 900;
-  src: url('/fonts/variable/OrderlyDisplay%%5Bwght%%5D.ttf?v=%(v)s'); }
+  src: url('/fonts/variable/Orderly%%5Bopsz%%2Cwght%%5D.ttf?v=%(v)s'); }
+.cols { display: grid; grid-template-columns: repeat(3, 30em); gap: 2.4em; align-items: start; }
+.cols p { max-width: none; }
+.text { font-optical-sizing: none; font-variation-settings: "opsz" 12; }
+.disp { font-optical-sizing: none; font-variation-settings: "opsz" 72; }
+.sys { font-family: "Segoe UI", Arial, sans-serif; }
 :root { color-scheme: light dark; --paper: #f6f7f9; --ink: #16171a; --mute: #8a8f98; --rule: #d9dce2; }
 @media (prefers-color-scheme: dark) { :root { --paper: #141518; --ink: #eceef2; --mute: #7d828c; --rule: #2c2f35; } }
 body { margin: 0; padding: 32px 40px; background: var(--paper); color: var(--ink); font-family: Orderly; }
@@ -89,6 +94,45 @@ def pages() -> dict[str, str]:
             b += "".join(f"<div class='l'>{px} px {name} {wt}</div><div class='w' style='font-size:{px}px;"
                          f"font-weight:{wt};line-height:1.25'>{html.escape(text)}</div>" for wt, name in WEIGHTS)
         out[f"ladder-{px}"] = _page(f"ladder {px}", b)
+    out.update(size_pages())
+    return out
+
+
+def size_pages() -> dict[str, str]:
+    """Optical size: Text against Display and a system face at reading sizes; auto against fixed opsz;
+    headlines; opsz steps at one size."""
+    out = {}
+    b = ""
+    for px in (9, 11, 13, 16):
+        for text in (DANISH, ENGLISH):
+            cells = "".join(f"<div><div class='l'>{px} px {lab}</div><p class='{cls}' style='font-size:{px}px;"
+                            f"line-height:1.45'>{html.escape(text)}</p></div>"
+                            for cls, lab in (("text", "Orderly Text (opsz 12)"), ("disp", "Orderly Display (opsz 72)"),
+                                             ("sys", "Segoe UI")))
+            b += f"<div class='cols'>{cells}</div>"
+    out["small"] = _page("small sizes", b)
+    b = ""
+    for px in (9, 12, 16, 24, 36, 48, 72, 96):
+        exp = min(max(px, 12), 72)
+        cells = "".join(f"<div><div class='l'>{px} px {lab}</div><div class='w' data-cmp='{px}-{key}' style='font-size:"
+                        f"{px}px;{css}'>Hamburgefonstiv</div></div>"
+                        for key, lab, css in (("auto", "auto", "font-optical-sizing:auto"),
+                                              ("fixed", f"fixed opsz {exp}",
+                                               f"font-optical-sizing:none;font-variation-settings:'opsz' {exp}")))
+        b += f"<div class='cols' style='grid-template-columns:repeat(2, max-content)'>{cells}</div>"
+    out["optical-auto"] = _page("optical sizing auto", b)
+    b = ""
+    for px in (72, 120, 180):
+        for cls, lab in (("disp", "Display (opsz 72)"), ("text", "Text (opsz 12)")):
+            b += "".join(f"<div class='l'>{px} px {lab}</div><div class='w {cls}' style='font-size:{px}px'>"
+                         f"{html.escape(w)}</div>" for w in ("Orderly Hamburgefonstiv",) if True)
+    out["headlines"] = _page("headlines", b)
+    b = ""
+    for wt in (400, 900, 100):
+        for o in (12, 24, 36, 48, 72):
+            b += (f"<div class='l'>64 px weight {wt} opsz {o}</div><div class='w' style='font-size:64px;font-weight:"
+                  f"{wt};font-optical-sizing:none;font-variation-settings:\"opsz\" {o}'>Hamburgefonstiv 2048</div>")
+    out["opsz-steps"] = _page("opsz steps", b)
     return out
 
 
@@ -130,6 +174,27 @@ def _launch(p):
     raise RuntimeError("no Chromium-based browser found; run `uv run playwright install chromium`")
 
 
+def _compare_auto(page) -> None:
+    """Pixel-compare each auto sample with itself re-set to the opsz the browser should pick (clamp of the size to
+    12..72), in the same place; and, as a control, to the opposite end of the axis, which must differ."""
+    res = []
+    for px in (9, 12, 16, 24, 36, 48, 72, 96):
+        el = page.locator(f"[data-cmp='{px}-auto']")
+        auto = el.screenshot()
+        exp, other = min(max(px, 12), 72), (72 if px < 42 else 12)
+        shots = []
+        for o in (exp, other):
+            el.evaluate("(e, css) => e.style.cssText = css",
+                        f'font-size:{px}px;font-optical-sizing:none;font-variation-settings:"opsz" {o}')
+            shots.append(el.screenshot())
+        el.evaluate("(e, css) => e.style.cssText = css", f"font-size:{px}px;font-optical-sizing:auto")
+        res.append(f"{px}px auto=opsz {exp}: {'yes' if auto == shots[0] else 'NO'}"
+                   f" (control opsz {other} differs: {'yes' if auto != shots[1] else 'NO'})")
+    print("font-optical-sizing auto in Chrome:")
+    for r in res:
+        print("  " + r)
+
+
 def render(only: list[str] | None = None, width: int = 1600) -> None:
     from playwright.sync_api import sync_playwright
 
@@ -141,16 +206,21 @@ def render(only: list[str] | None = None, width: int = 1600) -> None:
         with sync_playwright() as p:
             browser = _launch(p)
             print(f"browser: {browser.browser_type.name} {browser.version}")
-            for scheme in ("light", "dark"):
+            runs = [(s, 1) for s in ("light", "dark")] + [(s, 2) for s in ("light", "dark")]
+            for scheme, dsf in runs:
                 ctx = browser.new_context(viewport={"width": width, "height": 900}, color_scheme=scheme,
-                                          device_scale_factor=1)
+                                          device_scale_factor=dsf)
                 page = ctx.new_page()
                 for n in names:
+                    if dsf == 2 and n != "small":
+                        continue
                     page.goto(f"http://127.0.0.1:{PORT}/build/proof-pages/{n}.html")
                     page.evaluate("document.fonts.ready.then(() => document.fonts.size)")
                     page.wait_for_timeout(150)
-                    out = OUT / f"{n}-{scheme}.png"
+                    out = OUT / (f"{n}-{scheme}.png" if dsf == 1 else f"{n}-2x-{scheme}.png")
                     page.screenshot(path=str(out), full_page=True)
+                    if n == "optical-auto" and scheme == "light":
+                        _compare_auto(page)
                     print(f"wrote {out.relative_to(ROOT)}")
                 ctx.close()
             browser.close()

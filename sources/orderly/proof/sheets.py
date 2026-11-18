@@ -185,13 +185,16 @@ def _save(surface, out: Path) -> Path:
     return out
 
 
-MASTER_KEYS = {"thin": "THIN_DISPLAY", "regular": "REGULAR_DISPLAY", "black": "BLACK_DISPLAY"}
+MASTER_KEYS = {"thin": "THIN_DISPLAY", "regular": "REGULAR_DISPLAY", "black": "BLACK_DISPLAY",
+               "thin-text": "THIN_TEXT", "regular-text": "REGULAR_TEXT", "black-text": "BLACK_TEXT"}
 
 
 def master_named(key: str) -> Master:
-    from .. import weights
+    from .. import sizes, weights
 
-    return getattr(weights, MASTER_KEYS[key]) if key != "regular" else REGULAR_DISPLAY
+    if key == "regular":
+        return REGULAR_DISPLAY
+    return getattr(sizes if key.endswith("-text") else weights, MASTER_KEYS[key])
 
 
 def look(args: list[str]) -> None:
@@ -241,7 +244,9 @@ def render_all(names: list[str] | None = None) -> None:
                 glyph_sheet(m, present, out / f"{gk}-fill.png", cols=8, scale=0.22, points=False, glyphs=glyphs)
         text_sheet(m, SPACING_LINES, out / "strings.png", glyphs=glyphs)
         print(f"wrote {out.relative_to(ROOT)}/*.png")
-    masters = [master_named(k) for k in MASTER_KEYS]
-    for gk in ("control", "lc-rounds", "uc-rounds", "uc-diagonal", "figures"):
-        overlay_sheet(masters, GROUPS[gk], OUT / f"overlay-{gk}.png", cols=5, scale=0.42)
+    for tag, keys in (("", ("thin", "regular", "black")), ("-text", ("thin-text", "regular-text", "black-text")),
+                      ("-sizes", ("regular-text", "regular"))):
+        masters = [master_named(k) for k in keys]
+        for gk in ("control", "lc-rounds", "uc-rounds", "uc-diagonal", "figures"):
+            overlay_sheet(masters, GROUPS[gk], OUT / f"overlay{tag}-{gk}.png", cols=5, scale=0.42)
     print(f"wrote {OUT.relative_to(ROOT)}/overlay-*.png")
