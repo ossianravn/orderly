@@ -8,7 +8,7 @@ from ..geom import Contour, line
 from ..master import Master
 from ..parts import Ell, box, mirror_x, mirror_y
 from ..rounds import bowl, cut_round
-from ..shapes import arch_top, lc_bowl, lc_hook, lc_round
+from ..shapes import arch_top, lc_bowl, lc_hook, lc_round, notch_bot
 from ..strokes import SSpec, s_curve
 from . import Drawing, glyph
 
@@ -26,8 +26,8 @@ def e(m: Master) -> Drawing:
     # the bar is placed by its lower edge, always below the round's east extreme, so every master has the same
     # points: the bar's lower edge meets the round on the same quadrant
     y0 = eo.cy - m.xh * m.g("e.drop")
-    y1 = y0 + m.bar
-    x = ei.cx + ei.rx * math.cos(math.radians(m.ap_c))
+    y1 = y0 + m.bar * m.g("e.barw")
+    x = ei.cx + ei.rx * math.cos(math.radians(m.g("e.ap")))
     outer = eo.arc("S", "E", "N", "W", "S", "E")
     o = outer.piece(outer.crossings(1, y0)[0], outer.crossings(0, x)[-1])
     inner = ei.arc("S", "E", "N", "W", "S", "E")
@@ -101,7 +101,7 @@ def a_ss01(m: Master) -> Drawing:
     bo = Ell(w - rxb, (hb - m.os(m.xh)) / 2, rxb, (hb + m.os(m.xh)) / 2, m.tension)
     bi = bo.inset(side, th * m.g("a2.bar"), m.tension_in)
     jw = th * (1 - m.join)
-    bowl_c = bowl(bo, bi, st, jw * m.g("a2.bar"), jw, st * 0.5, m.join_turn, m.tension)
+    bowl_c = bowl(bo, bi, st, jw * m.g("a2.bar"), jw, st * 0.5, m.join_turn, m.tension, None, notch_bot(m))
     del eo_o, eo_i
     return Drawing(mirror_x(hook + [bowl_c], w / 2))
 
@@ -111,5 +111,5 @@ def g(m: Master) -> Drawing:
     bowl, xe = lc_bowl(m, 0)
     bot = m.desc - m.os(-m.desc)
     rx = xe * m.g("g.rx")
-    tail = lc_hook(m, 0, m.xh, bot, rx=rx, ry=rx * 0.72, ap=m.g("hook.ap"))
+    tail = lc_hook(m, 0, m.xh, bot, rx=rx, ry=rx * m.g("g.ry"), ap=m.g("hook.ap"))
     return Drawing(mirror_x([bowl, tail], xe / 2))

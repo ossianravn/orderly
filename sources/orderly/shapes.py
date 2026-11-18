@@ -48,8 +48,20 @@ def n_arch(m: Master, x0: float, width: float, host=None, base: float = 0.0, cut
     eo, ei, s, th = _arch_ellipses(m, x0, width)
     if cut is not None:
         x = ei.cx + ei.rx * math.sin(math.radians(cut))
-        return arm(eo, ei, s, x, th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension), None
-    return arch(eo, ei, s if host is None else host, base, th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension)
+        return arm(eo, ei, s, x, th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension, notch_top(m)), None
+    return arch(eo, ei, s if host is None else host, base, th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension,
+                notch_top(m))
+
+
+def notch_top(m: Master) -> tuple[float, float]:
+    """Band for an outer join at a stem whose top is the x-height: below the corner by at least `join.notch`,
+    below the round's top by at most `join.deep` (both / x-height)."""
+    return m.xh + m.os(m.xh) - m.xh * m.g("join.deep"), m.xh - m.xh * m.g("join.notch")
+
+
+def notch_bot(m: Master) -> tuple[float, float]:
+    """The same band mirrored for a join at the baseline."""
+    return m.xh * m.g("join.notch"), -m.os(m.xh) + m.xh * m.g("join.deep")
 
 
 def _arch_ellipses(m: Master, x0: float, width: float):
@@ -81,7 +93,8 @@ def lc_bowl(m: Master, x0: float, width: float | None = None):
     eo = Ell(eo.cx + dx, eo.cy, eo.rx, eo.ry, eo.t)
     ei = Ell(ei.cx + dx, ei.cy, ei.rx, ei.ry, ei.t)
     th = arch_top(m)
-    c = bowl(eo, ei, s, th * (1 - m.join), th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension)
+    c = bowl(eo, ei, s, th * (1 - m.join), th * (1 - m.join), m.stem * 0.5, m.join_turn, m.tension,
+             notch_top(m), notch_bot(m))
     return c, eo.p("E")[0]
 
 

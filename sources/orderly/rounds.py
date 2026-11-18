@@ -74,7 +74,7 @@ def tangent_from(path: Path, p: Pt, nth: int = 0) -> tuple[int, float]:
 
 
 def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, depth: float, side: int,
-              turn: float) -> tuple[Path, Join]:
+              turn: float, limit: tuple[float, float] | None = None) -> tuple[Path, Join]:
     """Cut the inner edge where it meets the host stem edge and place the outer edge for the join weight.
 
     at_start: the join is at the start of `inner` (the edge then runs away from the stem); otherwise at its end.
@@ -86,7 +86,7 @@ def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, de
         trimmed = inner.piece(pos, None) if at_start else inner.piece(None, pos)
         pt, tan = inner.at(pos)
         away = tan if at_start else neg(tan)
-        return trimmed, stem_join(pt, away, host, depth, weight, side, turn)
+        return trimmed, stem_join(pt, away, host, depth, weight, side, turn, limit)
     hits = meet(inner, host)
     ia, ib, pt = hits[0] if at_start else hits[-1]
     trimmed = inner.piece(ia, None) if at_start else inner.piece(None, ia)
@@ -104,7 +104,8 @@ def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, de
         q = flat[k][0]
         dist = abs((q[0] - pt[0]) * away[1] - (q[1] - pt[1]) * away[0])
         outer = q
-        if dist >= weight:
+        hi = limit[1] if limit is not None else 1e9  # on a shoulder (m) only the corner bound applies
+        if dist >= weight or q[1] >= hi:
             break
         k += step
     depth *= 0.5  # a curved host is a shoulder, not a stem: bury the stubs less deep
@@ -115,19 +116,28 @@ def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, de
 
 
 def shoulder(j: Join, top: Pt, t: float) -> Path:
-    """Outer edge from a join up to a horizontal top extreme (the shoulder of n, the top of b)."""
+    """Outer edge from a join up to a horizontal top extreme (the shoulder of n, the top of b).
+
+    The edge leaves the stem at between 1.6 and 2 times the angle of its chord to the top (2 is a circular arc),
+    so the shoulder is one round arc. Steeper, it climbs and turns sharply; at the chord's own angle the curve
+    goes straight and breaks at the top. Either is the beak heavy joins otherwise grow.
+    """
     sense = 1.0 if top[0] > j.outer[0] else -1.0
-    return Path([tcurve(j.outer, j.d, top, (sense, 0.0), t)])
+    a_d = math.atan2(abs(j.d[1]), abs(j.d[0]))
+    a_c = math.atan2(abs(top[1] - j.outer[1]), abs(top[0] - j.outer[0]))
+    a = min(max(a_d, 1.6 * a_c), 2.0 * a_c)
+    d = (math.copysign(math.cos(a), j.d[0]), math.copysign(math.sin(a), j.d[1]))
+    return Path([tcurve(j.outer, d, top, (sense, 0.0), t)])
 
 
 def arch(eo: Ell, ei: Ell, host: float | Path, base: float, w_join: float, depth: float, turn: float,
-         t: float) -> tuple[Contour, Path]:
+         t: float, limit: tuple[float, float] | None = None) -> tuple[Contour, Path]:
     """n-shoulder: joins a stem on the left, rises to the top, and comes down as a straight stem to y = base.
 
     Returns the contour and its outer right edge (the host for a following arch, as in m).
     """
     inner = ei.arc("W", "N", "E")
-    inner, j = join_into(inner, host, True, w_join, depth, +1, turn)
+    inner, j = join_into(inner, host, True, w_join, depth, +1, turn, limit)
     xr, xri = eo.p("E")[0], ei.p("E")[0]
     inner.to((xri, base))
     outer = shoulder(j, eo.p("N"), t).then(eo.arc("N", "E")).to((xr, base))
@@ -135,24 +145,26 @@ def arch(eo: Ell, ei: Ell, host: float | Path, base: float, w_join: float, depth
     return c, outer
 
 
-def arm(eo: Ell, ei: Ell, s: float, x_cut: float, w_join: float, depth: float, turn: float, t: float) -> Contour:
+def arm(eo: Ell, ei: Ell, s: float, x_cut: float, w_join: float, depth: float, turn: float, t: float,
+        limit: tuple[float, float] | None = None) -> Contour:
     """The arm of r: the n's shoulder from the stem, over the top, cut vertically at x_cut."""
     inner = ei.arc("W", "N", "E")
-    inner, j = join_into(inner, s, True, w_join, depth, +1, turn)
+    inner, j = join_into(inner, s, True, w_join, depth, +1, turn, limit)
     inner = inner.cut_x(x_cut, "head", -1)
     outer = shoulder(j, eo.p("N"), t).then(eo.arc("N", "E")).cut_x(x_cut, "head", -1)
     return Contour.of(outer.reversed(), line(j.outer, j.outer_in, j.inner_in, j.inner), inner)
 
 
-def bowl(eo: Ell, ei: Ell, s: float, w_top: float, w_bot: float, depth: float, turn: float, t: float) -> Contour:
+def bowl(eo: Ell, ei: Ell, s: float, w_top: float, w_bot: float, depth: float, turn: float, t: float,
+         top_limit: tuple[float, float] | None = None, bot_limit: tuple[float, float] | None = None) -> Contour:
     """A round joined at top and bottom to a stem whose right edge is x = s (the bowl of b and p)."""
     inner = ei.arc("W", "N", "E", "S", "W")
     cs = inner.crossings(0, s)
     inner = inner.piece(cs[0], cs[-1])
     pt, tan = inner.at((0, 0.0))
-    jt = stem_join(pt, tan, s, depth, w_top, +1, turn)
+    jt = stem_join(pt, tan, s, depth, w_top, +1, turn, top_limit)
     pb, tb = inner.at((len(inner.segs) - 1, 1.0))
-    jb = stem_join(pb, neg(tb), s, depth, w_bot, -1, turn)
+    jb = stem_join(pb, neg(tb), s, depth, w_bot, -1, turn, bot_limit)
     top = shoulder(jt, eo.p("N"), t)
     bottom = shoulder(jb, eo.p("S"), t).reversed()
     outer = top.then(eo.arc("N", "E", "S")).then(bottom)

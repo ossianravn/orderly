@@ -87,9 +87,15 @@ def question(m: Master) -> Drawing:
     ys = d * m.g("excl.gap") + d
     cx = w * m.g("q.x")
     o = eo.arc("W", "N", "E").cut_x(xt, "tail", 0)
-    o.add(tcurve(eo.p("E"), (0, -1), (cx + st / 2, yv), (0, -1), m.tension)).to((cx + st / 2, ys))
     i = ei.arc("W", "N", "E").cut_x(xt, "tail", 0)
-    i.add(tcurve(ei.p("E"), (0, -1), (cx - st / 2, yv), (0, -1), m.tension_in)).to((cx - st / 2, ys))
+    # the neck: from the round's east side down to the stem, offset square to its own direction
+    e_mid = ((eo.p("E")[0] + ei.p("E")[0]) / 2, eo.cy)
+    mid = ((e_mid[0] + cx) / 2, (eo.cy + yv) / 2)
+    a = math.atan2(yv - eo.cy, cx - e_mid[0])
+    nodes = [(e_mid, (0.0, -1.0), side), (mid, (math.cos(a), math.sin(a)), st * m.g("q.neck")), ((cx, yv), (0.0, -1.0), st)]
+    nl, nr = offsets(nodes, [(0.6, 0.6), (0.6, 0.6)])
+    o.then(nl).to((cx + st / 2, ys))  # travelling down, the left of travel is the outer (east) side
+    i.then(nr).to((cx - st / 2, ys))
     c = Contour.of(o, i.reversed())
     return Drawing([c if c.area() > 0 else c.reversed(), low_dot(m, cx)])
 

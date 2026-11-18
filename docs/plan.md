@@ -23,6 +23,7 @@ Decided by the maintainer on 2026-11-18 unless marked otherwise.
 | Git           | Commit and push to `main` without asking when the change is non-destructive.                                                                                                   |
 | Capital widths | Planner's ruling after the Phase 1 review (2026-11-18): the brief's capital widths are advance widths over the cap height. `O Q` are true circles and so come to about 1.17; the circle wins. |
 | Vertical metrics | Planner's ruling (2026-11-18): placeholder values (950 / -250) until Phase 5 sets them by the Google Fonts specification.                                                     |
+| Weight range  | Planner's ruling after the Phase 2 review (2026-11-18): the top master is a lowercase stem of about 160, not 186 (an ultra the geometry cannot carry). Nine named weights and `wght` 100 to 900 stay; the map is tuned by eye for even steps. |
 | QA tool       | Planner's ruling (2026-11-18): no downloaded executables. fontbakery from PyPI in the uv environment for local QA from Phase 4; fontspector only in CI through its official setup action (Phase 5). |
 
 Everything below is the planner's proposal (Claude, 2026-11-18). The maintainer can overrule any of it; record the
@@ -228,6 +229,15 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 ## Progress log
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
+
+- 2026-11-18: Heavy end reworked after the Phase 2 review (Claude Opus 5.5). Black Display at a lowercase stem of
+  160 (capital 168, bars 114 / 120, x-height 504, spacing area 0.076, widths re-derived with factor 0.95 plus
+  extra room for a a.ss01 r s S 2 3 4 5 ?); weight map 100 20, 200 34, 300 52, 400 78, 500 94, 600 110, 700 127,
+  800 143, 900 160. The join primitive now bounds the outer join point in a band (never past the stem's corner,
+  never deeper than `join.deep` under the round's top) and draws the shoulder as one round arc (start angle 1.6 to
+  2 times the chord's), so heavy joins are quiet notches; Thin and Regular joins are unchanged except a softer
+  shoulder in Regular `m 5 a.ss01 æ`. Black `e` has a lighter bar and longer terminal, `c C G` open apertures,
+  `s S` even weight, `?` keeps its weight through the neck (all weights), `g` a roomier hook, `r` a longer arc.
 
 - 2026-11-18: Phase 2 (weight) landed (Claude Opus 5.5). Thin and Black Display masters (`sources/orderly/weights.py`)
   and the variable font `fonts/variable/OrderlyDisplay[wght].ttf`: `wght` 100 to 900, default 400, nine named

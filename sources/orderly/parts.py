@@ -103,19 +103,24 @@ class Join:
 
 
 def stem_join(inner_pt: Pt, inner_dir: Pt, s: float, depth: float, weight: float, side: int,
-              turn: float = 0.0) -> Join:
+              turn: float = 0.0, limit: tuple[float, float] | None = None) -> Join:
     """Join an edge pair to the stem edge x = s.
 
     inner_pt is where the counter's edge crosses the stem edge and inner_dir its direction travelling away from
     the stem. The outer edge is placed so the stroke there measures `weight` square to the edges; `side` is +1
     when the outer edge lies above the inner (a top join) and -1 below. `turn` (degrees) swings the outer edge's
-    direction toward the horizontal, which softens the shoulder.
+    direction toward the horizontal, which softens the shoulder. `limit` (lo, hi) bounds the outer point's height:
+    it never passes the stem's corner, and the notch never cuts deeper than the band, so heavy joins take their
+    thinning from the counter side (the crotch rising toward the stem) instead of a deep outer cut.
     """
     a = math.atan2(inner_dir[1], inner_dir[0])
     a -= side * math.copysign(math.radians(turn), inner_dir[0])
     d = (math.cos(a), math.sin(a))
     dxa = max(abs(inner_dir[0]), 0.2)
-    outer = (s, inner_pt[1] + side * weight / dxa)
+    y = inner_pt[1] + side * weight / dxa
+    if limit is not None:  # a quiet notch: neither past the stem's corner nor deeper than the band allows
+        y = min(max(y, limit[0]), limit[1])
+    outer = (s, y)
     ko = depth / max(abs(d[0]), 0.2)
     ki = depth / dxa
     outer_in = (outer[0] - d[0] * ko, outer[1] - d[1] * ko)

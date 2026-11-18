@@ -97,7 +97,9 @@ REGULAR_DISPLAY_WIDTHS = {
 }
 
 REGULAR_DISPLAY_PARAMS = {
-    "e.drop": 0.04,  # e's bar: its lower edge lies this far under the round's centre / x-height
+    "e.drop": 0.04,
+    "e.barw": 1.0, "e.ap": 42,  # e's bar / the bar weight; its terminal's angle (as c)
+    "g.ry": 0.72, "q.neck": 1.0,  # g tail: vertical / horizontal radius; ? neck weight / its stem  # e's bar: its lower edge lies this far under the round's centre / x-height
     "s.mid": 0.51,  # s S spine centre / height (the optical centre)
     "s.upper": 0.92,  # upper round's width / lower round's
     "s.thin": 0.92, "s.side": 0.98, "s.spinew": 1.06,  # top-bottom, sides, spine / the round's weights and stem
@@ -121,6 +123,8 @@ REGULAR_DISPLAY_PARAMS = {
     "t.top": 0.55,  # t's flat top: this fraction of the way from the x-height to the ascender
     "k.join": 0.3,  # k arm's centre line meets the stem edge at this fraction of the x-height
     "k.armin": 0.1,  # k arm's top stops this many stems short of the leg's foot
+    "join.notch": 0.04,  # an outer join stays at least this far (/ x-height) inside the stem's end
+    "join.deep": 0.2,  # and cuts at most this far (/ x-height) under the round's top
     "k.cut": 0.45,  # k K arm's buried end: vertical cut this fraction of the stem from its left edge
     "g.rx": 0.5,  # g tail's outer radius / the bowl's width
     "q.w": 1.0, "amp.w": 1.0, "amp.loopk": 1.0,  # ? and & stroke weights / the stem; & loop / & stroke
