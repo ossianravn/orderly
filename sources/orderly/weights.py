@@ -54,6 +54,7 @@ THIN_PARAMS = {
     "slash.weight": 1.1, "1.flagw": 1.1, "paren.w": 1.3,
     "Q.top": 0.95, "a2.bar": 1.0, "s.spinew": 1.08, "s.thin": 0.95,
     "join.deep": 0.5,
+    "hook.ap": 40,  # a shorter tail, so the Thin t f j hooks do not end in a curl that reads as a dot
 }
 
 THIN_DISPLAY = replace(

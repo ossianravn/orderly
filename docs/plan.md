@@ -255,7 +255,8 @@ Newest first. One entry per phase or review: date, what landed, how it was check
   | Black Display   | 160 / 168  | 114 / 120 | 504      | 0.40 | 1.12       | 52, 50         | 0.076        | 38, 31         | 232   |
 
   Text widths are the Display sibling's plus the stroke growth and `TEXT_EXTRA` (narrow letters and rounds gain
-  10 to 18 units). Figure terminals open from 18 to 26 degrees in Regular Text. Open: the Text masters were judged
+  10 to 18 units). Figure terminals open from 18 to 26 degrees in Regular Text. Thin `t f j` hooks end sooner
+  (`hook.ap` 40), so the Thin t no longer ends in a curl that reads as a dot at 32 px. Open: the Text masters were judged
   in running text and character strings, not glyph by glyph at large size; Black Text `e` and `s` are tight at 9 px.
 
 - 2026-11-18: Heavy end reworked after the Phase 2 review (Claude Opus 5.5). Black Display at a lowercase stem of
