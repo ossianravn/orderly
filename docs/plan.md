@@ -108,8 +108,19 @@ An agent cannot judge a letter from coordinates. Two proof tools are part of the
 
 ### Site data
 
-The font build exports one JSON file for the site: axes, instances, metrics, features, languages, the glyph list with
-Unicode values, advances and outlines per master. The site shows these numbers; none is typed by hand.
+The site consumes only the `fonts/` folder, so the font work and the site work touch different files:
+
+- `fonts/web/Orderly[opsz,wght].woff2`: the variable font for the page (script subsets are added in Phase 5).
+- `fonts/data/orderly.json`: `family`, `version`, `unitsPerEm`, `metrics` (ascender, cap height, x-height per optical
+  size, descender, line metrics), `axes` (tag, name, min, default, max), `instances` (name, wght), `masters` (id, name,
+  wght, opsz, and the master's main numbers: stems, bars, x-height, overshoot, join, spacing), `features` (tag, name,
+  a sample string), `languages`, and `glyphs` (name, unicode, char, category, advance and sidebearings per master).
+- `fonts/data/outlines.json`: per glyph, per master id, the source contours as point lists (`x`, `y`, and whether the
+  point is on the curve), in the same order in every master, so the page can draw and interpolate them. Cubic curves,
+  overlapping parts kept as separate contours and labelled by part where the generator knows it (stem, bowl, arch).
+
+The site's build copies what it serves from `fonts/` into its own output. It shows these numbers; none is typed by
+hand. A change to this contract is agreed in this section first.
 
 ## Phases
 
