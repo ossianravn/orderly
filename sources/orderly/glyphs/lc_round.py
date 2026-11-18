@@ -6,8 +6,8 @@ import math
 
 from ..geom import Contour, line
 from ..master import Master
-from ..parts import box, mirror_x
-from ..rounds import cut_round
+from ..parts import Ell, box, mirror_x, mirror_y
+from ..rounds import bowl, cut_round
 from ..shapes import arch_top, lc_bowl, lc_hook, lc_round
 from ..strokes import SSpec, s_curve
 from . import Drawing, glyph
@@ -41,8 +41,9 @@ def e(m: Master) -> Drawing:
 def s_spec(m: Master, x0: float = 0.0) -> SSpec:
     return SSpec(
         x0=x0, w=m.w("s"), bot=-m.os(m.xh), top=m.xh + m.os(m.xh), ym=m.xh * m.g("s.mid"), upper=m.g("s.upper"),
-        th=arch_top(m) * m.g("s.thin"), side=m.stem * m.rside * m.g("s.thin"), spine=m.stem * m.g("s.spinew"),
-        steep=m.g("s.steep"), ap=m.g("s.ap"), t=m.tension, t_in=m.tension_in, k=m.g("s.k"), tilt=m.g("s.tilt"), lean=m.g("s.lean") * m.w("s"),
+        th=arch_top(m) * m.g("s.thin"), side=m.stem * m.rside * m.g("s.side"), spine=m.stem * m.g("s.spinew"),
+        ap=m.ap_c, t=m.tension, t_in=m.tension_in, hu=m.g("s.hu"), hl=m.g("s.hl"), lean=m.g("s.lean") * m.w("s"),
+        steep=m.g("s.steep"), t_bowl=m.g("s.tbowl"), t_mid=m.g("s.tmid"),
     )
 
 
@@ -81,6 +82,28 @@ def q(m: Master) -> Drawing:
 @glyph("a", 0x61, "lc")
 def a(m: Master) -> Drawing:
     return Drawing(_bowled(m, 0, m.xh, True, m.w("a")))
+
+
+@glyph("a.ss01", None, "lc")
+def a_ss01(m: Master) -> Drawing:
+    """Double-storey a: a stem rising into the hook of f, over a small bowl joined to the stem with thinned joins.
+
+    Drawn with the stem on the left and mirrored, like d from b.
+    """
+    w, st = m.w("a.ss01"), m.stem
+    eo_o, eo_i = lc_round(m)
+    side, th = st * m.rside, arch_top(m)
+    top = m.xh + m.os(m.xh)
+    rx = w * m.g("a2.hook")
+    hook = mirror_y([lc_hook(m, 0, top, 0, rx, rx * m.g("a2.hookry"), 90 - m.ap_c)], top / 2)
+    hb = m.xh * m.g("a2.bowl")
+    rxb = (w + side - st + m.bite * st) / 2
+    bo = Ell(w - rxb, (hb - m.os(m.xh)) / 2, rxb, (hb + m.os(m.xh)) / 2, m.tension)
+    bi = bo.inset(side, th * m.g("a2.bar"), m.tension_in)
+    jw = th * (1 - m.join)
+    bowl_c = bowl(bo, bi, st, jw * m.g("a2.bar"), jw, st * 0.5, m.join_turn, m.tension)
+    del eo_o, eo_i
+    return Drawing(mirror_x(hook + [bowl_c], w / 2))
 
 
 @glyph("g", 0x67, "lc")

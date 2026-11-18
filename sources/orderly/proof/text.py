@@ -4,7 +4,7 @@ from __future__ import annotations
 
 GROUPS = {
     "control": ["H", "O", "n", "o"],
-    "lc-rounds": ["o", "c", "e", "a", "d", "b", "p", "q", "g"],
+    "lc-rounds": ["o", "c", "e", "a", "a.ss01", "d", "b", "p", "q", "g"],
     "lc-arches": ["n", "h", "m", "r", "u"],
     "lc-straight": ["i", "j", "l", "t", "f", "s", "k"],
     "lc-diagonal": ["v", "w", "x", "y", "z"],

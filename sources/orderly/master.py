@@ -80,7 +80,7 @@ class Master:
 
 REGULAR_DISPLAY_WIDTHS = {
     # lowercase
-    "o": 516, "n": 452, "m": 724, "b": 490, "a": 476, "c": 452, "e": 492, "s": 364, "r": 270,
+    "o": 516, "n": 452, "m": 724, "b": 490, "a": 476, "c": 452, "e": 492, "s": 356, "r": 270,
     "v": 466, "w": 698, "x": 448, "y": 468, "z": 400, "k": 430, "t": 268, "f": 280, "j": 210,
     "i": 0, "l": 0,
     # capitals
@@ -92,27 +92,25 @@ REGULAR_DISPLAY_WIDTHS = {
     "seven": 452, "eight": 486, "nine": 486,
     # punctuation
     "AE.leg": 300,  # Æ: horizontal run of the A's leg
+    "a.ss01": 410,
     "question": 380, "hyphen": 300, "paren": 230, "slash": 380, "ampersand": 600,
 }
 
 REGULAR_DISPLAY_PARAMS = {
     "e.drop": 0.04,  # e's bar: its lower edge lies this far under the round's centre / x-height
-    "s.steep": 0.85,  # s spine steepness: fraction of the steepest spine its bowls allow
-    "s.mid": 0.515,  # height of the spine's centre / x-height
-    "s.upper": 0.94,  # upper bowl width / lower bowl width
-    "s.thin": 0.95,  # s horizontals / round tops (three stacked strokes)
-    "s.spinew": 0.94,  # spine weight / stem
-    "s.ap": 22,
-    "s.lean": 0.06,  # s upper bowl shifted right by this fraction of the width (stands it upright)
-    "s.k": 0.36,
-    "s.tilt": 0.45,  # s counters' side extremes move toward the spine by this fraction of its vertical offset  # bowl extremes: this fraction of the way from the spine centre to the top and bottom  # terminal cut, degrees from the bowl's horizontal axis
+    "s.mid": 0.51,  # s S spine centre / height (the optical centre)
+    "s.upper": 0.92,  # upper round's width / lower round's
+    "s.thin": 0.92, "s.side": 0.98, "s.spinew": 1.06,  # top-bottom, sides, spine / the round's weights and stem
+    "s.hu": 0.72, "s.hl": 0.28,  # upper round's west extreme, lower round's east extreme / height
+    "s.lean": 0.03,  # upper round's centre right of the lower's / width
+    "s.steep": 0.5, "s.tbowl": 0.58, "s.tmid": 0.56,  # spine angle; tensions leaving the rounds and at the centre
     "hook.ap": 55,
     "G.jaw": 0.9,  # G jaw's outer edge / O radius from the centre
     "G.foot": 0.26,  # where the G's round turns into the jaw / cap height
     "G.bar": 0.5,  # top of the G's bar (and jaw) / cap height
     "G.barl": 0.12,  # left end of the G's bar / O radius from the centre
-    "Q.x0": 0.36, "Q.y0": 0.2,  # Q tail, upper end: x / O radius from the centre, y / cap height
-    "Q.x1": 0.84, "Q.y1": -0.1,  # Q tail, lower end
+    "Q.at": -52, "Q.top": 0.7,  # Q tail starts mid-stroke at this angle on the round; weight there / full
+    "Q.x1": 0.98, "Q.y1": -0.11,  # Q tail, lower end: x / O radius from the centre, y / cap height
     "D.round": 1.0,
     "r.cut": 32,  # r's arm ends this many degrees past the top of the n's counter
     "dot.drop": 6,  # i j dots: top this far under the ascender
@@ -144,24 +142,27 @@ REGULAR_DISPLAY_PARAMS = {
     "Y.join": 0.44,  # Y arms meet the stem at this fraction of the cap height
     "fig.ap": 18,  # terminals of 2 3 5: degrees from the round's horizontal axis
     "1.drop": 0.2, "1.flagw": 1.0,  # 1 flag: drop / cap height; weight / figure bar
-    "2.rx": 1.0, "2.ry": 1.0, "2.diag": 1.0,  # 2 round: radius / half width, vertical / horizontal; diagonal weight
+    "2.rx": 1.0, "2.ry": 1.0, "2.diag": 1.0, "2.flat": 0.72, "2.te": 0.5, "2.tf": 0.62,  # 2 round: radius / half width, vertical / horizontal; diagonal weight
     "3.mid": 0.55, "3.upper": 0.88, "3.inset": 0.02, "3.waist": 0.3,  # 3: middle height, upper round, waist end
     "4.over": 0.55, "4.bar": 0.2,  # 4: crossbar beyond the stem / stem; crossbar bottom / cap
     "5.stem": 0.06, "5.bowl": 0.6, "5.top": 0.92,  # 5: stem left / width; round top / cap; top bar / width
-    "6.bowl": 0.62, "6.tall": 1.12, "6.ap": 42,  # 6 9: round height / cap; tall stroke radius / half width; cut
+    "6.bowl": 0.64, "6.leave": 0.97, "6.end": 22, "6.endx": 0.8, "6.t0": 0.62, "6.t1": 0.5,  # 6 9 stem
     "7.foot": 0.2,  # 7 diagonal's foot / width
-    "comma.x0": 0.18, "comma.x1": 0.22, "comma.len": 1.6, "comma.w": 0.62, "comma.thin": 0.42,  # / dot
+    "comma.x0": 0.2, "comma.x1": 0.18, "comma.len": 1.55, "comma.w": 0.6, "comma.thin": 0.4, "comma.angle": 28,  # / dot
     "excl.w": 0.95, "excl.gap": 0.55,  # ! ?: stroke / stem; gap above the dot / dot
     "q.ry": 0.92, "q.stem": 0.36, "q.x": 0.46,  # ?: round shape, where its stem starts / cap, stem x / width
     "hyphen.y": 0.53,  # hyphen centre / x-height
     "quote.w": 0.95, "quote.len": 0.3, "quote.gap": 0.7,  # quotes: weight / stem, length / cap, gap / weight
     "paren.low": 0.8, "paren.high": 20, "paren.ry": 1.25, "paren.w": 1.0,  # ( ): reach, curvature, weight
     "slash.w": 0.95, "slash.low": 0.6, "slash.high": 40,  # /: weight; reach below and above
-    "amp.loop": 0.2, "amp.loopx": 0.42, "amp.loopw": 1.0,  # &: loop radius / cap; loop centre / width; shape
-    "amp.bowlw": 0.84, "amp.bowlx": 0.0, "amp.ap": 30, "amp.legx": 215, "amp.legtop": 0.7,  # &: round, its opening, the leg
+    "amp.loop": 0.2, "amp.loopx": 0.4, "amp.loopw": 0.95,  # &: loop radius / cap; loop centre / width; shape
+    "amp.bowl": 0.6, "amp.bowlx": 0.42, "amp.bowlw": 0.8,  # &: bowl height / cap, centre / width, width / width
+    "amp.leave": 0.55, "amp.ap": 38,  # &: bowl leaves the loop's skeleton here / radius; terminal cut
     "ring.gap": 0.05, "ring.uc": 0.27, "ring.lc": 0.34, "ring.w": 0.8,  # Å å ring: gap, size / cap or x-height
     "slash.angle": 58, "slash.over": 0.05, "slash.weight": 0.92,  # Ø ø: degrees, reach past the round / cap
     "AE.top": 0.2, "ae.into": 0.03,  # Æ leg top inset / stem; æ: e's left extreme into the a's stem / stem
+    "a2.hook": 0.5, "a2.hookry": 0.8,  # double-storey a: top hook radius / width, vertical / horizontal
+    "a2.bowl": 0.6, "a2.bar": 0.92,  # its bowl's top / x-height; the bowl's top stroke / round top
     "8.mid": 0.54, "8.waist": 1.0, "8.upper": 0.9,  # 8: waist height / cap; waist weight / bar; upper width  # D's round: horizontal radius / half the cap height  # hook terminals of t f j g J, degrees past the bottom extreme
 }
 

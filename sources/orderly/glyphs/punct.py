@@ -8,7 +8,7 @@ from ..diag import hwidth, placed, stroke
 from ..geom import Contour, line, tcurve
 from ..master import Master
 from ..parts import Ell, box, disc, ring
-from ..rounds import cut_round
+from ..strokes import offsets
 from . import Drawing, glyph
 from .figures import term_x
 
@@ -28,11 +28,17 @@ def high_dot(m: Master, cx: float) -> Contour:
 
 
 def comma_tail(m: Master, cx: float, cy: float) -> Contour:
-    """Tail of the comma: leaves the dot's lower right and runs down-left, cut horizontally."""
+    """Tail of the comma: leaves the dot's lower right going down, bends gently left, cut horizontally."""
     d = dot_d(m)
-    top = (cx + d * m.g("comma.x0"), cy)
-    bot = (cx - d * m.g("comma.x1"), cy - d * m.g("comma.len"))
-    return stroke(bot, top, d * m.g("comma.thin"), d * m.g("comma.w"))
+    p0 = (cx + d * m.g("comma.x0"), cy)
+    a = math.radians(m.g("comma.angle"))
+    p1 = (cx - d * m.g("comma.x1"), cy - d * m.g("comma.len"))
+    left, right = offsets([(p0, (0.0, -1.0), d * m.g("comma.w")), (p1, (-math.sin(a), -math.cos(a)), d * m.g("comma.thin"))],
+                          [(0.5, 0.5)])
+    yc = p1[1] + d * m.g("comma.thin") * 0.5
+    left, right = left.cut_y(yc, "head", -1), right.cut_y(yc, "head", -1)
+    c = Contour.of(left, line(left.end, right.end), right.reversed())
+    return c if c.area() > 0 else c.reversed()
 
 
 @glyph("period", 0x2E, "pun")
@@ -144,25 +150,43 @@ def slash(m: Master) -> Drawing:
 
 @glyph("ampersand", 0x26, "uc")
 def ampersand(m: Master) -> Drawing:
-    """A small loop over a round opened to the right; a straight leg runs from the waist to the baseline."""
+    """A small loop; from its lower right a larger bowl runs down the left, round the bottom and up the right to a
+    vertical cut; a straight leg runs from the loop's left side to the baseline at the bottom right."""
     w = m.w("ampersand")
     st, b = m.cstem * m.fig, m.cbar * m.fig
     side, th = st * m.rside, b * m.rtop
     t, ti = m.tension, m.tension_in
-    top = m.cap + m.os(m.cap)
+    os = m.os(m.cap)
     ru = m.cap * m.g("amp.loop")
-    uo = Ell(w * m.g("amp.loopx"), top - ru, ru * m.g("amp.loopw"), ru, t)
-    ui = uo.inset(side * 0.92, th, ti)
-    y_ln = uo.p("S")[1] + th - 2  # the round's top runs inside the loop's foot
-    rl = w * m.g("amp.bowlw") / 2
-    lo = Ell(uo.cx + w * m.g("amp.bowlx"), (y_ln - m.os(m.cap)) / 2, rl, (y_ln + m.os(m.cap)) / 2, t)
-    li = lo.inset(side, th, ti)
-    x_up = term_x(li, m.g("amp.ap"), 1)
-    x_lo = lo.cx + li.rx * 0.5
-    bowl = cut_round(lo, li, x_up, x_lo)
-    a = math.radians(m.g("amp.legx"))
-    top_c = (uo.cx + (uo.rx - side / 2) * math.cos(a), uo.cy + (uo.ry - th / 2) * math.sin(a))
+    uo = Ell(w * m.g("amp.loopx"), m.cap + os - ru, ru * m.g("amp.loopw"), ru, t)
+    us = side * 0.92
+    ui = uo.inset(us, th, ti)
+    um = uo.inset(us / 2, th / 2, t)  # the loop's skeleton
+    hb = m.cap * m.g("amp.bowl")
+    lo = Ell(w * m.g("amp.bowlx"), (hb - os) / 2, w * m.g("amp.bowlw") / 2, (hb + os) / 2, t)
+    q = um.arc("E", "S")
+    pj, dj = q.at(q.crossings(0, um.cx + um.rx * m.g("amp.leave"))[0])
+    wj = (us + th) / 2 * 0.9
+    nodes = [
+        (pj, dj, wj),
+        ((lo.cx - lo.rx + side / 2, lo.cy), (0.0, -1.0), side),
+        ((lo.cx, -os + th / 2), (1.0, 0.0), th),
+        ((lo.cx + lo.rx - side / 2, lo.cy), (0.0, 1.0), side),
+        ((lo.cx, hb + os - th / 2), (-1.0, 0.0), th),
+    ]
+    left, right = offsets(nodes, [(0.55, 0.6), (t, t), (t, t), (t, t)], ti / t)
+    xt = lo.cx + (lo.rx - side) * math.cos(math.radians(m.g("amp.ap")))
+    left, right = left.cut_x(xt, "head", -1), right.cut_x(xt, "head", -1)
+    bowl = Contour.of(left, line(left.end, right.end), right.reversed())
+    bowl = bowl if bowl.area() > 0 else bowl.reversed()
+    top_c = um.p("W")
     tl = st * m.diag
+    t_top = side * 0.85 * cap_ratio(top_c, (w, 0))
     bot_c = (w - hwidth(top_c, (w, 0), tl) / 2, 0)
-    leg = stroke(bot_c, top_c, tl, tl * m.g("amp.legtop"))
+    leg = stroke(bot_c, top_c, tl, t_top)
     return Drawing(ring(uo, ui) + [bowl, leg])
+
+
+def cap_ratio(p0, p1) -> float:
+    """Weight square to a stroke along p0-p1 per unit of horizontal width."""
+    return abs(p1[1] - p0[1]) / math.hypot(p1[0] - p0[0], p1[1] - p0[1])

@@ -27,6 +27,27 @@ def hook(x0: float, st: float, th: float, y_top: float, bot: float, rx: float, r
     return Contour.of(outer, line(outer.end, inner.end), inner.reversed())
 
 
+Node = tuple[tuple[float, float], tuple[float, float], float]
+
+
+def offsets(nodes: list[Node], tens: list[tuple[float, float]], left_scale: float = 1.0) -> tuple[Path, Path]:
+    """Both edges of a stroke drawn along a skeleton.
+
+    Each node is (point, unit direction of travel, weight). The edges are the nodes offset square to the
+    direction by half the weight, joined by tension curves; the left edge (left of travel) may use scaled
+    tensions. Returns (left, right).
+    """
+
+    def edge(side: int, scale: float) -> Path:
+        pts = [((p[0] - side * d[1] * w / 2, p[1] + side * d[0] * w / 2), d) for p, d, w in nodes]
+        path = Path()
+        for (p0, d0), (p1, d1), (t0, t1) in zip(pts, pts[1:], tens):
+            path.add(tcurve(p0, d0, p1, d1, t0 * scale, t1 * scale))
+        return path
+
+    return edge(1, left_scale), edge(-1, 1.0)
+
+
 @dataclass(frozen=True)
 class SSpec:
     """The numbers of one s: box, weights and shape."""
@@ -35,55 +56,55 @@ class SSpec:
     w: float  # width of the lower bowl (the widest part)
     bot: float  # outer bottom extreme (with overshoot)
     top: float  # outer top extreme (with overshoot)
-    ym: float  # height of the spine's centre
+    ym: float  # height of the spine's centre (the optical centre)
     upper: float  # upper bowl width / lower bowl width
     th: float  # top and bottom thickness
     side: float  # thickness at the side extremes
-    spine: float  # spine thickness, square to the stroke
-    steep: float  # spine steepness: fraction of the steepest spine the bowls allow (0.5 to 0.85)
-    ap: float  # terminal cut, degrees from each bowl's horizontal axis
+    spine: float  # spine thickness, square to the stroke (the heaviest part)
+    ap: float  # terminal cut, degrees from each counter's horizontal axis (as c and C)
     t: float
     t_in: float
-    k: float = 0.47  # bowl centres: this fraction of the way from the spine centre to the top and bottom
+    hu: float = 0.72  # upper bowl's left extreme: fraction of the height
+    hl: float = 0.28  # lower bowl's right extreme: fraction of the height
     lean: float = 0.0  # upper bowl's centre lies this far right of the lower bowl's
-    tilt: float = 0.7  # counters' side extremes move toward the spine by this fraction of its vertical offset
+    steep: float = 0.8  # spine angle: fraction of the steepest the bowls allow
+    t_bowl: float = 0.72  # tension where the spine leaves a bowl: high keeps the bowl round past its extreme
+    t_mid: float = 0.4  # tension at the spine's centre: low keeps the passage short, with no straight run
 
 
 def s_curve(s: SSpec) -> Contour:
-    """Upper bowl over a wider lower bowl, joined by a spine; both terminals cut vertically.
+    """Two stacked rounds joined by a short curved spine, drawn from a skeleton.
 
-    The counters' side extremes sit nearer the spine than the outer ones (the stress tilts with the stroke),
-    so both edges of the spine leave their bowls alike.
+    The skeleton runs through seven nodes: the upper round's east, north and west extremes, the spine's centre,
+    the lower round's east, south and west extremes. Each node has a direction and a weight; both edges are the
+    nodes offset square to the direction, joined by tension curves. Terminals are vertical cuts. The same seven
+    nodes in every master keep the s compatible from Thin to Black.
     """
-    rxl = s.w / 2
-    cxl = s.x0 + rxl
-    rxu = rxl * s.upper
-    cxu = cxl + s.lean
-    cyu = s.ym + (s.top - s.ym) * s.k
-    cyl = s.ym - (s.ym - s.bot) * s.k
-    mx = s.x0 + s.w / 2 + s.lean / 2
-    w1 = cxu - rxu + s.side / 2  # centre line of the stroke at the side extremes
-    a = math.atan(s.steep * (cyu - s.ym) / (mx - w1))
-    dy = s.spine * math.cos(a) * s.tilt
-    uo = Ell(cxu, cyu, rxu, s.top - cyu, s.t)
-    ui = Ell(cxu, cyu + dy, rxu - s.side, s.top - s.th - cyu - dy, s.t_in)
-    lo = Ell(cxl, cyl, rxl, cyl - s.bot, s.t)
-    li = Ell(cxl, cyl - dy, rxl - s.side, cyl - dy - s.bot - s.th, s.t_in)
-    d = (math.cos(a), -math.sin(a))
-    n = (math.sin(a), math.cos(a))
-    m_up = (mx + n[0] * s.spine / 2, s.ym + n[1] * s.spine / 2)
-    m_dn = (mx - n[0] * s.spine / 2, s.ym - n[1] * s.spine / 2)
-    x1 = cxu + ui.rx * math.cos(math.radians(s.ap))
-    x2 = cxl - li.rx * math.cos(math.radians(s.ap))
-    down = (0.0, -1.0)
+    h = s.top - s.bot
+    yn, ys = s.top - s.th / 2, s.bot + s.th / 2
+    cyu, cyl = s.bot + h * s.hu, s.bot + h * s.hl
+    rl = (s.w - s.side) / 2
+    ru = (s.w * s.upper - s.side) / 2
+    cl = s.x0 + s.w / 2
+    cu = cl + s.lean
+    mx = (cu - ru + cl + rl) / 2
+    reach = min(cyu - s.ym, s.ym - cyl) / (mx - (cu - ru))
+    a = math.atan(s.steep * reach)
+    nodes = [
+        ((cu + ru, cyu), (0.0, 1.0), s.side),
+        ((cu, yn), (-1.0, 0.0), s.th),
+        ((cu - ru, cyu), (0.0, -1.0), s.side),
+        ((mx, s.ym), (math.cos(a), -math.sin(a)), s.spine),
+        ((cl + rl, cyl), (0.0, -1.0), s.side),
+        ((cl, ys), (-1.0, 0.0), s.th),
+        ((cl - rl, cyl), (0.0, 1.0), s.side),
+    ]
+    tens = [(s.t, s.t), (s.t, s.t), (s.t_bowl, s.t_mid), (s.t_mid, s.t_bowl), (s.t, s.t), (s.t, s.t)]
 
-    def edge(top_e: Ell, mid, bot_e: Ell, side_w: Ell, side_e: Ell, t: float) -> Path:
-        p = top_e.arc("E", "N", "W").cut_x(x1, "tail", 0)
-        p.add(tcurve(side_w.p("W"), down, mid, d, t))
-        p.add(tcurve(mid, d, side_e.p("E"), down, t))
-        return p.then(bot_e.arc("E", "S", "W")).cut_x(x2, "head", -1)
-
-    r = edge(uo, m_dn, li, uo, li, s.t)
-    lft = edge(ui, m_up, lo, ui, lo, s.t_in)
-    c = Contour.of(r, line(r.end, lft.end), lft.reversed())
+    left, right = offsets(nodes, tens, s.t_in / s.t)  # left of travel: the counters' side of each round
+    x1 = cu + (ru - s.side / 2) * math.cos(math.radians(s.ap))
+    x2 = cl - (rl - s.side / 2) * math.cos(math.radians(s.ap))
+    left = left.cut_x(x1, "tail", 0).cut_x(x2, "head", -1)
+    right = right.cut_x(x1, "tail", 0).cut_x(x2, "head", -1)
+    c = Contour.of(right, line(right.end, left.end), left.reversed())
     return c if c.area() > 0 else c.reversed()

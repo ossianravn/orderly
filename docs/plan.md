@@ -21,6 +21,9 @@ Decided by the maintainer on 2026-11-18 unless marked otherwise.
 | Credits       | Honest colophon: by Ossian Ravn, drawn in code with Claude. Font copyright line: `Copyright 2026 The Orderly Project Authors (https://github.com/ossianravn/orderly)`.         |
 | Site sections | Named with words. No "01, 02" numbering anywhere.                                                                                                                              |
 | Git           | Commit and push to `main` without asking when the change is non-destructive.                                                                                                   |
+| Capital widths | Planner's ruling after the Phase 1 review (2026-11-18): the brief's capital widths are advance widths over the cap height. `O Q` are true circles and so come to about 1.17; the circle wins. |
+| Vertical metrics | Planner's ruling (2026-11-18): placeholder values (950 / -250) until Phase 5 sets them by the Google Fonts specification.                                                     |
+| QA tool       | Planner's ruling (2026-11-18): no downloaded executables. fontbakery from PyPI in the uv environment for local QA from Phase 4; fontspector only in CI through its official setup action (Phase 5). |
 
 Everything below is the planner's proposal (Claude, 2026-11-18). The maintainer can overrule any of it; record the
 change in this table.
@@ -225,6 +228,15 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 ## Progress log
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
+
+- 2026-11-18: Phase 1 review fixes (Claude Opus 5.5). `s S` redrawn from a skeleton of two stacked rounds and a
+  short curved spine (west extreme of the upper round at 72 %, east extreme of the lower at 28 %, spine 1.06 of
+  the stem, apertures as c and C). Double-storey `a.ss01` drawn (feature wiring waits for Phase 4) and `æ` built
+  from it. `6 9`: a full round with a stem that leaves its outer contour on the tangent and curves at full weight to
+  a vertical cut. `&` redrawn: small loop, a bowl leaving the loop's lower right and rising to a vertical cut, a
+  straight leg from the loop's left side. `Q`'s tail starts inside the round's stroke. `2`'s neck flows from the
+  round's east extreme into the diagonal with no straight joint (this also removes the 2's structural limit found
+  in Phase 1). The comma's tail is curved. Checked by outline sheets and browser proofs; interpolation check clean.
 
 - 2026-11-18: Phase 1 (Regular Display) landed (Claude Opus 5.5, implementer). 81 glyphs plus space: `A-Z a-z 0-9`,
   `. , : ; ! ? - ' " ( ) / &`, `Æ Ø Å æ ø å`, spaced by the area method with one hand adjustment (J). Shared

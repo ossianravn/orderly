@@ -11,7 +11,7 @@ from ..parts import Ell, box, ring, shift
 from ..shapes import lc_round, uc_round
 from . import Drawing, glyph
 from .control import o
-from .lc_round import a, e
+from .lc_round import a, a_ss01, e
 from .uc_diag import A
 
 
@@ -81,8 +81,8 @@ def AE(m: Master) -> Drawing:
 
 @glyph("ae", 0xE6, "lc")
 def ae(m: Master) -> Drawing:
-    """a and e sharing the a's stem: the e's left side runs into it."""
-    left = a(m).contours
+    """The double-storey a and e sharing the a's stem (a single-storey a would make it read as oe)."""
+    left = a_ss01(m).contours
     x0, x1 = _bounds_x(left)
     right = e(m).contours
     ex0, _ = _bounds_x(right)

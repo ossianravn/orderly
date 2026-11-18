@@ -8,10 +8,9 @@ from __future__ import annotations
 import math
 
 from ..diag import edges, hwidth, y_at
-from ..geom import Contour, line, quad
+from ..geom import Contour, line, quad, tcurve, unit
 from ..master import Master
 from ..parts import Ell, ring
-from ..rounds import tangent_from
 from . import Drawing, glyph
 
 
@@ -60,21 +59,23 @@ def term_x(ei: Ell, ap: float, side: int) -> float:
 
 @glyph("two", 0x32, "uc")
 def two(m: Master) -> Drawing:
-    """Round top with a vertical cut, a straight diagonal leaving the round on its tangent, a flat base."""
+    """Round top with a vertical cut; from the round's east extreme the neck flows, without a straight joint,
+    into the diagonal that meets a flat base."""
     st, b, _, _ = fw(m)
     w = m.w("two")
     eo, ei = top_round(m, w, m.g("2.rx"), m.g("2.ry"))
     xt = term_x(ei, m.g("fig.ap"), -1)
-    outer = eo.arc("W", "N", "E", "S").cut_x(xt, "tail", 0)
-    inner = ei.arc("W", "N", "E", "S").cut_x(xt, "tail", 0)
+    outer = eo.arc("W", "N", "E").cut_x(xt, "tail", 0)
+    inner = ei.arc("W", "N", "E").cut_x(xt, "tail", 0)
+    ex, ey = ei.p("E")
+    slope = m.g("2.flat") * (ey - b) / ex  # the neck's direction at the foot: flatter than the chord
+    d = unit((-1.0, -slope))
     t = st * m.diag * m.g("2.diag")
-    ti = tangent_from(inner, (0, b))
-    foot = hwidth((0, b), inner.at(ti)[0], t)  # the diagonal's foot: its weight measured along the base
-    to = tangent_from(outer, (foot, b))
-    # same points in every master: the diagonal must leave both edges below the round's east extreme
-    assert ti[0] == len(inner.segs) - 1 and to[0] == len(outer.segs) - 1, "2: diagonal leaves the round above E"
-    oi, oo = inner.piece(None, ti), outer.piece(None, to)
-    c = line((0, 0), (w, 0), (w, b), (foot, b)).to(oo.end).then(oo.reversed()).to(oi.start).then(oi).to((0, b))
+    foot = hwidth((0, b), (ex, b + slope * ex), t)
+    te, tf = m.g("2.te"), m.g("2.tf")
+    inner.add(tcurve(ei.p("E"), (0, -1), (0, b), d, te * m.tension_in / m.tension, tf))
+    outer.add(tcurve(eo.p("E"), (0, -1), (foot, b), d, te, tf))
+    c = line((0, 0), (w, 0), (w, b), (foot, b)).then(outer.reversed()).to(inner.start).then(inner).to((0, 0))
     return Drawing([Contour.of(c)])
 
 

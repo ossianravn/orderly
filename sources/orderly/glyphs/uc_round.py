@@ -48,11 +48,15 @@ def G(m: Master) -> Drawing:
 
 @glyph("Q", 0x51, "uc")
 def Q(m: Master) -> Drawing:
+    """O with one straight tail: it starts inside the round's stroke at the lower right, so only its outer
+    part shows, and ends in a horizontal cut below the baseline."""
     eo, ei = uc_round(m)
-    r = eo.rx
-    top = (eo.cx + r * m.g("Q.x0"), m.cap * m.g("Q.y0"))
-    bot = (eo.cx + r * m.g("Q.x1"), m.cap * m.g("Q.y1"))
-    return Drawing(ring(eo, ei) + [stroke(bot, top, m.cstem * m.diag)])
+    a = math.radians(m.g("Q.at"))
+    rm_x, rm_y = (eo.rx + ei.rx) / 2, (eo.ry + ei.ry) / 2
+    top = (eo.cx + rm_x * math.cos(a), eo.cy + rm_y * math.sin(a))
+    bot = (eo.cx + eo.rx * m.g("Q.x1"), m.cap * m.g("Q.y1"))
+    t = m.cstem * m.diag
+    return Drawing(ring(eo, ei) + [stroke(bot, top, t, t * m.g("Q.top"))])
 
 
 @glyph("D", 0x44, "uc")
@@ -64,10 +68,10 @@ def D(m: Master) -> Drawing:
 
 def S_spec(m: Master) -> SSpec:
     return SSpec(
-        x0=0, w=m.w("S"), bot=-m.os(m.cap), top=m.cap + m.os(m.cap), ym=m.cap * m.g("s.mid"),
-        upper=m.g("s.upper"), th=m.cbar * m.rtop * m.g("s.thin"), side=m.cstem * m.rside * m.g("s.thin"),
-        spine=m.cstem * m.g("s.spinew"), steep=m.g("s.steep"), ap=m.g("s.ap"), t=m.tension, t_in=m.tension_in,
-        k=m.g("s.k"), tilt=m.g("s.tilt"), lean=m.g("s.lean") * m.w("S"),
+        x0=0, w=m.w("S"), bot=-m.os(m.cap), top=m.cap + m.os(m.cap), ym=m.cap * m.g("s.mid"), upper=m.g("s.upper"),
+        th=m.cbar * m.rtop * m.g("s.thin"), side=m.cstem * m.rside * m.g("s.side"), spine=m.cstem * m.g("s.spinew"),
+        ap=m.ap_C, t=m.tension, t_in=m.tension_in, hu=m.g("s.hu"), hl=m.g("s.hl"), lean=m.g("s.lean") * m.w("S"),
+        steep=m.g("s.steep"), t_bowl=m.g("s.tbowl"), t_mid=m.g("s.tmid"),
     )
 
 

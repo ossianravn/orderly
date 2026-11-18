@@ -22,3 +22,8 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-root = "sources"
 module-name = "orderly"
+
+[dependency-groups]
+qa = [
+    "fontbakery==1.1.0",
+]

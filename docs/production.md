@@ -43,7 +43,7 @@ Checked 2026-11-18 on Windows 11 with uv 0.8.15 and Python 3.13.2.
 | Sources             | fontTools 4.68.0, ufoLib2 0.19.1         | UFO and designspace writing; `fontTools.varLib.interpolatable` for the compatibility check.                                                                                                               |
 | Outline sheets      | skia-python 144.1                        | Anti-aliased rendering with non-zero winding, so overlapping contours draw as the font will.                                                                                                              |
 | Browser proofs      | playwright 1.65.2 (Python)               | Drives the installed Chrome (157 at the time of writing), else Edge, else Playwright's own Chromium (`uv run playwright install chromium`). Device scale factor 1, so 16 px is 16 screen pixels.            |
-| Font QA             | **fontspector 1.9.1** (planned)          | See "QA tool" below. Not installed in Phases 0 and 1.                                                                                                                                                       |
+| Font QA             | fontbakery 1.1.0 (local), fontspector (CI) | See "QA tool" below. fontbakery is in the `qa` group; fontspector runs only in CI from Phase 5.                                                                                                            |
 
 ### Determinism
 
@@ -53,13 +53,12 @@ bytes (checked with SHA-256).
 
 ### QA tool
 
-fontspector (fonttools/fontspector, the Rust successor to fontbakery) is the preferred QA tool. It is not on PyPI,
-so it cannot be pinned in the uv environment. Its documented installs are a prebuilt binary from the GitHub releases
-page (`fontspector-1.9.1-x86_64-pc-windows-gnu.zip` for Windows), `cargo-binstall fontspector`, or building from
-source with cargo, which needs `protoc` (not installed here). In CI the `fonttools/setup-fontspector` action
-installs it. Phases 0 and 1 run no QA, so it was not installed; installing a downloaded executable waits for the
-maintainer's go-ahead. Fallback if fontspector does not work on Windows: fontbakery 1.1.0 from PyPI (released
-2025-10-02).
+Ruled by the planner (2026-11-18): no downloaded executables.
+
+- **Local QA: fontbakery 1.1.0** from PyPI, pinned in the `qa` dependency group of `pyproject.toml`. Run it with
+  `uv run --group qa fontbakery check-universal fonts/...` (and `check-googlefonts`) from Phase 4 on.
+- **CI: fontspector** (the Rust successor to fontbakery), installed only in GitHub Actions through its official
+  `fonttools/setup-fontspector` action, from Phase 5. It is not on PyPI, and its Windows binary is a download.
 
 ## Spacing
 

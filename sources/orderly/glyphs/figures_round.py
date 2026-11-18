@@ -8,6 +8,7 @@ from ..geom import Contour, line
 from ..master import Master
 from ..parts import Ell, ring, rotate180
 from ..rounds import join_into, meet, shoulder
+from ..strokes import offsets
 from . import Drawing, glyph
 from .figures import fw, term_x, top_round
 
@@ -60,23 +61,28 @@ def five(m: Master) -> Drawing:
 
 
 def _six(m: Master, w: float) -> list[Contour]:
-    """6: a round at the foot and a tall stroke rising from its left side to a vertical cut at the top right."""
+    """6: a full round at the foot; the stem leaves the round's outer contour on its tangent and curves gently,
+    at full weight, to a vertical cut near the top right."""
     st, b, side, th = fw(m)
-    t, ti = m.tension, m.tension_in
     os = m.os(m.cap)
     hb = m.cap * m.g("6.bowl")
-    bo = Ell(w / 2, (hb - os) / 2, w / 2, (hb + os) / 2, t)
-    bi = bo.inset(side, th, ti)
-    rxt = w / 2 * m.g("6.tall")
-    to = Ell(rxt, bo.cy, rxt, m.cap + os - bo.cy, t)
-    tin = to.inset(side, th, ti)
-    xt = tin.cx + tin.rx * math.sin(math.radians(m.g("6.ap")))  # measured from the top: the stroke is tall
-    to_path = to.arc("E", "N", "W").cut_x(xt, "tail", 0)
-    bo_path = bo.arc("W", "S", "E", "N", "W")
-    ti_path = tin.arc("W", "N", "E").cut_x(xt, "head", -1)
-    ia, ib, _ = meet(bo_path, ti_path)[-1]
-    outer = to_path.then(bo_path.piece(None, ia)).then(ti_path.piece(ib, None))
-    return [Contour.of(outer), ring(bo, bi)[1]]
+    bo = Ell(w / 2, (hb - os) / 2, w / 2, (hb + os) / 2, m.tension)
+    bi = bo.inset(side, th, m.tension_in)
+    quad_wn = bo.arc("W", "N")
+    pos = quad_wn.crossings(0, bo.cx - bo.rx * m.g("6.leave"))[0]
+    po, d0 = quad_wn.at(pos)
+    w0 = side * 0.97  # a hair inside the round's stroke, so the stem never touches the counter
+    n0 = (-d0[1], d0[0])
+    p0 = (po[0] - n0[0] * w0 / 2, po[1] - n0[1] * w0 / 2)
+    fe = math.radians(m.g("6.end"))
+    de = (math.cos(fe), math.sin(fe))
+    we = (side + th) / 2
+    pe = (w * m.g("6.endx"), m.cap + os - math.cos(fe) * we / 2)
+    left, right = offsets([(p0, d0, w0), (pe, de, we)], [(m.g("6.t0"), m.g("6.t1"))])
+    xc = pe[0] - math.sin(fe) * we / 2 - 1
+    left, right = left.cut_x(xc, "head", -1), right.cut_x(xc, "head", -1)
+    stem = Contour.of(left, line(left.end, right.end), right.reversed())
+    return ring(bo, bi) + [stem if stem.area() > 0 else stem.reversed()]
 
 
 @glyph("six", 0x36, "uc")
