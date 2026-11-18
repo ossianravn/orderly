@@ -43,9 +43,9 @@ def _params(display: Master, **over) -> MappingProxyType:
 
 REGULAR_TEXT = replace(
     REGULAR_DISPLAY, name="RegularText", style="Regular Text", opsz=12,
-    xh=516, stem=86, cstem=92, bar=76, cbar=82, rside=1.06, rtop=1.03,
-    join=0.3, ap_c=50, ap_C=47, dot=1.32, sp_area=0.112, space=0.52,
-    widths=text_widths(REGULAR_DISPLAY, 86, 92, 0.8),
+    xh=516, stem=90, cstem=96, bar=78, cbar=84, rside=1.06, rtop=1.03,
+    join=0.3, ap_c=50, ap_C=47, dot=1.3, sp_area=0.112, space=0.52,
+    widths=text_widths(REGULAR_DISPLAY, 90, 96, 0.8),
     params=_params(REGULAR_DISPLAY, **{"e.ap": 50, "fig.ap": 26, "e.drop": 0.035, "join.deep": 0.22,
                                          "comma.len": 1.7, "quote.len": 0.32, "ring.uc": 0.29, "ring.lc": 0.36}),
 )
@@ -64,7 +64,7 @@ BLACK_TEXT = replace(
     xh=520, stem=148, cstem=156, bar=106, cbar=112, rside=1.04,
     join=0.46, bite=0.4, apex=0.56, ap_c=56, ap_C=54, dot=1.16, sp_area=0.094, space=0.48,
     widths=text_widths(BLACK_DISPLAY, 148, 156, 0.8),
-    params=_params(BLACK_DISPLAY, **{"e.ap": 40, "e.drop": 0.09, "fig.ap": 14}),
+    params=_params(BLACK_DISPLAY, **{"e.ap": 48, "e.drop": 0.06, "fig.ap": 14}),
 )
 
 TEXT = [THIN_TEXT, REGULAR_TEXT, BLACK_TEXT]

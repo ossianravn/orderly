@@ -40,7 +40,7 @@ def derived_widths(base: Master, stem: float, cstem: float, k: float, extra: dic
 
 
 # Black letters whose counters or arms need more room than the stroke count gives them.
-BLACK_EXTRA = {"a": 36, "a.ss01": 50, "r": 24, "two": 56, "three": 70, "five": 56, "four": 40, "question": 30,
+BLACK_EXTRA = {"a": 36, "a.ss01": 120, "r": 24, "two": 56, "three": 70, "five": 56, "four": 40, "question": 30,
                "s": 16, "S": 16}
 
 
@@ -70,17 +70,17 @@ THIN_DISPLAY = replace(
 
 BLACK_PARAMS = {
     **REGULAR_DISPLAY_PARAMS,
-    "e.drop": 0.1,
+    "e.drop": 0.065,
     "t.left": 0.42, "t.right": 0.62, "t.rx": 1.22, "f.rx": 1.15, "j.rx": 1.3,
     "excl.w": 0.92, "quote.w": 0.86, "quote.gap": 0.42,
     "comma.len": 1.35, "comma.w": 0.62, "comma.thin": 0.42,
     "ring.w": 0.62, "ring.uc": 0.36, "ring.lc": 0.46, "ring.gap": 0.045,
     "slash.weight": 0.8, "1.flagw": 0.9, "paren.w": 0.92,
     "s.thin": 0.88, "s.spinew": 0.94, "s.side": 0.96, "s.steep": 0.5,
-    "Q.top": 0.6, "a2.bar": 0.74, "a2.bowl": 0.56, "B.midw": 0.82, "P.round": 1.4, "B.round": 1.4,
+    "Q.top": 0.6, "a2.bar": 0.74, "a2.bowl": 0.52, "B.midw": 0.82, "P.round": 1.4, "B.round": 1.4,
     "dot.drop": 0,
     "join.deep": 0.075,
-    "e.barw": 0.8, "e.ap": 34, "g.ry": 0.62, "r.cut": 46, "fig.ap": 8,
+    "e.barw": 0.8, "e.ap": 44, "g.ry": 0.62, "r.cut": 46, "fig.ap": 8,
     "4.bar": 0.17, "q.neck": 1.08,
     "k.cut": 0.8, "k.join": 0.4, "K.join": 0.4, "g.rx": 0.66,
     "q.w": 0.8, "q.ry": 0.86, "q.stem": 0.5, "excl.gap": 0.32, "amp.w": 0.8, "amp.loopk": 0.72,

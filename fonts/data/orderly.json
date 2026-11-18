@@ -95,16 +95,16 @@
    "wght": 400,
    "opsz": 12,
    "numbers": {
-    "stem": 86,
-    "capStem": 92,
-    "bar": 76,
-    "capBar": 82,
+    "stem": 90,
+    "capStem": 96,
+    "bar": 78,
+    "capBar": 84,
     "xHeight": 516,
     "capHeight": 700,
     "overshoot": 0.015,
     "join": 0.3,
     "spacingArea": 0.112,
-    "dot": 1.32
+    "dot": 1.3
    }
   },
   {
@@ -233,7 +233,7 @@
      "rsb": 92
     },
     "RegularText": {
-     "advance": 721,
+     "advance": 727,
      "lsb": 78,
      "rsb": 78
     },
@@ -271,7 +271,7 @@
      "rsb": 76
     },
     "RegularText": {
-     "advance": 849,
+     "advance": 850,
      "lsb": 62,
      "rsb": 62
     },
@@ -309,7 +309,7 @@
      "rsb": 63
     },
     "RegularText": {
-     "advance": 585,
+     "advance": 591,
      "lsb": 58,
      "rsb": 52
     },
@@ -347,7 +347,7 @@
      "rsb": 56
     },
     "RegularText": {
-     "advance": 630,
+     "advance": 634,
      "lsb": 46,
      "rsb": 46
     },
@@ -385,7 +385,7 @@
      "rsb": 63
     },
     "RegularText": {
-     "advance": 585,
+     "advance": 591,
      "lsb": 58,
      "rsb": 52
     },
@@ -423,7 +423,7 @@
      "rsb": 64
     },
     "RegularText": {
-     "advance": 868,
+     "advance": 878,
      "lsb": 58,
      "rsb": 53
     },
@@ -461,7 +461,7 @@
      "rsb": 54
     },
     "RegularText": {
-     "advance": 412,
+     "advance": 414,
      "lsb": 58,
      "rsb": 45
     },
@@ -499,7 +499,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 585,
+     "advance": 591,
      "lsb": 52,
      "rsb": 58
     },
@@ -537,7 +537,7 @@
      "rsb": 53
     },
     "RegularText": {
-     "advance": 570,
+     "advance": 575,
      "lsb": 43,
      "rsb": 43
     },
@@ -575,7 +575,7 @@
      "rsb": 54
     },
     "RegularText": {
-     "advance": 814,
+     "advance": 822,
      "lsb": 43,
      "rsb": 43
     },
@@ -613,7 +613,7 @@
      "rsb": 53
     },
     "RegularText": {
-     "advance": 551,
+     "advance": 556,
      "lsb": 43,
      "rsb": 43
     },
@@ -651,7 +651,7 @@
      "rsb": 53
     },
     "RegularText": {
-     "advance": 572,
+     "advance": 577,
      "lsb": 43,
      "rsb": 43
     },
@@ -689,7 +689,7 @@
      "rsb": 54
     },
     "RegularText": {
-     "advance": 511,
+     "advance": 515,
      "lsb": 46,
      "rsb": 45
     },
@@ -727,9 +727,9 @@
      "rsb": 55
     },
     "RegularText": {
-     "advance": 477,
+     "advance": 479,
      "lsb": 46,
-     "rsb": 48
+     "rsb": 49
     },
     "BlackText": {
      "advance": 459,
@@ -765,7 +765,7 @@
      "rsb": 55
     },
     "RegularText": {
-     "advance": 629,
+     "advance": 633,
      "lsb": 46,
      "rsb": 45
     },
@@ -803,7 +803,7 @@
      "rsb": 55
     },
     "RegularText": {
-     "advance": 446,
+     "advance": 452,
      "lsb": 44,
      "rsb": 44
     },
@@ -841,7 +841,7 @@
      "rsb": 56
     },
     "RegularText": {
-     "advance": 598,
+     "advance": 600,
      "lsb": 58,
      "rsb": 46
     },
@@ -879,7 +879,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 598,
+     "advance": 600,
      "lsb": 46,
      "rsb": 58
     },
@@ -917,7 +917,7 @@
      "rsb": 56
     },
     "RegularText": {
-     "advance": 598,
+     "advance": 600,
      "lsb": 58,
      "rsb": 46
     },
@@ -955,7 +955,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 598,
+     "advance": 600,
      "lsb": 46,
      "rsb": 58
     },
@@ -993,7 +993,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 560,
+     "advance": 563,
      "lsb": 46,
      "rsb": 58
     },
@@ -1031,14 +1031,14 @@
      "rsb": 65
     },
     "RegularText": {
-     "advance": 538,
+     "advance": 546,
      "lsb": 45,
      "rsb": 54
     },
     "BlackText": {
-     "advance": 716,
+     "advance": 785,
      "lsb": 35,
-     "rsb": 43
+     "rsb": 42
     },
     "ThinDisplay": {
      "advance": 430,
@@ -1051,7 +1051,7 @@
      "rsb": 42
     },
     "BlackDisplay": {
-     "advance": 704,
+     "advance": 774,
      "lsb": 25,
      "rsb": 32
     }
@@ -1069,7 +1069,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 598,
+     "advance": 600,
      "lsb": 46,
      "rsb": 58
     },
@@ -1107,7 +1107,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 202,
+     "advance": 206,
      "lsb": 58,
      "rsb": 58
     },
@@ -1145,7 +1145,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 202,
+     "advance": 206,
      "lsb": 58,
      "rsb": 58
     },
@@ -1183,7 +1183,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 202,
+     "advance": 206,
      "lsb": 58,
      "rsb": 58
     },
@@ -1221,7 +1221,7 @@
      "rsb": 54
     },
     "RegularText": {
-     "advance": 428,
+     "advance": 444,
      "lsb": 45,
      "rsb": 45
     },
@@ -1259,7 +1259,7 @@
      "rsb": 53
     },
     "RegularText": {
-     "advance": 348,
+     "advance": 360,
      "lsb": 45,
      "rsb": 45
     },
@@ -1297,7 +1297,7 @@
      "rsb": 53
     },
     "RegularText": {
-     "advance": 546,
+     "advance": 550,
      "lsb": 58,
      "rsb": 43
     },
@@ -1335,7 +1335,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 655,
+     "advance": 660,
      "lsb": 78,
      "rsb": 61
     },
@@ -1373,7 +1373,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 675,
+     "advance": 681,
      "lsb": 78,
      "rsb": 58
     },
@@ -1411,7 +1411,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 656,
+     "advance": 662,
      "lsb": 78,
      "rsb": 61
     },
@@ -1449,7 +1449,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 726,
+     "advance": 731,
      "lsb": 78,
      "rsb": 58
     },
@@ -1487,7 +1487,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 720,
+     "advance": 725,
      "lsb": 58,
      "rsb": 58
     },
@@ -1525,7 +1525,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 720,
+     "advance": 725,
      "lsb": 58,
      "rsb": 58
     },
@@ -1563,7 +1563,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 1075,
+     "advance": 1084,
      "lsb": 59,
      "rsb": 59
     },
@@ -1601,7 +1601,7 @@
      "rsb": 92
     },
     "RegularText": {
-     "advance": 875,
+     "advance": 885,
      "lsb": 78,
      "rsb": 78
     },
@@ -1639,7 +1639,7 @@
      "rsb": 92
     },
     "RegularText": {
-     "advance": 761,
+     "advance": 769,
      "lsb": 78,
      "rsb": 78
     },
@@ -1677,7 +1677,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 739,
+     "advance": 744,
      "lsb": 58,
      "rsb": 58
     },
@@ -1715,7 +1715,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 746,
+     "advance": 750,
      "lsb": 58,
      "rsb": 58
     },
@@ -1753,7 +1753,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 691,
+     "advance": 695,
      "lsb": 61,
      "rsb": 61
     },
@@ -1791,9 +1791,9 @@
      "rsb": 74
     },
     "RegularText": {
-     "advance": 669,
+     "advance": 668,
      "lsb": 62,
-     "rsb": 64
+     "rsb": 65
     },
     "BlackText": {
      "advance": 603,
@@ -1829,7 +1829,7 @@
      "rsb": 78
     },
     "RegularText": {
-     "advance": 815,
+     "advance": 816,
      "lsb": 62,
      "rsb": 64
     },
@@ -1867,7 +1867,7 @@
      "rsb": 76
     },
     "RegularText": {
-     "advance": 849,
+     "advance": 850,
      "lsb": 62,
      "rsb": 62
     },
@@ -1905,7 +1905,7 @@
      "rsb": 76
     },
     "RegularText": {
-     "advance": 764,
+     "advance": 768,
      "lsb": 78,
      "rsb": 62
     },
@@ -1943,7 +1943,7 @@
      "rsb": 74
     },
     "RegularText": {
-     "advance": 603,
+     "advance": 608,
      "lsb": 60,
      "rsb": 60
     },
@@ -1981,7 +1981,7 @@
      "rsb": 92
     },
     "RegularText": {
-     "advance": 248,
+     "advance": 252,
      "lsb": 78,
      "rsb": 78
     },
@@ -2019,7 +2019,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 615,
+     "advance": 619,
      "lsb": 78,
      "rsb": 61
     },
@@ -2057,7 +2057,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 597,
+     "advance": 601,
      "lsb": 78,
      "rsb": 60
     },
@@ -2095,7 +2095,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 588,
+     "advance": 592,
      "lsb": 78,
      "rsb": 60
     },
@@ -2133,7 +2133,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 674,
+     "advance": 678,
      "lsb": 60,
      "rsb": 60
     },
@@ -2209,7 +2209,7 @@
      "rsb": 87
     },
     "RegularText": {
-     "advance": 719,
+     "advance": 725,
      "lsb": 73,
      "rsb": 73
     },
@@ -2247,7 +2247,7 @@
      "rsb": 77
     },
     "RegularText": {
-     "advance": 649,
+     "advance": 653,
      "lsb": 63,
      "rsb": 63
     },
@@ -2285,7 +2285,7 @@
      "rsb": 92
     },
     "RegularText": {
-     "advance": 419,
+     "advance": 423,
      "lsb": 61,
      "rsb": 78
     },
@@ -2323,7 +2323,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 612,
+     "advance": 616,
      "lsb": 60,
      "rsb": 63
     },
@@ -2361,7 +2361,7 @@
      "rsb": 77
     },
     "RegularText": {
-     "advance": 652,
+     "advance": 657,
      "lsb": 60,
      "rsb": 60
     },
@@ -2399,7 +2399,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 589,
+     "advance": 593,
      "lsb": 60,
      "rsb": 58
     },
@@ -2475,7 +2475,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 586,
+     "advance": 590,
      "lsb": 72,
      "rsb": 61
     },
@@ -2513,7 +2513,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 631,
+     "advance": 635,
      "lsb": 61,
      "rsb": 61
     },
@@ -2551,7 +2551,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 631,
+     "advance": 635,
      "lsb": 61,
      "rsb": 61
     },
@@ -2589,7 +2589,7 @@
      "rsb": 75
     },
     "RegularText": {
-     "advance": 631,
+     "advance": 635,
      "lsb": 61,
      "rsb": 61
     },
@@ -2627,7 +2627,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 720,
+     "advance": 725,
      "lsb": 58,
      "rsb": 58
     },
@@ -2665,7 +2665,7 @@
      "rsb": 68
     },
     "RegularText": {
-     "advance": 560,
+     "advance": 563,
      "lsb": 46,
      "rsb": 58
     },
@@ -2703,7 +2703,7 @@
      "rsb": 76
     },
     "RegularText": {
-     "advance": 849,
+     "advance": 850,
      "lsb": 62,
      "rsb": 62
     },
@@ -2741,7 +2741,7 @@
      "rsb": 56
     },
     "RegularText": {
-     "advance": 630,
+     "advance": 634,
      "lsb": 46,
      "rsb": 46
     },
@@ -2779,7 +2779,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 899,
+     "advance": 906,
      "lsb": 58,
      "rsb": 61
     },
@@ -2817,12 +2817,12 @@
      "rsb": 55
     },
     "RegularText": {
-     "advance": 984,
+     "advance": 992,
      "lsb": 45,
      "rsb": 45
     },
     "BlackText": {
-     "advance": 1165,
+     "advance": 1235,
      "lsb": 35,
      "rsb": 36
     },
@@ -2837,7 +2837,7 @@
      "rsb": 32
     },
     "BlackDisplay": {
-     "advance": 1137,
+     "advance": 1207,
      "lsb": 25,
      "rsb": 26
     }
@@ -2855,7 +2855,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 231,
+     "advance": 235,
      "lsb": 59,
      "rsb": 59
     },
@@ -2893,7 +2893,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 232,
+     "advance": 236,
      "lsb": 59,
      "rsb": 60
     },
@@ -2931,7 +2931,7 @@
      "rsb": 74
     },
     "RegularText": {
-     "advance": 235,
+     "advance": 239,
      "lsb": 61,
      "rsb": 61
     },
@@ -2969,7 +2969,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 236,
+     "advance": 240,
      "lsb": 61,
      "rsb": 62
     },
@@ -3007,7 +3007,7 @@
      "rsb": 86
     },
     "RegularText": {
-     "advance": 239,
+     "advance": 243,
      "lsb": 63,
      "rsb": 63
     },
@@ -3045,7 +3045,7 @@
      "rsb": 74
     },
     "RegularText": {
-     "advance": 424,
+     "advance": 425,
      "lsb": 61,
      "rsb": 60
     },
@@ -3083,7 +3083,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 443,
+     "advance": 445,
      "lsb": 60,
      "rsb": 60
     },
@@ -3121,7 +3121,7 @@
      "rsb": 78
     },
     "RegularText": {
-     "advance": 210,
+     "advance": 214,
      "lsb": 64,
      "rsb": 64
     },
@@ -3159,7 +3159,7 @@
      "rsb": 78
     },
     "RegularText": {
-     "advance": 349,
+     "advance": 359,
      "lsb": 64,
      "rsb": 64
     },
@@ -3197,7 +3197,7 @@
      "rsb": 73
     },
     "RegularText": {
-     "advance": 252,
+     "advance": 255,
      "lsb": 67,
      "rsb": 59
     },
@@ -3235,7 +3235,7 @@
      "rsb": 81
     },
     "RegularText": {
-     "advance": 252,
+     "advance": 255,
      "lsb": 59,
      "rsb": 67
     },
@@ -3273,7 +3273,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 443,
+     "advance": 447,
      "lsb": 58,
      "rsb": 58
     },
@@ -3311,7 +3311,7 @@
      "rsb": 72
     },
     "RegularText": {
-     "advance": 719,
+     "advance": 726,
      "lsb": 60,
      "rsb": 58
     },
