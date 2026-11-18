@@ -241,6 +241,20 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Polish pass after the Phase 4 and 5 review (Claude Opus 5.5). The heavy Thin `Ω` the reviewer saw
+  was another font: the proof (and most input) uses U+03A9, the glyph was encoded only as U+2126, which shapers
+  normalise to U+03A9 anyway; `Ω` now also takes U+03A9, `∆` U+0394 and `µ` U+03BC (one glyph each, no Greek
+  support implied). `∞` at 1.24 of the math width with stem-weight sides; `~` and `≈` with the stroke of `+ =`
+  and a taller, wider wave. Black `a.ss01` and `æ`: bowl top 0.67 of the x-height, bowl stroke 0.52 of the bar's
+  round top, no width cut; the lower counter reads at 32 px. Black `¢`: vertical 0.55 of the stem (`cent.v`).
+  Thin `§`: each s 0.68 of the height (`sect.h`), so the two close a loop. `@`: centred on the middle of the
+  x-height (it sits in lowercase addresses; on the cap height it looked too big beside text), with an `at.case`
+  for capitals. Black `ľ.ss02`: the hook never shorter than 1.7 stems (`l2.rx`). `orderly.json` gains
+  `glyphCount` (529, the compiled font's total). Looked at: the six-master grids of every changed glyph, the
+  symbols page light and dark, the kerning page after the clearance change (light and dark: `ff fl fi fb fh fk`
+  keep a gap, no collision in `(fj) [Jj]`), the Black ss01 sample at 40 px and the grid at 32 px. Checked: two
+  builds identical, `orderly check` clean, hyperglot 32/32, fontbakery universal 0 FAIL.
+
 - 2026-11-18: Phase 5 (production) at its gate (Claude Opus 5.5). Landed: vertical metrics by the Google Fonts
   specification (typo = hhea 1000 / -300 / 0, line height 1.3, win 1142 / 335 from the outlines of all masters);
   version 1.000 (proposal, reason in production); names, PostScript names for the nine `fvar` instances, `STAT`

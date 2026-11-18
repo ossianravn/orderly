@@ -43,7 +43,7 @@ CASE = {
     "guilsinglleft": lambda m: (m.cap - m.xh) / 2, "guilsinglright": lambda m: (m.cap - m.xh) / 2,
     "exclamdown": lambda m: m.cap - m.xh, "questiondown": lambda m: m.cap - m.xh,
     "colon": lambda m: (m.cap - m.xh) / 2, "periodcentered": lambda m: (m.cap - m.xh) / 2,
-    "bullet": lambda m: (m.cap - m.xh) / 2,
+    "bullet": lambda m: (m.cap - m.xh) / 2, "at": lambda m: (m.cap - m.xh) / 2,
 }
 
 for _n, _dy in CASE.items():
@@ -54,7 +54,7 @@ for _n, _dy in CASE.items():
 
 
 def l_foot(m: Master) -> list:
-    rx = m.stem * m.g("t.rx")
+    rx = m.stem * max(m.g("t.rx"), m.g("l2.rx"))  # never shorter than l2.rx stems (the Black t's hook is)
     return [lc_hook(m, 0, m.asc, -m.os(m.xh), rx, rx * m.g("hook.ry"), m.g("hook.ap"))]
 
 

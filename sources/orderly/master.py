@@ -185,6 +185,7 @@ REGULAR_DISPLAY_PARAMS = {
     "arrow.w": 1.0, "arrow.sb": 0.07,  # arrows: stroke / figure stem; side margin / cap height
     "brace.r": 1.5, "brace.nose": 0.13,  # braces: turn radius / stem; nose depth / x-height
     "ss.waist": 0.78,  # ß: the waist's centre / x-height
+    "cent.v": 0.84, "sect.h": 0.62, "l2.rx": 1.7,  # ¢ vertical / stem; § each s / height; ss02 l hook / stem
     "Omega.open": 62,  # Ω: where the round is cut open, degrees from the foot on its inner edge
 }
 

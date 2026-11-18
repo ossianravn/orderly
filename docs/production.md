@@ -155,7 +155,9 @@ is Regular Text; its UFO style name is "Regular", so the font names itself Order
 
 ```
 {
-  "family": "Orderly", "version": "0.100", "unitsPerEm": 1000,
+  "family": "Orderly", "version": "1.000", "unitsPerEm": 1000,
+  "glyphCount": 529,                                   // glyphs in the compiled font, .notdef and spaces included
+                                                       // (the README's number; "glyphs" below lists all but .notdef)
   "metrics": { "ascender": 740, "capHeight": 700, "descender": -200,
                "xHeight": { "12": 516, "72": 500 },          // per optical size, Regular masters
                "line": { "ascender": 1000, "descender": -300, "lineGap": 0 } },   // typo = hhea; line height 1.3

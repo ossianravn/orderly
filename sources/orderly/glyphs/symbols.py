@@ -151,8 +151,9 @@ def at(m: Master) -> Drawing:
     inner = [c.map(lambda p: (p[0] * k, p[1] * k)) for c in a(m).contours]
     xs = [p[0] for c in inner for p in c.flat(6)]
     cx, r = (min(xs) + max(xs)) / 2, m.cap * 0.5
-    eo = Ell(cx, m.xh * k / 2, r, r, m.tension)
-    return Drawing(ring(eo, eo.inset(m.bar * 0.85, m.bar * 0.8)) + inner)
+    up = m.xh / 2 - m.xh * k / 2  # centred on the middle of the x-height, as it sits in lowercase addresses
+    eo = Ell(cx, m.xh / 2, r, r, m.tension)
+    return Drawing(ring(eo, eo.inset(m.bar * 0.85, m.bar * 0.8)) + shift(inner, 0, up))
 
 
 def _bracket(m: Master) -> Contour:
@@ -196,12 +197,12 @@ def asciicircum(m: Master) -> Drawing:
                               edges(("r", w, y0), ("r", w / 2 + t * 0.45, y0 + h), t, t * 0.9))])
 
 
-def tilde_shape(m: Master, h: float = 0.32) -> list:
+def tilde_shape(m: Master, h: float = 0.4, k: float = 1.0) -> list:
     """The tilde's wave at math width, centred on the math axis (~ and ≈)."""
     from dataclasses import replace
 
-    big = replace(m, xh=m.cap * 1.25, bar=m.bar * 1.05)
-    cs = _shape("tildecomb", big, 0, m.cap * h, m.bar * 1.0, 0)
+    big = replace(m, xh=m.cap * 1.5, bar=m.bar * 1.05)  # the wave spans the math width once its ends are cut
+    cs = _shape("tildecomb", big, 0, m.cap * h, (m.stem + m.bar) / 2 * 0.95 * k, 0)  # as heavy as + and =
     ys = [p[1] for c in cs for p in c.flat(6)]
     return shift(cs, 0, mid(m) - (min(ys) + max(ys)) / 2)
 

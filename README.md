@@ -9,7 +9,7 @@ program that draws every glyph from a handful of numbers.
 - **Optical size** (`opsz`) 12 to 72. At 12 (the default) it is the Text design: larger x-height, sturdier stems,
   looser spacing and open apertures for 9 to 20 px. At 72 it is the Display design: pure geometry and tight spacing
   for headlines. Browsers choose the value from the font size by themselves.
-- **Character set**: 528 glyphs. Google Fonts Latin Kernel and Latin Core complete; every Latin-script official
+- **Character set**: 529 glyphs. Google Fonts Latin Kernel and Latin Core complete; every Latin-script official
   language of the EU and the Nordic countries, Sámi and Greenlandic included, and Turkish (32 languages, checked
   with hyperglot). Currency, math, arrows for signage, fractions, superiors and inferiors.
 - **OpenType features**: `kern` `mark` `mkmk` `ccmp` `locl` `case` `cpsp` `frac` `numr` `dnom` `sups` `subs` `ordn`

@@ -87,8 +87,8 @@ def plusminus(m: Master) -> Drawing:
 @glyph("approxequal", 0x2248, "uc")
 @math_glyph
 def approxequal(m: Master) -> Drawing:
-    t = tilde_shape(m, 0.26)
-    g = m.cap * 0.11
+    t = tilde_shape(m, 0.34, 0.9)
+    g = m.cap * 0.125
     return Drawing(shift(t, 0, g) + shift(t, 0, -g))
 
 
@@ -105,10 +105,10 @@ def logicalnot(m: Master) -> Drawing:
 def infinity(m: Master) -> Drawing:
     """Two rounds side by side whose outlines cross at the waist; their counters stay apart (the 8 lying down)."""
     w, y = _w(m), mid(m)
-    side, th = m.bar * 0.98, m.bar * 0.86  # lighter than an o: two counters share the width
+    side, th = m.stem * 0.88, m.bar * 0.9  # the + and = weights: stem-like sides, bar-like tops
     gap = side * 0.55  # the counters' distance from the waist
-    r = (w * 0.56 + side / 2 + gap / 2) / 2  # so the sign is 1.12 of the math width in every master
-    ry = r * 0.86
+    r = (w * 0.62 + side / 2 + gap / 2) / 2  # so the sign is 1.24 of the math width in every master
+    ry = r * 0.94
     cl, cr = w / 2 - (r - side / 2 - gap / 2), w / 2 + (r - side / 2 - gap / 2)
     lo, ro = Ell(cl, y, r, ry, m.tension), Ell(cr, y, r, ry, m.tension)
     lp, rp = lo.arc("E", "N", "W", "S", "E"), ro.arc("W", "S", "E", "N", "W")

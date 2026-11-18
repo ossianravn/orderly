@@ -96,6 +96,7 @@ def export(masters: list[Master], sets: list[dict[str, Glyph]], vf: Path, out_di
         })
     data = {
         "family": FAMILY, "version": f"{VERSION[0]}.{VERSION[1]:03d}", "unitsPerEm": 1000,
+        "glyphCount": len(font.getGlyphOrder()),  # the compiled font's total, .notdef and spaces included
         "metrics": {
             "ascender": masters[0].asc, "capHeight": masters[0].cap, "descender": masters[0].desc,
             "xHeight": {str(m.opsz): m.xh for m in masters if m.wght == 400},

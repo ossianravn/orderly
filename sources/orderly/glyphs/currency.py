@@ -33,7 +33,7 @@ def thin_bar(m: Master) -> float:
 def cent(m: Master) -> Drawing:
     eo, ei = lc_round(m)
     x = ei.cx + ei.rx * math.cos(math.radians(m.ap_c))
-    v = thin_bar(m)
+    v = m.stem * m.g("cent.v")  # lighter in Black, where the c's counter is small
     return Drawing([cut_round(eo, ei, x, x), box(eo.cx - v / 2, -m.xh * 0.16, eo.cx + v / 2, m.xh * 1.16)])
 
 

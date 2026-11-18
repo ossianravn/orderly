@@ -87,7 +87,7 @@ def section(m: Master) -> Drawing:
     st, b, side, th = fw(sm)
     w = sm.w("S") * 0.96
     y0, y1 = -m.cap * 0.12, m.cap + m.os(m.cap)
-    hs = (y1 - y0) * 0.62
+    hs = (y1 - y0) * m.g("sect.h")  # each s's height: enough overlap that the two close a loop
 
     def one(bot: float, top: float):
         return s_curve(SSpec(

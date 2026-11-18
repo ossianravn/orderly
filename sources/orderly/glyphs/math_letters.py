@@ -18,7 +18,7 @@ from .lc_arch import u
 from .symbols import _chevron
 
 
-@glyph("mu", 0xB5, "lc")
+@glyph("mu", (0xB5, 0x3BC), "lc")  # micro sign and Greek mu: one glyph (shapers normalise)
 def mu(m: Master) -> Drawing:
     """µ: the u with its left stem run down to the descender."""
     return Drawing(u(m).contours + [box(0, m.desc, m.stem, m.xh * 0.5)])
@@ -31,7 +31,7 @@ def pi(m: Master) -> Drawing:
     return Drawing([box(0, m.xh - m.bar, w, m.xh), box(xl, 0, xl + st, m.xh), box(xr, 0, xr + st, m.xh)])
 
 
-@glyph("Omega", 0x2126, "uc")
+@glyph("Omega", (0x2126, 0x3A9), "uc")  # ohm sign normalises to Greek Omega
 def Omega(m: Master) -> Drawing:
     """Ω: the O's round opened at the foot, its ends standing on two short feet that run outward."""
     st, b = m.cstem, m.cbar
@@ -61,7 +61,7 @@ def partialdiff(m: Master) -> Drawing:
     return Drawing(mirror_x(_six(m, w), w / 2))
 
 
-@glyph("uni2206", 0x2206, "uc")
+@glyph("uni2206", (0x2206, 0x394), "uc")  # increment and Greek Delta
 def increment(m: Master) -> Drawing:
     """∆: the A's two strokes with a flat apex, standing on a bar instead of crossing one."""
     w = m.w("A") * 1.02
