@@ -1,6 +1,6 @@
 ---
 import SectionHead from "./SectionHead.astro";
-import { meta } from "../lib/data";
+import { count, meta } from "../lib/data";
 
 // Features the font build lists with a sample; layout-engine features without one are left out.
 const shown = meta.features.filter((f) => f.sample && f.sample.trim());
@@ -13,7 +13,7 @@ const byDefault = new Set(["kern", "mark", "mkmk", "ccmp", "locl", "liga", "calt
     id="features-h"
     title="Features"
     lead={shown.length
-      ? `${shown.length} OpenType features, each beside an example.`
+      ? `${count(shown.length, "OpenType feature")}, each beside an example.`
       : "No OpenType features in this build yet."}
   />
   <ul class="list">

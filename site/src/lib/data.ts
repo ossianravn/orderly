@@ -29,7 +29,8 @@ export interface Meta {
   glyphs: { name: string; unicode: number | null; char: string | null; category: string }[];
 }
 
-export const meta: Meta = read("../fonts/data/orderly.json");
+// ORDERLY_META points the build at another copy of the data (worst-case checks); the default is the font build's.
+export const meta: Meta = read(process.env.ORDERLY_META ?? "../fonts/data/orderly.json");
 export const packed: Packed = read("public/data/glyphs.json");
 
 export const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
@@ -66,6 +67,9 @@ export function widthAt(text: string, masterIndex: number): number {
 export const masterIndex = (id: string) => packed.masters.findIndex((m) => m.id === id);
 
 export const repo = "https://github.com/ossianravn/orderly";
+
+/** "1 language", "32 languages". */
+export const count = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 /** Groups for the character grid, in a reader's order. */
 export const categories: [string, string][] = [

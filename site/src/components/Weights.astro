@@ -1,6 +1,6 @@
 ---
 import SectionHead from "./SectionHead.astro";
-import { axis, meta } from "../lib/data";
+import { axis, count, meta } from "../lib/data";
 
 const w = axis("wght");
 const phrase = "Kartotek, køreplan, hyldemeter, rækkefølge, årgang";
@@ -10,7 +10,7 @@ const phrase = "Kartotek, køreplan, hyldemeter, rækkefølge, årgang";
   <SectionHead
     id="weights-h"
     title="Weights"
-    lead={`${meta.instances.length} named weights, ${meta.instances[0].name} to ${meta.instances.at(-1)!.name}, on one axis from ${w.min} to ${w.max}.`}
+    lead={`${count(meta.instances.length, "named weight")}, ${meta.instances[0].name} to ${meta.instances.at(-1)!.name}, on one axis from ${w.min} to ${w.max}.`}
   />
   <div class="ladder" data-ladder>
   <ol>
@@ -22,7 +22,6 @@ const phrase = "Kartotek, køreplan, hyldemeter, rækkefølge, årgang";
             class="rung"
             data-w={i.wght}
             aria-pressed={i.wght === w.default ? "true" : "false"}
-            aria-label={`${i.name}, ${i.wght}`}
           >
             <span class="who">
               <span class="label">{i.name}</span>

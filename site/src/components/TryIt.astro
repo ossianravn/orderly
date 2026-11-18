@@ -21,7 +21,7 @@ const text = "Hver ting på sin plads.\nAllt har sin plats.\nKaikki paikallaan.\
   <div class="grid">
     <div class="main">
       <label class="visually-hidden" for="t-text">Text set in Orderly</label>
-      <textarea id="t-text" class="spec" spellcheck="false" rows="4" style={`--size: ${size}px`}>{text}</textarea>
+      <textarea id="t-text" class="spec" spellcheck="false" dir="auto" rows="4" style={`--size: ${size}px`}>{text}</textarea>
     </div>
   </div>
 </section>
@@ -115,6 +115,13 @@ const text = "Hver ting på sin plads.\nAllt har sin plats.\nKaikki paikallaan.\
     line-height: 1.12;
     letter-spacing: -0.005em;
     caret-color: var(--mark);
+    overflow-wrap: anywhere;
+  }
+  /* Phones zoom into a field set below 16 px; keep the field at 16 px there. */
+  @media (pointer: coarse) {
+    textarea {
+      font-size: max(16px, var(--size));
+    }
   }
   textarea:focus-visible {
     outline: none;

@@ -1,6 +1,6 @@
 ---
 import SectionHead from "./SectionHead.astro";
-import { meta } from "../lib/data";
+import { count, meta } from "../lib/data";
 import { texts, tiers } from "../lib/texts";
 
 const listed = new Map(meta.languages.map((l) => [l.tag, l.name]));
@@ -18,7 +18,9 @@ const rows = [20, 16, 13, 11].map((px) => items.filter((it) => it.px === px)).fi
   <SectionHead
     id="reading-h"
     title="Reading"
-    lead={`Text sizes, in ${items.length} of the ${meta.languages.length || items.length} languages the font covers.`}
+    lead={meta.languages.length
+      ? `Text sizes, in ${items.length} of the ${count(meta.languages.length, "language")} the font covers.`
+      : `Text sizes, in ${count(items.length, "language")}.`}
   />
   <div class="grid">
     <div class="main tiers">

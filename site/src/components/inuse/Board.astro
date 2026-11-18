@@ -11,8 +11,8 @@ const rows: [string, string, string, string, boolean][] = [
 
 <figure class="board" aria-label="Departure board">
   <div class="head">
-    <p><span class="title">Afgange</span> <span class="sub">Departures</span></p>
-    <p class="where"><span class="sub">Lindhøj St.</span> <span class="clock">10:39</span></p>
+    <p class="name"><span class="title">Afgange</span><span class="sub">Departures</span></p>
+    <p class="where"><span class="sub">Lindhøj St.</span><span class="clock">10:39</span></p>
   </div>
   <table>
     <thead>
@@ -44,6 +44,7 @@ const rows: [string, string, string, string, boolean][] = [
     --alert: #ff7556;
     background: var(--bg);
     color: var(--fg);
+    border: 1px solid rgb(255 255 255 / 0.07);
     border-radius: 0.4rem;
     padding: clamp(1rem, 2.4vw, 1.75rem);
     font-variant-numeric: tabular-nums;
@@ -62,13 +63,21 @@ const rows: [string, string, string, string, boolean][] = [
     font-weight: 600;
     line-height: 1;
   }
+  .name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.6em;
+  }
   .sub {
     color: var(--dim);
     font-size: 0.8rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     font-weight: 500;
-    margin-left: 0.5em;
+  }
+  .where .sub {
+    margin-right: 0.4em;
   }
   .where {
     white-space: nowrap;
@@ -76,7 +85,6 @@ const rows: [string, string, string, string, boolean][] = [
   .clock {
     font-size: clamp(1.25rem, 4.2cqi, 2rem);
     font-weight: 500;
-    margin-left: 0.4em;
   }
   table {
     width: 100%;

@@ -1,7 +1,7 @@
 ---
 import SectionHead from "./SectionHead.astro";
 import { BOX_H, BOX_W, cellDrawing, inspect } from "../lib/inspect";
-import { axis, categories, drawn, packed } from "../lib/data";
+import { axis, categories, count, drawn, packed } from "../lib/data";
 
 const first = "a";
 const loc = { wght: axis("wght").default, opsz: axis("opsz").max };
@@ -20,7 +20,7 @@ const typed = (g: (typeof drawn)[number]) => g.char && g.category !== "mark";
 ---
 
 <section id="characters" class="sec" aria-labelledby="characters-h">
-  <SectionHead id="characters-h" title="Characters" lead={`${drawn.length} glyphs, and every one of them drawn from the same few parts.`}>
+  <SectionHead id="characters-h" title="Characters" lead={`${count(drawn.length, "glyph")}, and every one of them drawn from the same few parts.`}>
     <dl slot="side" class="label at">
       <div><dt>Weight</dt><dd data-out="wght">{loc.wght}</dd></div>
       <div><dt>Optical size</dt><dd data-out="opsz" data-auto={String(loc.opsz)}>{loc.opsz}</dd></div>
@@ -216,6 +216,10 @@ const typed = (g: (typeof drawn)[number]) => g.char && g.category !== "mark";
   }
   .facts dd {
     margin-top: 0.15rem;
+    overflow-wrap: anywhere;
+  }
+  .facts div:first-child {
+    grid-column: 1 / -1;
   }
   @media (max-width: 1000px) {
     .split {
@@ -225,7 +229,7 @@ const typed = (g: (typeof drawn)[number]) => g.char && g.category !== "mark";
       grid-row: 1;
       top: 0;
       z-index: 2;
-      grid-template-columns: 12rem minmax(0, 1fr);
+      grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
       align-items: start;
       gap: var(--s3);
       background: var(--paper);
@@ -235,11 +239,21 @@ const typed = (g: (typeof drawn)[number]) => g.char && g.category !== "mark";
       border-bottom: 1px solid var(--rule);
     }
     .facts {
-      grid-template-columns: repeat(2, auto);
-      gap: var(--s1) var(--s3);
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.15rem;
+      align-self: center;
+    }
+    .facts div {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--s2);
     }
     .facts dd {
       margin-top: 0;
+      font-size: var(--f-small);
+      text-align: right;
+      min-width: 0;
     }
     .cells {
       grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));

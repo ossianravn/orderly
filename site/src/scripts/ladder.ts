@@ -37,11 +37,12 @@ export function initLadder(): void {
     dragging = true;
     moved = false;
     startY = e.clientY;
-    ladder.setPointerCapture(e.pointerId);
   });
   ladder.addEventListener("pointermove", (e) => {
     if (!dragging) return;
     if (!moved && Math.abs(e.clientY - startY) < 6) return;
+    // Capture only once it is a drag, so that a plain click still reaches its rung.
+    if (!moved) ladder.setPointerCapture(e.pointerId);
     moved = true;
     stopGlide();
     ladder.dataset.dragging = "true";
@@ -60,7 +61,8 @@ export function initLadder(): void {
       moved = false;
       return;
     }
-    glideWeight(Number(rung.dataset.w));
+    // A click from the keyboard (detail 0) sets the weight at once; pointer clicks glide.
+    glideWeight(Number(rung.dataset.w), e.detail === 0);
   });
 
   subscribe((s) => {

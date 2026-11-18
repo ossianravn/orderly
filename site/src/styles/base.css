@@ -5,6 +5,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   overflow-x: clip;
@@ -29,7 +30,6 @@ body {
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent;
   padding-bottom: 7rem;
 }
 
@@ -77,6 +77,22 @@ textarea {
   color: inherit;
 }
 
+/* Controls answer a tap at once and do not select their own labels on a long press. */
+a,
+button,
+label,
+input {
+  touch-action: manipulation;
+}
+
+button,
+label,
+[role="radiogroup"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
 svg {
   display: block;
 }
@@ -111,6 +127,13 @@ svg {
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* Sections off screen are not laid out until they come near: the page sets a lot of type in many
+   weights and optical sizes, and laying it all out at load blocks the main thread. */
+main > section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1400px;
 }
 
 /* Specimens follow the control bar; the interface and body copy do not. */

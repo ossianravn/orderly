@@ -19,14 +19,14 @@
 </div>
 
 <style>
-  /* A physical card: everything scales with its width (125 x 75 mm), set at 26rem wide. */
+  /* A physical card (125 x 75 mm): every length is in --u, one pixel of a 416 px wide card. */
   .wrap {
     container-type: inline-size;
   }
   .card {
     --ink: #1b1d20;
     --line: #d5dde4;
-    --u: calc(100cqi / 26);
+    --u: calc(100cqi / 416);
     position: relative;
     aspect-ratio: 5 / 3;
     background-color: #fbfcfc;

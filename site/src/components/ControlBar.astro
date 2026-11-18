@@ -63,8 +63,8 @@ const o = axis("opsz");
     bottom: max(var(--s3), env(safe-area-inset-bottom));
     transform: translateX(-50%);
     align-items: center;
-    gap: var(--s4);
-    padding: var(--s2) var(--s4);
+    gap: var(--s3);
+    padding: var(--s2) var(--s3) var(--s2) var(--s4);
     background: var(--bar-bg);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     backdrop-filter: blur(20px) saturate(160%);
@@ -77,6 +77,13 @@ const o = axis("opsz");
   :global(.js) .bar {
     display: flex;
   }
+  @media (prefers-reduced-transparency: reduce) {
+    .bar {
+      background: var(--bar-solid);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
   .extra {
     display: contents;
   }
@@ -87,7 +94,7 @@ const o = axis("opsz");
   }
   .group + .group,
   .extra > .group:first-child {
-    padding-left: var(--s4);
+    padding-left: var(--s3);
     border-left: 1px solid var(--rule);
   }
   .label {
@@ -174,7 +181,7 @@ const o = axis("opsz");
   }
   .seg span {
     display: block;
-    padding: 0.3rem 0.7rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 0.45rem;
     color: var(--ink-2);
     transition: background-color 160ms ease, color 160ms ease;
@@ -221,13 +228,14 @@ const o = axis("opsz");
       margin-inline: auto;
     }
     .weight {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
       order: 2;
     }
     .weight .range {
-      flex: 1;
+      flex: 1 1 0;
       width: auto;
-      min-width: 0;
+      min-width: 3rem;
     }
     .more {
       display: grid;
@@ -242,7 +250,11 @@ const o = axis("opsz");
     }
     .bar[data-expanded="true"] .extra {
       display: grid;
+      grid-template-columns: minmax(0, 1fr);
       gap: var(--s3);
+    }
+    .extra > .group {
+      min-width: 0;
     }
     .extra > .group:first-child {
       padding-left: 0;

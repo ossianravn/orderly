@@ -12,7 +12,8 @@
   --rule-strong: #121417;
   --mark: #c2381c;
   --on-mark: #f3f5f6;
-  --bar-bg: rgb(243 245 246 / 0.8);
+  --bar-bg: rgb(250 251 251 / 0.82);
+  --bar-solid: #fafbfb;
   --bar-edge: rgb(18 20 23 / 0.1);
   --shadow: 0 1px 2px rgb(18 20 23 / 0.06), 0 10px 30px rgb(18 20 23 / 0.12);
   --track: #cfd4d8;
@@ -37,7 +38,7 @@
   --s6: 4.45rem;
   --s7: 7.2rem;
 
-  --m: clamp(1rem, 4.4vw, 4rem);
+  --m: max(clamp(1rem, 4.4vw, 4rem), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --label-col: 11.5rem;
   --gap: var(--s5);
   --measure: 32em;
@@ -60,7 +61,8 @@
     --rule-strong: #e9ecee;
     --mark: #ff7556;
     --on-mark: #111315;
-    --bar-bg: rgb(26 29 32 / 0.8);
+    --bar-bg: rgb(28 31 34 / 0.82);
+    --bar-solid: #1c1f22;
     --bar-edge: rgb(233 236 238 / 0.1);
     --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.45);
     --track: #3a4046;
@@ -77,7 +79,8 @@
   --rule-strong: #e9ecee;
   --mark: #ff7556;
   --on-mark: #111315;
-  --bar-bg: rgb(26 29 32 / 0.8);
+  --bar-bg: rgb(28 31 34 / 0.82);
+  --bar-solid: #1c1f22;
   --bar-edge: rgb(233 236 238 / 0.1);
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.45);
   --track: #3a4046;
