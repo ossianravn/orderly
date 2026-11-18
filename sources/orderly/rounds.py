@@ -44,6 +44,35 @@ def meet(a: Path, b: Path) -> list[tuple[tuple[int, float], tuple[int, float], P
     return hits
 
 
+def tangent_from(path: Path, p: Pt, nth: int = 0) -> tuple[int, float]:
+    """Position on a path where the line from p touches it (the nth such point along the path)."""
+    from .geom import tangent
+
+    def f(i: int, t: float) -> float:
+        q, d = bez(path.segs[i], t), tangent(path.segs[i], t)
+        return (q[0] - p[0]) * d[1] - (q[1] - p[1]) * d[0]
+
+    found = 0
+    for i, s in enumerate(path.segs):
+        n = 64
+        prev = f(i, 0.0)
+        for k in range(1, n + 1):
+            cur = f(i, k / n)
+            if (prev < 0) != (cur < 0):
+                lo, hi = (k - 1) / n, k / n
+                for _ in range(50):
+                    mid = (lo + hi) / 2
+                    if (f(i, lo) < 0) != (f(i, mid) < 0):
+                        hi = mid
+                    else:
+                        lo = mid
+                if found == nth:
+                    return i, (lo + hi) / 2
+                found += 1
+            prev = cur
+    raise ValueError("no tangent from point")
+
+
 def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, depth: float, side: int,
               turn: float) -> tuple[Path, Join]:
     """Cut the inner edge where it meets the host stem edge and place the outer edge for the join weight.
@@ -78,6 +107,7 @@ def join_into(inner: Path, host: float | Path, at_start: bool, weight: float, de
         if dist >= weight:
             break
         k += step
+    depth *= 0.5  # a curved host is a shoulder, not a stem: bury the stubs less deep
     ko = depth / max(abs(d[0]), 0.2)
     ki = depth / max(abs(away[0]), 0.2)
     j = Join(outer, d, pt, (outer[0] - d[0] * ko, outer[1] - d[1] * ko), (pt[0] - away[0] * ki, pt[1] - away[1] * ki))
@@ -103,6 +133,15 @@ def arch(eo: Ell, ei: Ell, host: float | Path, base: float, w_join: float, depth
     outer = shoulder(j, eo.p("N"), t).then(eo.arc("N", "E")).to((xr, base))
     c = Contour.of(outer.reversed(), line(j.outer, j.outer_in, j.inner_in, j.inner), inner)
     return c, outer
+
+
+def arm(eo: Ell, ei: Ell, s: float, x_cut: float, w_join: float, depth: float, turn: float, t: float) -> Contour:
+    """The arm of r: the n's shoulder from the stem, over the top, cut vertically at x_cut."""
+    inner = ei.arc("W", "N", "E")
+    inner, j = join_into(inner, s, True, w_join, depth, +1, turn)
+    inner = inner.cut_x(x_cut, "head", -1)
+    outer = shoulder(j, eo.p("N"), t).then(eo.arc("N", "E")).cut_x(x_cut, "head", -1)
+    return Contour.of(outer.reversed(), line(j.outer, j.outer_in, j.inner_in, j.inner), inner)
 
 
 def bowl(eo: Ell, ei: Ell, s: float, w_top: float, w_bot: float, depth: float, turn: float, t: float) -> Contour:

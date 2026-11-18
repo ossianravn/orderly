@@ -60,6 +60,32 @@ def ring(eo: Ell, ei: Ell) -> list[Contour]:
     return [Contour.of(eo.arc("S", "E", "N", "W", "S")), Contour.of(ei.arc("S", "W", "N", "E", "S"))]
 
 
+def half_round(cx: float, y0: float, y1: float, xr: float, t: float) -> Path:
+    """Right half of a round from its bottom extreme (cx, y0) through its east extreme to its top (cx, y1)."""
+    ym = (y0 + y1) / 2
+    return Path([tcurve((cx, y0), (1.0, 0.0), (xr, ym), (0.0, 1.0), t),
+                 tcurve((xr, ym), (0.0, 1.0), (cx, y1), (-1.0, 0.0), t)])
+
+
+def dbowl(x0: float, st: float, y0: float, y1: float, xr: float, rx: float, arm: float, side: float, t: float,
+          t_in: float, ystem: float | None = None) -> list[Contour]:
+    """A stem with a D-shaped bowl from y0 to y1 on its right: one outer contour and the counter.
+
+    The bowl's round has horizontal radius rx at the outside. ystem, if given, is where the stem's foot sits
+    (P R: the stem runs on below the bowl to ystem); otherwise the bowl's bottom arm is the stem's foot (D).
+    """
+    cx = xr - rx
+    outer = Path()
+    if ystem is None:
+        outer.add(((x0, y0), (cx, y0)))
+    else:
+        outer.add(((x0, ystem), (x0 + st, ystem))).to((x0 + st, y0)).to((cx, y0))
+    outer.then(half_round(cx, y0, y1, xr, t)).to((x0, y1))
+    inner = line((x0 + st, y0 + arm), (x0 + st, y1 - arm), (cx, y1 - arm))
+    inner.then(half_round(cx, y0 + arm, y1 - arm, xr - side, t_in).reversed()).to((x0 + st, y0 + arm))
+    return [Contour.of(outer), Contour(inner.segs)]
+
+
 def disc(cx: float, cy: float, d: float, t: float = 0.56) -> Contour:
     e = Ell(cx, cy, d / 2, d / 2, t)
     return Contour.of(e.arc("S", "E", "N", "W", "S"))

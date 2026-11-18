@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from .geom import Contour
 from .glyphs import load
 from .master import Master
-from .spacing import COPY, bounds, sidebearings
+from .spacing import COPY, sidebearings
 
 
 @dataclass
@@ -36,8 +36,8 @@ def build(m: Master, only: list[str] | None = None) -> dict[str, Glyph]:
         if d.advance is not None or not d.contours:
             raw[n] = (spec, d, None, None, None)
             continue
-        left, right = sidebearings(m, n, spec.zone, d.contours)
-        raw[n] = (spec, d, left, right, bounds(d.contours))
+        left, right, zx0, zx1 = sidebearings(m, n, spec.zone, d.contours)
+        raw[n] = (spec, d, left, right, (zx0, 0, zx1, 0))
     # copied sides: a glyph may take its left or right sidebearing from another glyph
     for n, (src_l, src_r) in COPY.items():
         if n not in raw or raw[n][2] is None:

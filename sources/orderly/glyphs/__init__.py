@@ -43,6 +43,7 @@ def glyph(name: str, uni: int | tuple[int, ...] | None, zone: str):
 
 def load() -> dict[str, Spec]:
     """Import every glyph module (registration happens on import) and return the registry in drawing order."""
-    from . import control  # noqa: F401
+    from . import control, lc_arch, lc_diag, lc_round, lc_stem, uc_bowl, uc_diag, uc_round, uc_straight  # noqa: F401
+    from . import figures, figures_round, nordic, punct  # noqa: F401
 
     return REGISTRY

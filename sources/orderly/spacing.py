@@ -12,7 +12,9 @@ from .geom import Contour
 from .master import Master
 
 # Hand adjustments in font units at the Regular weight, added to the computed sidebearing: name -> (left, right).
-ADJUST: dict[str, tuple[float, float]] = {}
+ADJUST: dict[str, tuple[float, float]] = {
+    "J": (-15, 0),  # the open top left of J reads as a hole beside H
+}
 
 # Glyphs whose sidebearings copy another glyph's side: name -> (left source, right source); None keeps computed.
 COPY: dict[str, tuple[str | None, str | None]] = {}
@@ -46,12 +48,20 @@ def bounds(contours: list[Contour]) -> tuple[float, float, float, float]:
     return min(xs), min(ys), max(xs), max(ys)
 
 
-def sidebearings(m: Master, name: str, z: str, contours: list[Contour]) -> tuple[float, float]:
-    """Area-method left and right sidebearings for a drawing, before hand adjustment."""
+def sidebearings(m: Master, name: str, z: str, contours: list[Contour]) -> tuple[float, float, float, float]:
+    """Area-method sidebearings, measured from the outline's extremes inside the zone.
+
+    Parts outside the zone (the hook of j below the baseline, the hook of f above the x-height) may reach into
+    the sidebearing, as they do in hand-spaced fonts. Returns left, right and the zone extremes they hang from.
+    """
     y0, y1 = zone(m, z)
     h = y1 - y0
-    xmin, _, xmax, _ = bounds(contours)
     rows, step = profile(contours, y0, y1)
+    filled = [r for r in rows if r]
+    if filled:
+        xmin, xmax = min(r[0] for r in filled), max(r[1] for r in filled)
+    else:
+        xmin, _, xmax, _ = bounds(contours)
     depth = m.sp_depth * h
     white_l = sum(min(r[0] - xmin, depth) if r else depth for r in rows) * step
     white_r = sum(min(xmax - r[1], depth) if r else depth for r in rows) * step
@@ -59,4 +69,4 @@ def sidebearings(m: Master, name: str, z: str, contours: list[Contour]) -> tuple
     left = (target - white_l) / h
     right = (target - white_r) / h
     dl, dr = ADJUST.get(name, (0.0, 0.0))
-    return left + dl, right + dr
+    return left + dl, right + dr, xmin, xmax

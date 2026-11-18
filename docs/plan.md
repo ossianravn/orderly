@@ -226,6 +226,33 @@ a monospace companion, submission to Google Fonts or Fontsource. Name a need bef
 
 Newest first. One entry per phase or review: date, what landed, how it was checked, what is open.
 
+- 2026-11-18: Phase 1 (Regular Display) landed (Claude Opus 5.5, implementer). 81 glyphs plus space: `A-Z a-z 0-9`,
+  `. , : ; ! ? - ' " ( ) / &`, `Æ Ø Å æ ø å`, spaced by the area method with one hand adjustment (J). Shared
+  parts: the compass `Ell`, the n arch (also h m r u), the bowl (b d p q a g), one hook (t f j g J), the s curve
+  (s S), apex polygons for v w y A V W M Y, cut rounds for c e C G. Checked: outline sheets of every group and
+  browser proofs (words 16 to 200 px, paragraph 11 to 24 px, spacing strings, character set, light and dark) were
+  looked at; `uv run orderly check` finds no interpolation problem against a throwaway light master and compiles
+  a two-master variable font; two builds give the same bytes. Open, and the implementer's weak spots: `I` and `l`
+  differ only by height (the `ss02` l is Phase 4); `rn` and `cl` close up at 11 to 13 px in this Display master;
+  `fl` and `ff` nearly touch (kerning, Phase 4); `T` and `J` leave holes beside `S` and `H` (kerning); the `s S`
+  spine is long and straight for a geometric face; `æ` is a little dark where the e meets the stem; the `6 9` loop
+  is tall and narrow.
+
+  Implementer's proposals for the reviewer, not decided:
+  - Read the brief's capital widths as advance widths over the cap height. Settled: H 0.97, N 1.02, U 0.96, A V
+    0.97, D 1.04, C 0.95, G 1.12, B P 0.86, R 0.89, E 0.81, F L S 0.77 to 0.78, M 1.18, W 1.46. `O Q` are true
+    circles (722 by 722) and so come out at 1.17, not 1.1; narrowing them would break rule 1.
+  - The brief's starting values are kept unchanged (cap 700, x-height 500, ascender 740, descender -200,
+    lowercase stem 78). Numbers the brief leaves open are settled in `sources/orderly/master.py`: capital stem
+    84, lowercase bar 70, capital bar 76, round sides 1.07 of the stem, round tops 1.03 of the bar, diagonals
+    0.96 of the stem measured square, curve tension 0.56 outside and in, join thinning 0.24 of the stroke, flat
+    apexes 0.8 of the stem, dots 1.2 of the stem, round overshoot 1.5 % and apex overshoot 0.5 %.
+  - Masters must keep a few shapes in the same arrangement for interpolation to work: the e's bar sits below the
+    round's centre, the 2's diagonal leaves the round below its east extreme, the counter of each joined round
+    runs into its stem. The generator now places the e's bar by its lower edge and stops the build with a
+    message when the 2 breaks its rule; the Thin and Black masters of Phase 2 need their own numbers for these
+    (a throwaway master at 2.1 times the weights closes the e's eye).
+
 - 2026-11-18: Phase 0 (pipeline proof) landed (Claude Opus 5.5, implementer). `uv` environment with pinned
   versions, the generator skeleton in `sources/orderly/`, both proof tools (outline sheets from the generator with
   skia; browser proofs of the compiled font with Playwright and Chrome on port 4813), `OFL.txt`, `.gitattributes`,

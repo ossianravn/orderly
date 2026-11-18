@@ -61,6 +61,22 @@ installs it. Phases 0 and 1 run no QA, so it was not installed; installing a dow
 maintainer's go-ahead. Fallback if fontspector does not work on Windows: fontbakery 1.1.0 from PyPI (released
 2025-10-02).
 
+## Spacing
+
+`spacing.py` sets sidebearings by an area method in the manner of HT Letterspacer. On scanlines through the glyph's
+zone (baseline to x-height for lowercase, to cap height otherwise) it measures the outline's distance from the
+glyph's own extreme in that zone, clipped to a depth (`sp_depth`, 3 % of the zone height); the sidebearing makes
+up the difference to a target area (`sp_area`, 0.09 of the zone height squared). Parts outside the zone (the
+hooks of j and f, the tails of g and y) may reach into the sidebearing. `ADJUST` holds hand corrections in units;
+in Phase 1 only J (-15 on the left). Resulting Regular Display values: n 45 | 40, o 34 | 34, H 63 | 63, O 47 | 47.
+
+## Interpolation check
+
+`uv run orderly check` writes the real master and a throwaway light master (all weights times 0.35) to
+`build/compat/`, runs `fontTools.varLib.interpolatable` on them, and compiles the pair to a variable font with
+fontc. The light master is not a design; it only proves that every glyph function draws the same contours and
+points for a different set of numbers.
+
 ## Vertical metrics
 
 Placeholders until Phase 5: typo and hhea ascender 950, descender -250, line gap 0, `USE_TYPO_METRICS` set, win
