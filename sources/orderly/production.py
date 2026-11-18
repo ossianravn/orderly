@@ -21,6 +21,11 @@ from fontTools.ttLib.tables import ttProgram
 from .ufo import FAMILY, VERSION
 from .weights import WEIGHT_MAP, WEIGHT_NAMES
 
+# fontTools packs GSUB and GPOS with HarfBuzz's repacker when uharfbuzz happens to be installed (the qa group
+# brings it) and with its own packer otherwise; the two give different bytes. Always use fontTools' own, so the
+# output does not depend on what else is installed (CI installs only the default dependencies).
+CFG = {"fontTools.ttLib.tables.otBase:USE_HARFBUZZ_REPACKER": False}
+
 SIZES = [(12, FAMILY), (72, f"{FAMILY} Display")]  # optical size of each static family
 SIZES_BY_FAMILY = [(f, o) for o, f in SIZES]
 RIBBI = {"Regular", "Bold"}
@@ -47,7 +52,7 @@ def _unhinted(font: TTFont) -> None:
 
 
 def finish(path: Path) -> None:
-    font = TTFont(path, recalcTimestamp=False)  # keep fontc's fixed head.modified: same sources, same bytes
+    font = TTFont(path, recalcTimestamp=False, cfg=CFG)  # keep fontc's fixed head.modified: same sources, same bytes
     weights = [{"value": u, "name": n, **({"flags": 0x2, "linkedValue": 700} if n == "Regular" else {})}
                for (u, _), n in zip(WEIGHT_MAP, WEIGHT_NAMES)]
     sizes = [{"value": 12, "name": "12pt", "flags": 0x2}, {"value": 72, "name": "72pt"}]  # GF axis registry
@@ -153,9 +158,10 @@ def statics(vf: Path, out_ttf: Path, out_woff2: Path) -> list[Path]:
     made = []
     for opsz, family in SIZES:
         for (wght, _), style in zip(WEIGHT_MAP, WEIGHT_NAMES):
-            font = instantiateVariableFont(TTFont(vf, recalcTimestamp=False), {"wght": wght, "opsz": opsz},
+            font = instantiateVariableFont(TTFont(vf, recalcTimestamp=False, cfg=CFG), {"wght": wght, "opsz": opsz},
                                            overlap=OverlapMode.REMOVE, updateFontNames=False)
             font.recalcTimestamp = False
+            font.cfg.update(CFG)
             _drop_repeats(font)
             font["OS/2"].usWeightClass = wght
             del font["STAT"]
@@ -200,7 +206,7 @@ def web(vf: Path, out: Path) -> Path:
         opts = subset.Options()
         opts.layout_features, opts.name_IDs, opts.name_languages = ["*"], ["*"], ["*"]
         opts.notdef_outline, opts.flavor = True, "woff2"
-        font = TTFont(vf, recalcTimestamp=False)
+        font = TTFont(vf, recalcTimestamp=False, cfg=CFG)
         sub = subset.Subsetter(opts)
         sub.populate(unicodes=codes)
         sub.subset(font)
