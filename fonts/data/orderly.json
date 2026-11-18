@@ -5762,6 +5762,348 @@
    }
   },
   {
+   "name": "endash",
+   "unicode": 8211,
+   "char": "–",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 644,
+     "lsb": 72,
+     "rsb": 72
+    },
+    "RegularText": {
+     "advance": 620,
+     "lsb": 60,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 596,
+     "lsb": 48,
+     "rsb": 48
+    },
+    "ThinDisplay": {
+     "advance": 616,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "RegularDisplay": {
+     "advance": 588,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 572,
+     "lsb": 36,
+     "rsb": 36
+    }
+   }
+  },
+  {
+   "name": "emdash",
+   "unicode": 8212,
+   "char": "—",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 1064,
+     "lsb": 72,
+     "rsb": 72
+    },
+    "RegularText": {
+     "advance": 1040,
+     "lsb": 60,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 1016,
+     "lsb": 48,
+     "rsb": 48
+    },
+    "ThinDisplay": {
+     "advance": 1036,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "RegularDisplay": {
+     "advance": 1008,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 992,
+     "lsb": 36,
+     "rsb": 36
+    }
+   }
+  },
+  {
+   "name": "quoteleft",
+   "unicode": 8216,
+   "char": "‘",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 201,
+     "lsb": 74,
+     "rsb": 74
+    },
+    "RegularText": {
+     "advance": 236,
+     "lsb": 60,
+     "rsb": 59
+    },
+    "BlackText": {
+     "advance": 268,
+     "lsb": 48,
+     "rsb": 47
+    },
+    "ThinDisplay": {
+     "advance": 160,
+     "lsb": 60,
+     "rsb": 59
+    },
+    "RegularDisplay": {
+     "advance": 182,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 251,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "quoteright",
+   "unicode": 8217,
+   "char": "’",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 200,
+     "lsb": 73,
+     "rsb": 74
+    },
+    "RegularText": {
+     "advance": 236,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 268,
+     "lsb": 47,
+     "rsb": 48
+    },
+    "ThinDisplay": {
+     "advance": 160,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "RegularDisplay": {
+     "advance": 183,
+     "lsb": 44,
+     "rsb": 45
+    },
+    "BlackDisplay": {
+     "advance": 251,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "quotesinglbase",
+   "unicode": 8218,
+   "char": "‚",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 199,
+     "lsb": 73,
+     "rsb": 73
+    },
+    "RegularText": {
+     "advance": 236,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 267,
+     "lsb": 47,
+     "rsb": 47
+    },
+    "ThinDisplay": {
+     "advance": 157,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "RegularDisplay": {
+     "advance": 182,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 251,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "quotedblleft",
+   "unicode": 8220,
+   "char": "“",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 277,
+     "lsb": 74,
+     "rsb": 74
+    },
+    "RegularText": {
+     "advance": 417,
+     "lsb": 60,
+     "rsb": 59
+    },
+    "BlackText": {
+     "advance": 534,
+     "lsb": 48,
+     "rsb": 47
+    },
+    "ThinDisplay": {
+     "advance": 219,
+     "lsb": 60,
+     "rsb": 59
+    },
+    "RegularDisplay": {
+     "advance": 327,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 529,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "quotedblright",
+   "unicode": 8221,
+   "char": "”",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 276,
+     "lsb": 73,
+     "rsb": 74
+    },
+    "RegularText": {
+     "advance": 417,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 534,
+     "lsb": 47,
+     "rsb": 48
+    },
+    "ThinDisplay": {
+     "advance": 219,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "RegularDisplay": {
+     "advance": 328,
+     "lsb": 44,
+     "rsb": 45
+    },
+    "BlackDisplay": {
+     "advance": 529,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "quotedblbase",
+   "unicode": 8222,
+   "char": "„",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 275,
+     "lsb": 73,
+     "rsb": 73
+    },
+    "RegularText": {
+     "advance": 417,
+     "lsb": 59,
+     "rsb": 60
+    },
+    "BlackText": {
+     "advance": 533,
+     "lsb": 47,
+     "rsb": 47
+    },
+    "ThinDisplay": {
+     "advance": 216,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "RegularDisplay": {
+     "advance": 327,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 529,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
+   "name": "ellipsis",
+   "unicode": 8230,
+   "char": "…",
+   "category": "punctuation",
+   "metrics": {
+    "ThinText": {
+     "advance": 411,
+     "lsb": 73,
+     "rsb": 73
+    },
+    "RegularText": {
+     "advance": 750,
+     "lsb": 59,
+     "rsb": 59
+    },
+    "BlackText": {
+     "advance": 1021,
+     "lsb": 47,
+     "rsb": 47
+    },
+    "ThinDisplay": {
+     "advance": 321,
+     "lsb": 58,
+     "rsb": 58
+    },
+    "RegularDisplay": {
+     "advance": 593,
+     "lsb": 44,
+     "rsb": 44
+    },
+    "BlackDisplay": {
+     "advance": 1038,
+     "lsb": 35,
+     "rsb": 35
+    }
+   }
+  },
+  {
    "name": "plus",
    "unicode": 43,
    "char": "+",
@@ -6820,348 +7162,6 @@
     },
     "BlackDisplay": {
      "advance": 249,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "endash",
-   "unicode": 8211,
-   "char": "–",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 644,
-     "lsb": 72,
-     "rsb": 72
-    },
-    "RegularText": {
-     "advance": 620,
-     "lsb": 60,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 596,
-     "lsb": 48,
-     "rsb": 48
-    },
-    "ThinDisplay": {
-     "advance": 616,
-     "lsb": 58,
-     "rsb": 58
-    },
-    "RegularDisplay": {
-     "advance": 588,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 572,
-     "lsb": 36,
-     "rsb": 36
-    }
-   }
-  },
-  {
-   "name": "emdash",
-   "unicode": 8212,
-   "char": "—",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 1064,
-     "lsb": 72,
-     "rsb": 72
-    },
-    "RegularText": {
-     "advance": 1040,
-     "lsb": 60,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 1016,
-     "lsb": 48,
-     "rsb": 48
-    },
-    "ThinDisplay": {
-     "advance": 1036,
-     "lsb": 58,
-     "rsb": 58
-    },
-    "RegularDisplay": {
-     "advance": 1008,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 992,
-     "lsb": 36,
-     "rsb": 36
-    }
-   }
-  },
-  {
-   "name": "quoteleft",
-   "unicode": 8216,
-   "char": "‘",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 201,
-     "lsb": 74,
-     "rsb": 74
-    },
-    "RegularText": {
-     "advance": 236,
-     "lsb": 60,
-     "rsb": 59
-    },
-    "BlackText": {
-     "advance": 268,
-     "lsb": 48,
-     "rsb": 47
-    },
-    "ThinDisplay": {
-     "advance": 160,
-     "lsb": 60,
-     "rsb": 59
-    },
-    "RegularDisplay": {
-     "advance": 182,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 251,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "quoteright",
-   "unicode": 8217,
-   "char": "’",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 200,
-     "lsb": 73,
-     "rsb": 74
-    },
-    "RegularText": {
-     "advance": 236,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 268,
-     "lsb": 47,
-     "rsb": 48
-    },
-    "ThinDisplay": {
-     "advance": 160,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "RegularDisplay": {
-     "advance": 183,
-     "lsb": 44,
-     "rsb": 45
-    },
-    "BlackDisplay": {
-     "advance": 251,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "quotesinglbase",
-   "unicode": 8218,
-   "char": "‚",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 199,
-     "lsb": 73,
-     "rsb": 73
-    },
-    "RegularText": {
-     "advance": 236,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 267,
-     "lsb": 47,
-     "rsb": 47
-    },
-    "ThinDisplay": {
-     "advance": 157,
-     "lsb": 58,
-     "rsb": 58
-    },
-    "RegularDisplay": {
-     "advance": 182,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 251,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "quotedblleft",
-   "unicode": 8220,
-   "char": "“",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 277,
-     "lsb": 74,
-     "rsb": 74
-    },
-    "RegularText": {
-     "advance": 417,
-     "lsb": 60,
-     "rsb": 59
-    },
-    "BlackText": {
-     "advance": 534,
-     "lsb": 48,
-     "rsb": 47
-    },
-    "ThinDisplay": {
-     "advance": 219,
-     "lsb": 60,
-     "rsb": 59
-    },
-    "RegularDisplay": {
-     "advance": 327,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 529,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "quotedblright",
-   "unicode": 8221,
-   "char": "”",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 276,
-     "lsb": 73,
-     "rsb": 74
-    },
-    "RegularText": {
-     "advance": 417,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 534,
-     "lsb": 47,
-     "rsb": 48
-    },
-    "ThinDisplay": {
-     "advance": 219,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "RegularDisplay": {
-     "advance": 328,
-     "lsb": 44,
-     "rsb": 45
-    },
-    "BlackDisplay": {
-     "advance": 529,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "quotedblbase",
-   "unicode": 8222,
-   "char": "„",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 275,
-     "lsb": 73,
-     "rsb": 73
-    },
-    "RegularText": {
-     "advance": 417,
-     "lsb": 59,
-     "rsb": 60
-    },
-    "BlackText": {
-     "advance": 533,
-     "lsb": 47,
-     "rsb": 47
-    },
-    "ThinDisplay": {
-     "advance": 216,
-     "lsb": 58,
-     "rsb": 58
-    },
-    "RegularDisplay": {
-     "advance": 327,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 529,
-     "lsb": 35,
-     "rsb": 35
-    }
-   }
-  },
-  {
-   "name": "ellipsis",
-   "unicode": 8230,
-   "char": "…",
-   "category": "punctuation",
-   "metrics": {
-    "ThinText": {
-     "advance": 411,
-     "lsb": 73,
-     "rsb": 73
-    },
-    "RegularText": {
-     "advance": 750,
-     "lsb": 59,
-     "rsb": 59
-    },
-    "BlackText": {
-     "advance": 1021,
-     "lsb": 47,
-     "rsb": 47
-    },
-    "ThinDisplay": {
-     "advance": 321,
-     "lsb": 58,
-     "rsb": 58
-    },
-    "RegularDisplay": {
-     "advance": 593,
-     "lsb": 44,
-     "rsb": 44
-    },
-    "BlackDisplay": {
-     "advance": 1038,
      "lsb": 35,
      "rsb": 35
     }
